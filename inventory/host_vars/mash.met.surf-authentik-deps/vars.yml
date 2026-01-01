@@ -1,0 +1,52 @@
+# This is vars.yml for the supplementary host of authentik.
+
+---
+
+########################################################################
+#                                                                      #
+# Playbook                                                             #
+#                                                                      #
+########################################################################
+
+# Put a strong secret below, generated with `pwgen -s 64 1` or in another way
+mash_playbook_generic_secret_key: 't5PZGhdwnDhRTy6lP7WkiW6R7opUjXg9jbQZ9PlwrS72nhKTLaUJWpm3PhFvtYxD'
+
+# Override service names and directory path prefixes
+mash_playbook_service_identifier_prefix: 'mash-authentik-'
+mash_playbook_service_base_directory_name_prefix: 'authentik-'
+
+########################################################################
+#                                                                      #
+# /Playbook                                                            #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# Various other overrides                                              #
+#                                                                      #
+########################################################################
+
+devture_systemd_docker_base_ipv6_enabled: true
+
+########################################################################
+#                                                                      #
+# /Various other overrides                                             #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# valkey                                                               #
+#                                                                      #
+########################################################################
+
+valkey_enabled: true
+
+########################################################################
+#                                                                      #
+# /valkey                                                              #
+#                                                                      #
+########################################################################

@@ -1,0 +1,146 @@
+---
+########################################################################
+#                                                                      #
+# Playbook                                                             #
+#                                                                      #
+########################################################################
+
+# Put a strong secret below, generated with `pwgen -s 64 1` or in another way
+mash_playbook_generic_secret_key: "ZJ2qdAcPs3mdQj5lxmgWAULwx5p8oNw08drNL7tT8HrLS4yHyP0Y4rnKEtgcSYY1"
+
+# Override service names and directory path prefixes
+mash_playbook_service_identifier_prefix: 'mash-immich-'
+mash_playbook_service_base_directory_name_prefix: 'immich-'
+
+########################################################################
+#                                                                      #
+# /Playbook                                                            #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# Various other overrides                                              #
+#                                                                      #
+########################################################################
+
+# See: docs/configuring-ipv6.md
+devture_systemd_docker_base_ipv6_enabled: true
+
+########################################################################
+#                                                                      #
+# /Various other overrides                                             #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# valkey                                                               #
+#                                                                      #
+########################################################################
+
+valkey_enabled: true
+
+########################################################################
+#                                                                      #
+# /valkey                                                              #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# postgres                                                             #
+#                                                                      #
+########################################################################
+
+postgres_enabled: true
+
+# Put a strong secret below, generated with `pwgen -s 64 1` or in another way
+postgres_connection_password: "3hMoBYOqj5lOalh5a7D5eaYIHCM5ICtSp5XWQRawwC9YOncHQVkUPA6gpSZr8t6X"
+
+postgres_container_image_registry_prefix_upstream_default: ghcr.io/
+postgres_container_image_name: immich-app/postgres
+postgres_container_image_suffix: ""
+
+# We pin Postgres to a specific major version or versions.
+# The version/versions defined here have corresponding `postgres_container_image_vXX_version` overrides below,
+# so that the Postgres role would install Immich/Postgres (see https://github.com/immich-app/base-images), instead of vanilla Postgres.
+#
+# When a new Immich/Postgres version becomes available and the same major version is supported by the Postgres role, you can:
+# - override the variable (e.g. `postgres_container_image_vXX_version`) for it by defining it below and pointing to an Immich/Postgres container image
+# - adjust `postgres_allowed_versions_custom` to allow upgrading to the new major version
+# - run `--tags=upgrade-postgres`
+# - clean up:
+#   - remove the variable override for the old Postgres version (e.g. `postgres_container_image_vXX_version`)
+#   -adjust `postgres_allowed_versions_custom` to only contain the new Postgres version
+postgres_allowed_versions_custom: [18]
+
+postgres_container_image_v18_version: 18-vectorchord0.5.3-pgvector0.8.1
+
+postgres_initdb_args_list_custom:
+  - "--data-checksums"
+
+# The Immich Postgres custom entrypoint copies `/var/postgresql-conf-tpl/postgresql.${DB_STORAGE_TYPE,,}.conf`
+# into `/etc/postgresql/postgresql.conf`, so we need to run as a privileged-enough user
+# that can write to the filesystem.
+# See: https://github.com/immich-app/base-images/blob/489692aaafce6c4d005537809cd48b82f206a9bb/postgres/immich-docker-entrypoint.sh#L7-L17
+#
+# Still, we wish for the files to be owned by a UID/GID that corresponds to `postgres:postgres` in the container.
+postgres_uid: 999
+postgres_gid: 999
+
+postgres_container_uid: 0
+postgres_container_gid: 0
+postgres_container_read_only_enabled: false
+postgres_container_cap_drop_all_enabled: false
+
+# We use an arbitrary user/group in `postgres_uid` (that matches the `postgres` user that exists in the container image's `/etc/passwd` file).
+# As such, we don't wish to mount the host's `/etc/passwd` file,
+# which is unlikely to have a matching entry.
+postgres_container_mount_etc_passwd_enabled: false
+
+# Launch Postgres like Immich Postgres intends (passing in a custom config file).
+# See: https://github.com/immich-app/base-images/blob/489692aaafce6c4d005537809cd48b82f206a9bb/postgres/Dockerfile#L42
+postgres_postgres_process_extra_arguments_custom:
+  - "-c"
+  - "config_file=/etc/postgresql/postgresql.conf"
+
+postgres_managed_databases_additional:
+  - name: "{{ immich_database_name }}"
+    username: "{{ immich_database_username }}"
+    password: "{{ immich_database_password }}"
+    additional_sql_queries: |-
+      {{
+        ["\c " + immich_database_name]
+        +
+        immich_database_preparation_sql_queries
+      }}
+
+########################################################################
+#                                                                      #
+# /postgres                                                            #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# immich                                                               #
+#                                                                      #
+########################################################################
+
+immich_database_hostname: "{{ postgres_connection_hostname }}"
+immich_database_port: "{{ postgres_connection_port }}"
+
+# Put a strong secret below, generated with `pwgen -s 64 1` or in another way
+immich_database_password: "LctkmqiL3uEB4rzqsjBSv0dmH6oPnsLb8JW9UZorlZFbGR9psRoVl3mU8LBABurO"
+immich_database_sslmode: disable
+
+########################################################################
+#                                                                      #
+# /immich                                                              #
+#                                                                      #
+########################################################################

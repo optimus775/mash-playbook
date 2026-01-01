@@ -9,7 +9,11 @@ optimization_vars_files_file_path := run_directory_path + "/optimization-vars-fi
 # Pulls external Ansible roles
 roles: _requirements-yml
     #!/usr/bin/env sh
-    if [ -x "$(command -v agru)" ]; then
+    agru_bin="{{ justfile_directory() }}/agru"
+    if [ -x "$agru_bin" ]; then
+        echo "[NOTE] This command just updates the roles, but if you want to update everything at once (playbook, roles, etc.) - use 'just update'"
+        "$agru_bin" -r {{ justfile_directory() }}/requirements.yml
+    elif command -v agru >/dev/null 2>&1; then
         echo "[NOTE] This command just updates the roles, but if you want to update everything at once (playbook, roles, etc.) - use 'just update'"
         agru -r {{ justfile_directory() }}/requirements.yml
     else
@@ -74,7 +78,11 @@ _optimize-for-var-paths +PATHS:
 # Updates the playbook and installs the necessary Ansible roles pinned in requirements.yml. If a -u flag is passed, also updates the requirements.yml file with new role versions (if available)
 update *flags: _requirements-yml update-playbook-only
     #!/usr/bin/env sh
-    if [ -x "$(command -v agru)" ]; then
+    agru_bin="{{ justfile_directory() }}/agru"
+    if [ -x "$agru_bin" ]; then
+        echo {{ if flags == "" { "Installing roles pinned in requirements.yml..." } else if flags == "-u" { "Updating roles and pinning new versions in requirements.yml..." } else { "Unknown flags passed" } }}
+        "$agru_bin" -r {{ templates_directory_path }}/requirements.yml {{ flags }}
+    elif command -v agru >/dev/null 2>&1; then
         echo {{ if flags == "" { "Installing roles pinned in requirements.yml..." } else if flags == "-u" { "Updating roles and pinning new versions in requirements.yml..." } else { "Unknown flags passed" } }}
         agru -r {{ templates_directory_path }}/requirements.yml {{ flags }}
     else

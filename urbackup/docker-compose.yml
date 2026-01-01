@@ -1,0 +1,53 @@
+services:
+  urbackup:
+    image: uroni/urbackup-server:latest
+    container_name: urbackup
+    restart: unless-stopped
+
+    environment:
+      # UID/GID пользователя, которому должны принадлежать файлы бэкапов
+      # здесь предполагаю, что mash = uid 997, gid 986
+      - PUID=997
+      - PGID=986
+      - TZ=Europe/Madrid
+
+    volumes:
+      # База UrBackup (конфиги, БД)
+      - /srv/storage/urbackup/database:/var/urbackup
+      # Собственно бэкапы клиентов (Btrfs-том)
+      - /srv/storage/urbackup/backups:/backups
+
+    # Порты, которые нужны не через Traefik:
+    ports:
+      - "55415:55415"       # Internet clients
+      - "35623:35623/udp"   # UDP discovery (опционально, но полезно в LAN)
+
+    networks:
+      default:
+      traefik:
+        aliases:
+          - urbackup-met-surf
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+      # Router под ваш домен, например urbackup.met.surf
+      - "traefik.http.routers.urbackup-met-surf.rule=Host(`urbackup.met.surf`)"
+      - "traefik.http.routers.urbackup-met-surf.entrypoints=web-secure"
+      - "traefik.http.routers.urbackup-met-surf.tls=true"
+      - "traefik.http.routers.urbackup-met-surf.tls.certResolver=default"
+
+      # Сервис UrBackup внутри Docker-сети: слушает HTTP на 55414
+      - "traefik.http.services.urbackup-met-surf.loadbalancer.server.port=55414"
+      - "traefik.http.routers.urbackup-met-surf.service=urbackup-met-surf"
+
+    # ВАЖНО: включаем Btrfs-поддержку, как советует официальный README
+    cap_add:
+      - SYS_ADMIN
+
+networks:
+  traefik:
+    external: true     # это внешний network, который создаёт MASH для traefik
+  default:
+    external: false

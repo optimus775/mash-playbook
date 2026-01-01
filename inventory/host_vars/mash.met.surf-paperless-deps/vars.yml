@@ -1,0 +1,37 @@
+# This is vars.yml for the supplementary host of Paperless-ngx.
+
+---
+
+########################################################################
+#                                                                      #
+# Playbook                                                             #
+#                                                                      #
+########################################################################
+
+# Put a strong secret below, generated with `pwgen -s 64 1` or in another way
+mash_playbook_generic_secret_key: 'EwXadT7ufhyudaS0ezqiv4eEhZG054mHQAeyediDEvZB1Ofs5blVofI8bWLkmL99'
+
+# Override service names and directory path prefixes
+mash_playbook_service_identifier_prefix: 'mash-paperless-'
+mash_playbook_service_base_directory_name_prefix: 'paperless-'
+
+########################################################################
+#                                                                      #
+# /Playbook                                                            #
+#                                                                      #
+########################################################################
+
+
+########################################################################
+#                                                                      #
+# valkey                                                               #
+#                                                                      #
+########################################################################
+
+valkey_enabled: true
+
+########################################################################
+#                                                                      #
+# /valkey                                                              #
+#                                                                      #
+########################################################################
