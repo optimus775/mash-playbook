@@ -11,6 +11,9 @@ inventory/host_vars/mash.met.surf/vars.yml.backup
 # ignores macos files
 .DS_Store
 
+# Ansible Vault password file (local only)
+.vault-pass
+
 /requirements.yml
 /setup.yml
 /group_vars/mash_servers
