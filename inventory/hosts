@@ -19,6 +19,7 @@
 [mash_servers]
 [mash_servers:children]
 mash_met_surf
+mash_truste_top
 
 [mash_met_surf]
 mash.met.surf ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
@@ -31,4 +32,5 @@ mash.met.surf-authentik-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansi
 mash.met.surf-immich-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
 mash.met.surf-paperless-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
 
-# pt.truste.top ansible_host=185.186.78.84 ansible_ssh_user=root ansible_ssh_private_key_file="~/Ansible-deploy-servers/keys/Global20"
+[mash_truste_top]
+mash.truste.top ansible_host=65.21.236.37 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global34"
