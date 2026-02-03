@@ -1,5 +1,7 @@
 *.log
 inventory/host_vars/mash.met.surf/vars.yml.backup
+inventory/host_vars/*/vars.yml.pre-vault.bak
+inventory/host_vars/*/vault.yml.bak
 
 # ignore roles pulled by ansible-galaxy
 /roles/galaxy/*

@@ -1,0 +1,3 @@
+inventory/host_vars/mash.met.surf/vars.yml filter=git-crypt diff=git-crypt
+inventory/host_vars/mash.normus.ru/vars.yml filter=git-crypt diff=git-crypt
+inventory/host_vars/mash.truste.top/vars.yml filter=git-crypt diff=git-crypt
