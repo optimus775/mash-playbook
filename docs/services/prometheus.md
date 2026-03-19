@@ -42,10 +42,6 @@ If you've installed [Prometheus Node Exporter](prometheus-node-exporter.md) on t
 ```yaml
 prometheus_self_node_scraper_enabled: true
 prometheus_self_node_scraper_static_configs_target: "{{ prometheus_node_exporter_identifier }}:9100"
-
-# node-exporter runs in another container network, so we need to connect to it.
-prometheus_container_additional_networks:
-  - "{{ prometheus_node_exporter_container_network }}"
 ```
 
 To scrape a **remote** Prometheus Node Exporter instance, do not use `prometheus_self_node_scraper_*`, but rather follow the [Scraping any other exporter service](#scraping-any-other-exporter-service) guide below.
@@ -97,6 +93,7 @@ prometheus_hostname: prometheus.example.com
 
 - [Grafana](grafana.md) — a web-based tool for visualizing your Prometheus metrics (time-series)
 - [Grafana Loki](grafana-loki.md) — a log aggregation system that helps collect, store, and analyze logs in a scalable and efficient manner (like Prometheus, but for logs)
+- [Prometheus Alertmanager](prometheus-alertmanager.md) — Handle alerts sent by client applications such as the Prometheus server
 - [prometheus-blackbox-exporter](prometheus-blackbox-exporter.md) — Blackbox probing of HTTP/HTTPS/DNS/TCP/ICMP and gRPC endpoints
 - [prometheus-node-exporter](prometheus-node-exporter.md) — an exporter for machine metrics
 - [prometheus-postgres-exporter](prometheus-postgres-exporter.md) — an exporter for monitoring a [Postgres](postgres.md) database server

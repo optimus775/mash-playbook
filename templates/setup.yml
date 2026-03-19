@@ -177,6 +177,10 @@
     - role: galaxy/bitmagnet
     # /role-specific:bitmagnet
 
+    # role-specific:borg_ui
+    - role: galaxy/borg_ui
+    # /role-specific:borg_ui
+
     # role-specific:browserless
     - role: galaxy/browserless
     # /role-specific:browserless
@@ -185,6 +189,10 @@
     - role: galaxy/calibre_web
     # /role-specific:calibre_web
 
+    # role-specific:calibre_web_automated
+    - role: galaxy/calibre_web_automated
+    # /role-specific:calibre_web_automated
+
     # role-specific:cap
     - role: galaxy/cap
     # /role-specific:cap
@@ -192,6 +200,10 @@
     # role-specific:changedetection
     - role: galaxy/changedetection
     # /role-specific:changedetection
+
+    # role-specific:chiefonboarding
+    - role: galaxy/chiefonboarding
+    # /role-specific:chiefonboarding
 
     # role-specific:cinny
     - role: galaxy/cinny
@@ -320,6 +332,10 @@
     # role-specific:flaresolverr
     - role: galaxy/flaresolverr
     # /role-specific:flaresolverr
+
+    # role-specific:flatnotes
+    - role: galaxy/flatnotes
+    # /role-specific:flatnotes
 
     # role-specific:fmd_server
     - role: galaxy/fmd_server
@@ -697,6 +713,10 @@
     - role: galaxy/phpmyadmin
     # /role-specific:phpmyadmin
 
+    # role-specific:pinepods
+    - role: galaxy/pinepods
+    # /role-specific:pinepods
+
     # role-specific:plausible
     - role: galaxy/plausible
     # /role-specific:plausible
@@ -728,6 +748,10 @@
     # role-specific:prometheus
     - role: galaxy/prometheus
     # /role-specific:prometheus
+
+    # role-specific:prometheus_alertmanager
+    - role: galaxy/prometheus_alertmanager
+    # /role-specific:prometheus_alertmanager
 
     # role-specific:prometheus_blackbox_exporter
     - role: galaxy/prometheus_blackbox_exporter
