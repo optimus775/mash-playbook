@@ -408,11 +408,6 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (filebrowser_quantum_identifier + '.service'), 'priority': 2000, 'restart_necessary': (filebrowser_quantum_restart_necessary | bool), 'groups': ['mash', 'filebrowser-quantum']} if filebrowser_quantum_enabled else omit) }}
   # /role-specific:filebrowser_quantum
 
-  # role-specific:firezone
-  - |-
-    {{ ({'name': (firezone_identifier + '.service'), 'priority': 2000, 'restart_necessary': (firezone_restart_necessary | bool), 'groups': ['mash', 'firezone']} if firezone_enabled else omit) }}
-  # /role-specific:firezone
-
   # role-specific:flaresolverr
   - |-
     {{ ({'name': (flaresolverr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'flaresolverr']} if flaresolverr_enabled else omit) }}
@@ -1498,17 +1493,6 @@ mash_playbook_postgres_managed_databases_auto_itemized:
       } if fider_enabled and fider_database_hostname == postgres_connection_hostname else omit)
     }}
   # /role-specific:fider
-
-  # role-specific:firezone
-  - |-
-    {{
-      ({
-        'name': firezone_database_name,
-        'username': firezone_database_username,
-        'password': firezone_database_password,
-      } if firezone_enabled and firezone_database_hostname == postgres_connection_hostname else omit)
-    }}
-  # /role-specific:firezone
 
   # role-specific:focalboard
   - |-
@@ -4031,6 +4015,7 @@ chiefonboarding_environment_variables_default_from_email: "{{ exim_relay_sender_
 chiefonboarding_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 chiefonboarding_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 chiefonboarding_database_password: "{{ (mash_playbook_generic_secret_key + ':db.chiefonboarding') | hash('sha512') | to_uuid }}"
+chiefonboarding_database_sslmode: "{{ 'disable' if postgres_enabled and chiefonboarding_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -4726,6 +4711,7 @@ docmost_database_hostname: "{{ postgres_connection_hostname if postgres_enabled 
 docmost_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 docmost_database_username: "{{ docmost_identifier }}"
 docmost_database_password: "{{ (mash_playbook_generic_secret_key + ':db.docmost') | hash('sha512') | to_uuid }}"
+docmost_database_sslmode: "{{ 'disable' if postgres_enabled and docmost_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -4959,20 +4945,19 @@ endlessh_container_additional_networks_auto: |
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
   }}
 
-endlessh_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-endlessh_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ endlessh_identifier }}"
+endlessh_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+endlessh_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
+endlessh_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+endlessh_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+endlessh_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ endlessh_identifier }}"
 endlessh_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
 endlessh_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
-# Only enable Traefik labels for metrics if a hostname is set (indicating that this will be exposed publicly)
-endlessh_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and endlessh_hostname }}"
-endlessh_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
 # role-specific:traefik
-endlessh_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-endlessh_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
-endlessh_container_labels_traefik_loadbalancer_serverstransport: "{{ traefik_config_tcp_servertransports_default_proxyprotocol_name }}@file"
+endlessh_container_labels_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
+endlessh_container_labels_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
+endlessh_container_labels_traefik_tcp_loadbalancer_serverstransport: "{{ traefik_config_tcp_servertransports_default_proxyprotocol_name }}@file"
 # /role-specific:traefik
 
 ########################################################################
@@ -5153,7 +5138,7 @@ excalidraw_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_en
 excalidraw_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:excalidraw_room
-excalidraw_container_image_self_build: true # Building the image is necessary for using the self-hosted collaboration server
+excalidraw_container_image_self_build: "{{ excalidraw_room_enabled }}" # Building the image is necessary for using the self-hosted collaboration server
 # /role-specific:excalidraw_room
 
 # role-specific:traefik
@@ -5353,6 +5338,7 @@ fider_environment_variables_email_noreply: "{{ exim_relay_sender_address if exim
 fider_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 fider_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 fider_database_password: "{{ (mash_playbook_generic_secret_key + ':db.fider') | hash('sha512') | to_uuid }}"
+fider_database_sslmode: "{{ 'disable' if postgres_enabled and fider_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -5437,7 +5423,7 @@ filebrowser_quantum_container_labels_traefik_enabled: "{{ mash_playbook_traefik_
 filebrowser_quantum_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:onlyoffice_docs
-filebrowser_quantum_config_integrations_office: true
+filebrowser_quantum_config_integrations_office: "{{ onlyoffice_docs_enabled }}"
 filebrowser_quantum_config_integrations_office_url: "{{ onlyoffice_docs_scheme }}://{{ onlyoffice_docs_hostname }}"
 filebrowser_quantum_config_integrations_office_secret: "{{ onlyoffice_docs_environment_variables_jwt_secret }}"
 # /role-specific:onlyoffice_docs
@@ -5453,60 +5439,6 @@ filebrowser_quantum_container_labels_traefik_tls_certResolver: "{{ traefik_certR
 #                                                                      #
 ########################################################################
 # /role-specific:filebrowser_quantum
-
-
-
-# role-specific:firezone
-########################################################################
-#                                                                      #
-# firezone                                                             #
-#                                                                      #
-########################################################################
-
-firezone_enabled: false
-
-firezone_identifier: "{{ mash_playbook_service_identifier_prefix }}firezone"
-
-firezone_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}firezone"
-
-firezone_uid: "{{ mash_playbook_uid }}"
-firezone_gid: "{{ mash_playbook_gid }}"
-
-firezone_systemd_required_services_list_auto: |
-  {{
-    ([postgres_identifier ~ '.service'] if postgres_enabled and firezone_database_hostname == postgres_connection_hostname else [])
-  }}
-
-firezone_container_additional_networks_auto: |
-  {{
-    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
-    +
-    ([postgres_container_network] if postgres_enabled and firezone_database_hostname == postgres_connection_hostname and firezone_container_network != postgres_container_network else [])
-  }}
-
-firezone_generic_secret: "{{ mash_playbook_generic_secret_key }}"
-
-firezone_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-firezone_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
-# role-specific:postgres
-firezone_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
-firezone_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
-firezone_database_username: "{{ firezone_identifier }}"
-firezone_database_password: "{{ (mash_playbook_generic_secret_key + ':fz.db.user') | hash('sha512') | to_uuid }}"
-# /role-specific:postgres
-
-# role-specific:traefik
-firezone_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-firezone_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
-# /role-specific:traefik
-
-########################################################################
-#                                                                      #
-# /firezone                                                            #
-#                                                                      #
-########################################################################
-# /role-specific:firezone
 
 
 
@@ -5664,6 +5596,7 @@ focalboard_database_type: "{{ 'postgres' if postgres_enabled else 'sqlite' }}"
 focalboard_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 focalboard_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 focalboard_database_password: "{{ (mash_playbook_generic_secret_key + ':db.focalboard') | hash('sha512') | to_uuid }}"
+focalboard_database_sslmode: "{{ 'disable' if postgres_enabled and focalboard_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -6057,6 +5990,7 @@ ghostfolio_database_hostname: "{{ postgres_connection_hostname if postgres_enabl
 ghostfolio_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 ghostfolio_database_username: ghostfolio
 ghostfolio_database_password: "{{ (mash_playbook_generic_secret_key + ':db.ghostfolio') | hash('sha512') | to_uuid }}"
+ghostfolio_database_sslmode: "{{ 'disable' if postgres_enabled and ghostfolio_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -6772,16 +6706,6 @@ hubsite_service_excalidraw_description: "Virtual whiteboard for sketching hand-d
 hubsite_service_excalidraw_priority: 1000
 # /role-specific:excalidraw
 
-# role-specific:firezone
-# Firezone
-hubsite_service_firezone_enabled: "{{ firezone_enabled }}"
-hubsite_service_firezone_name: Firezone
-hubsite_service_firezone_url: "https://{{ firezone_hostname }}"
-hubsite_service_firezone_logo_location: "{{ role_path }}/assets/firezone.png"
-hubsite_service_firezone_description: "A self-hosted VPN server, based on Wireguard"
-hubsite_service_firezone_priority: 1000
-# /role-specific:firezone
-
 # role-specific:fmd_server
 # FMD Server
 hubsite_service_fmd_server_enabled: "{{ fmd_server_enabled }}"
@@ -7221,19 +7145,6 @@ mash_playbook_hubsite_service_list_auto_itemized:
       } if hubsite_service_excalidraw_enabled else omit)
     }}
   # /role-specific:excalidraw
-
-  # role-specific:firezone
-  - |-
-    {{
-      ({
-        'name': hubsite_service_firezone_name,
-        'url': hubsite_service_firezone_url,
-        'logo_location': hubsite_service_firezone_logo_location,
-        'description': hubsite_service_firezone_description,
-        'priority': hubsite_service_firezone_priority,
-      } if hubsite_service_firezone_enabled else omit)
-    }}
-  # /role-specific:firezone
 
   # role-specific:fmd_server
   - |-
@@ -8284,6 +8195,7 @@ joplin_server_database_hostname: "{{ postgres_connection_hostname if postgres_en
 joplin_server_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 joplin_server_database_username: "{{ joplin_server_identifier }}"
 joplin_server_database_password: "{{ (mash_playbook_generic_secret_key + ':db.joplinserver') | hash('sha512') | to_uuid }}"
+joplin_server_database_sslmode: "{{ 'disable' if postgres_enabled and joplin_server_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -8975,6 +8887,7 @@ linkwarden_environment_variables_meili_key: "{{ meilisearch_default_admin_api_ke
 linkwarden_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 linkwarden_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 linkwarden_database_password: "{{ (mash_playbook_generic_secret_key + ':linkwarden.db') | hash('sha512') | to_uuid }}"
+linkwarden_database_sslmode: "{{ 'disable' if postgres_enabled and linkwarden_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -9107,6 +9020,7 @@ lldap_database_mysql_password: "{{ (mash_playbook_generic_secret_key + ':lldap.d
 lldap_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 lldap_database_postgres_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 lldap_database_postgres_password: "{{ (mash_playbook_generic_secret_key + ':lldap.db') | hash('sha512') | to_uuid }}"
+lldap_database_postgres_sslmode: "{{ 'disable' if postgres_enabled and lldap_database_postgres_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -11241,6 +11155,7 @@ openarchiver_environment_variables_meili_key: "{{ meilisearch_default_admin_api_
 openarchiver_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 openarchiver_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 openarchiver_database_password: "{{ (mash_playbook_generic_secret_key + ':openarchiver.db') | hash('sha512') | to_uuid }}"
+openarchiver_database_sslmode: "{{ 'disable' if postgres_enabled and openarchiver_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:tika
@@ -11308,6 +11223,7 @@ opengist_database_mysql_password: "{{ (mash_playbook_generic_secret_key + ':open
 opengist_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 opengist_database_postgres_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 opengist_database_postgres_password: "{{ (mash_playbook_generic_secret_key + ':opengist.db') | hash('sha512') | to_uuid }}"
+opengist_database_postgres_sslmode: "{{ 'disable' if postgres_enabled and opengist_database_postgres_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -11989,7 +11905,7 @@ pgadmin_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabl
 pgadmin_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:exim_relay
-pgadmin_environment_variables_pgadmin_disable_postfix: true
+pgadmin_environment_variables_pgadmin_disable_postfix: "{{ exim_relay_enabled }}"
 pgadmin_environment_variables_pgadmin_config_mail_server: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
 pgadmin_environment_variables_pgadmin_config_mail_port: "{{ 8025 if exim_relay_enabled else '' }}"
 pgadmin_environment_variables_pgadmin_config_security_email_sender: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
@@ -12553,22 +12469,19 @@ prometheus_alertmanager_container_additional_networks_auto: |
     +
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
-    ([prometheus_container_network] if prometheus_enabled | default(false) and prometheus_alertmanager_container_network != prometheus_container_network else [])
+    ([prometheus_container_network] if prometheus_enabled | default(false) and prometheus_alertmanager_container_network != prometheus_container_network and not prometheus_alertmanager_container_labels_metrics_enabled else [])
   }}
 
-prometheus_alertmanager_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-prometheus_alertmanager_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_alertmanager_identifier }}"
-
-# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
-prometheus_alertmanager_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and prometheus_alertmanager_hostname }}"
-prometheus_alertmanager_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
+prometheus_alertmanager_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+prometheus_alertmanager_container_labels_metrics_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+prometheus_alertmanager_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+prometheus_alertmanager_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_alertmanager_identifier }}"
 prometheus_alertmanager_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
 prometheus_alertmanager_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
 # role-specific:traefik
-prometheus_alertmanager_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-prometheus_alertmanager_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+prometheus_alertmanager_container_labels_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
+prometheus_alertmanager_container_labels_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
 # /role-specific:traefik
 
 ########################################################################
@@ -12601,19 +12514,16 @@ prometheus_blackbox_exporter_container_additional_networks_auto: |
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
   }}
 
-prometheus_blackbox_exporter_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-prometheus_blackbox_exporter_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_blackbox_exporter_identifier }}"
-
-# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
-prometheus_blackbox_exporter_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and prometheus_blackbox_exporter_hostname }}"
-prometheus_blackbox_exporter_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
+prometheus_blackbox_exporter_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+prometheus_blackbox_exporter_container_labels_metrics_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+prometheus_blackbox_exporter_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+prometheus_blackbox_exporter_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_blackbox_exporter_identifier }}"
 prometheus_blackbox_exporter_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
 prometheus_blackbox_exporter_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
 # role-specific:traefik
-prometheus_blackbox_exporter_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-prometheus_blackbox_exporter_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+prometheus_blackbox_exporter_container_labels_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
+prometheus_blackbox_exporter_container_labels_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
 # /role-specific:traefik
 
 ########################################################################
@@ -12648,13 +12558,10 @@ prometheus_node_exporter_container_additional_networks_auto: |
     ([prometheus_container_network] if prometheus_enabled | default(false) and prometheus_self_node_scraper_enabled | default(false) else [])
   }}
 
-prometheus_node_exporter_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-prometheus_node_exporter_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_node_exporter_identifier }}"
-
-# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
-prometheus_node_exporter_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and prometheus_node_exporter_hostname }}"
-prometheus_node_exporter_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
+prometheus_node_exporter_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+prometheus_node_exporter_container_labels_metrics_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+prometheus_node_exporter_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+prometheus_node_exporter_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_node_identifier }}"
 prometheus_node_exporter_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
 prometheus_node_exporter_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
@@ -12671,8 +12578,8 @@ prometheus_node_exporter_container_extra_arguments:
   - "--mount type=bind,src=/var/run/dbus/system_bus_socket,dst=/var/run/dbus/system_bus_socket,ro,bind-propagation=rslave"
 
 # role-specific:traefik
-prometheus_node_exporter_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-prometheus_node_exporter_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+prometheus_node_exporter_container_labels_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
+prometheus_node_exporter_container_labels_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
 # /role-specific:traefik
 
 ########################################################################
@@ -12712,26 +12619,23 @@ prometheus_postgres_exporter_systemd_required_services_list_auto: |
     ([postgres_identifier ~ '.service'] if postgres_enabled else [])
   }}
 
-prometheus_postgres_exporter_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-prometheus_postgres_exporter_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_postgres_exporter_identifier }}"
-
+prometheus_postgres_exporter_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+prometheus_postgres_exporter_container_labels_metrics_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+prometheus_postgres_exporter_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+prometheus_postgres_exporter_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ prometheus_postgres_exporter_identifier }}"
 prometheus_postgres_exporter_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
 prometheus_postgres_exporter_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
-
-# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
-prometheus_postgres_exporter_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and prometheus_postgres_exporter_hostname | length > 0 }}"
-prometheus_postgres_exporter_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:postgres
 prometheus_postgres_exporter_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 prometheus_postgres_exporter_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 prometheus_postgres_exporter_database_password: "{{ postgres_connection_password if postgres_enabled else '' }}"
-prometheus_postgres_exporter_database_ssl: false
+prometheus_postgres_exporter_database_sslmode: "{{ 'disable' if postgres_enabled and prometheus_postgres_exporter_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
-prometheus_postgres_exporter_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-prometheus_postgres_exporter_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+prometheus_postgres_exporter_container_labels_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
+prometheus_postgres_exporter_container_labels_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
 # /role-specific:traefik
 
 ########################################################################
@@ -12813,15 +12717,14 @@ promtail_container_additional_networks_auto: |
     ) | unique
   }}
 
+promtail_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+promtail_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
 promtail_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
 promtail_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
 promtail_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ promtail_identifier }}"
 promtail_container_labels_metrics_traefik_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
 promtail_container_labels_metrics_traefik_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
-
-# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
-promtail_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-promtail_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:loki
 promtail_config_clients_auto: |
@@ -13276,6 +13179,7 @@ readeck_environment_variables_readeck_mail_fromnoreply: "{{ exim_relay_sender_ad
 readeck_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 readeck_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 readeck_database_password: "{{ (mash_playbook_generic_secret_key + ':readeck.db') | hash('sha512') | to_uuid }}"
+readeck_database_sslmode: "{{ 'disable' if postgres_enabled and readeck_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -13528,7 +13432,7 @@ rssbridge_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_ena
 rssbridge_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:browserless
-rssbridge_config_webdriver_headless: true
+rssbridge_config_webdriver_headless: "{{ browserless_enabled }}"
 rssbridge_config_webdriver_selenium_server_url: "http://{{ browserless_identifier }}:{{ browserless_container_http_port }}/chromium/playwright"
 # /role-specific:browserless
 
@@ -14453,6 +14357,7 @@ teable_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxya
 teable_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 teable_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 teable_database_password: "{{ (mash_playbook_generic_secret_key + ':teable.db') | hash('sha512') | to_uuid }}"
+teable_database_sslmode: "{{ 'disable' if postgres_enabled and teable_database_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -14649,7 +14554,7 @@ tinyauth_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_prox
 # role-specific:lldap
 tinyauth_ldap_enabled: "{{ lldap_enabled }}"
 tinyauth_environment_variable_ldap_address: ldap://{{ lldap_identifier }}:{{ lldap_container_ldap_port }}
-tinyauth_environment_variable_ldap_insecure: true
+tinyauth_environment_variable_ldap_insecure: "{{ lldap_enabled }}"
 # /role-specific:lldap
 
 # role-specific:traefik
@@ -14949,6 +14854,7 @@ vaultwarden_database_mysql_password: "{{ (mash_playbook_generic_secret_key + ':d
 vaultwarden_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 vaultwarden_database_postgres_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 vaultwarden_database_postgres_password: "{{ (mash_playbook_generic_secret_key + ':db.vaultwarden') | hash('sha512') | to_uuid }}"
+vaultwarden_database_postgres_sslmode: "{{ 'disable' if postgres_enabled and vaultwarden_database_postgres_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 # role-specific:traefik
@@ -15083,7 +14989,7 @@ vikunja_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prim
 # /role-specific:traefik
 
 # role-specific:typesense
-vikunja_environment_variables_typesense_enabled: true
+vikunja_environment_variables_typesense_enabled: "{{ typesense_enabled }}"
 vikunja_environment_variables_typesense_url: http://{{ typesense_identifier }}:{{ typesense_container_http_port }}
 vikunja_environment_variables_typesense_apikey: "{{ typesense_environment_variables_api_key }}"
 # /role-specific:typesense
@@ -15370,6 +15276,7 @@ woodpecker_ci_server_database_mysql_password: "{{ (mash_playbook_generic_secret_
 woodpecker_ci_server_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 woodpecker_ci_server_database_postgres_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 woodpecker_ci_server_database_postgres_password: "{{ (mash_playbook_generic_secret_key + ':woodpecker.ci') | hash('sha512') | to_uuid }}"
+woodpecker_ci_server_database_postgres_sslmode: "{{ 'disable' if postgres_enabled and woodpecker_ci_server_database_postgres_hostname == postgres_connection_hostname else 'prefer' }}"
 # /role-specific:postgres
 
 ########################################################################
