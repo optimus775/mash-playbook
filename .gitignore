@@ -23,5 +23,7 @@ inventory/host_vars/*/vault.yml.bak
 /run/*
 !/run/.gitkeep
 
+/var/
+
 /group_vars/*
 !/group_vars/.gitkeep
