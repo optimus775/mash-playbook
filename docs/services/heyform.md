@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: 2020 - 2024 MDAD project contributors
-SPDX-FileCopyrightText: 2020 - 2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2020 Aaron Raimist
 SPDX-FileCopyrightText: 2020 Chris van Dijk
 SPDX-FileCopyrightText: 2020 Dominik Zajac
 SPDX-FileCopyrightText: 2020 Mickaël Cornière
+SPDX-FileCopyrightText: 2020-2024 MDAD project contributors
+SPDX-FileCopyrightText: 2020-2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2022 François Darveau
 SPDX-FileCopyrightText: 2022 Julian Foad
 SPDX-FileCopyrightText: 2022 Warren Bailey
@@ -12,30 +12,32 @@ SPDX-FileCopyrightText: 2023 Antonis Christofides
 SPDX-FileCopyrightText: 2023 Felix Stupp
 SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
 SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
-SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2024 Thomas Miceli
+SPDX-FileCopyrightText: 2024-2026 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# RSSHub
+# HeyForm
 
-The playbook can install and configure [RSSHub](https://docs.rsshub.app/) for you.
+The playbook can install and configure [HeyForm](https://github.com/heyform/heyform) for you.
 
-RSSHub is a self-hosted service to create RSS feeds from web pages via various "routes".
+HeyForm is a form builder that lets you create, customize, and automate forms.
 
-See the project's [documentation](https://docs.rsshub.app/guide/) to learn what RSSHub does and why it might be useful to you.
+See the project's [documentation](https://docs.heyform.net/) to learn what HeyForm does and why it might be useful to you.
 
-For details about configuring the [Ansible role for RSSHub](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3Az3yKvCwcEfxn41ozRTcNR8ad6kpUm), you can check them via:
-- 🌐 [the role's documentation](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3Az3yKvCwcEfxn41ozRTcNR8ad6kpUm/tree/docs/configuring-rsshub.md) online
-- 📁 `roles/galaxy/rsshub/docs/configuring-rsshub.md` locally, if you have [fetched the Ansible roles](../installing.md)
+For details about configuring the [Ansible role for HeyForm](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzsKztkwnLv9wVMRYbcpoFesx6L5j), you can check them via:
+- 🌐 [the role's documentation](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzsKztkwnLv9wVMRYbcpoFesx6L5j/tree/docs/configuring-heyform.md) online
+- 📁 `roles/galaxy/heyform/docs/configuring-heyform.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
 ## Dependencies
 
 This service requires the following other services:
 
+- [MongoDB](mongodb.md) database
 - [Traefik](traefik.md) reverse-proxy server
-- (optional) [Browserless](browserless.md)
-- (optional) [Valkey](valkey.md) data-store; see [below](#configuring-valkey-optional) for details about installation
+- [Valkey](valkey.md) data-store; see [below](#configure-valkey) for details about installation
+- (optional) [exim-relay](exim-relay.md) mailer — required on the default configuration
 
 ## Adjusting the playbook configuration
 
@@ -44,44 +46,51 @@ To enable this service, add the following configuration to your `vars.yml` file:
 ```yaml
 ########################################################################
 #                                                                      #
-# rsshub                                                               #
+# heyform                                                              #
 #                                                                      #
 ########################################################################
 
-rsshub_enabled: true
+heyform_enabled: true
 
-rsshub_hostname: rsshub.example.com
+heyform_hostname: heyform.example.com
 
 ########################################################################
 #                                                                      #
-# /rsshub                                                              #
+# /heyform                                                             #
 #                                                                      #
 ########################################################################
 ```
 
-**Note**: hosting RSSHub under a subpath (by configuring the `rsshub_path_prefix` variable) does not seem to be possible due to RSSHub's technical limitations.
+**Note**: hosting HeyForm under a subpath (by configuring the `heyform_path_prefix` variable) does not seem to be possible due to HeyForm's technical limitations.
 
-### Connecting to a Browserless instance (optional)
+### Set a random string
 
-You can optionally have the RSSHub instance connect to a Browserless instance, in order to have it simulate browser behavior for obtaining websites' data.
+You also need to set a random string to the variable as below by adding the following configuration to your `vars.yml` file. The value can be generated with `pwgen -s 64 1` or in another way.
 
-Browserless is available on the playbook. Enabling it automatically configures the RSSHub instance to connect to it.
+```yaml
+heyform_environment_variables_form_encryption_key: YOUR_SECRET_KEY_HERE
+```
 
-See [this page](browserless.md) for details about how to install it.
+### Configuring the mailer (optional)
 
-### Configuring Valkey (optional)
+On HeyForm you can set up a mailer for functions such as password recovery. If you enable the [exim-relay](exim-relay.md) service in your inventory configuration, the playbook will automatically configure it as a mailer for the service.
 
-Valkey can optionally be enabled for caching data. This playbook supports it, and you can set up a Valkey instance by enabling it on `vars.yml`.
+>[!WARNING]
+> Without setting an authentication method such as DKIM, SPF, and DMARC for your hostname, emails are most likely to be quarantined as spam at recipient's mail servers. The worst scenario is that your server's IP address or hostname will be included in the spam list such as the one managed by [Spamhaus](https://www.spamhaus.org/), depending on the reputation. As the exim-relay service supports DKIM signing, refer to [the role's documentation](https://github.com/mother-of-all-self-hosting/ansible-role-exim-relay/blob/main/docs/configuring-exim-relay.md#enable-dkim-support-optional) for details about how to set it up.
 
-If RSSHub is the sole service which requires Valkey on your server, it is fine to set up just a single Valkey instance. However, **it is not recommended if there are other services which require it, because sharing the Valkey instance has security concerns and possibly causes data conflicts**, as described on the [documentation for configuring Valkey](valkey.md). In this case, you should install a dedicated Valkey instance for each of them.
+### Configure Valkey
 
-If you are unsure whether you will install other services along with RSSHub or you have already set up services which need Valkey (such as [Nextcloud](nextcloud.md), [Vikunja](vikunja.md), and [Docmost](docmost.md)), it is recommended to install a Valkey instance dedicated to RSSHub.
+HeyForm requires a Valkey data-store to work. This playbook supports it, and you can set up a Valkey instance by enabling it on `vars.yml`.
+
+If HeyForm is the sole service which requires Valkey on your server, it is fine to set up just a single Valkey instance. However, **it is not recommended if there are other services which require it, because sharing the Valkey instance has security concerns and possibly causes data conflicts**, as described on the [documentation for configuring Valkey](valkey.md). In this case, you should install a dedicated Valkey instance for each of them.
+
+If you are unsure whether you will install other services along with HeyForm or you have already set up services which need Valkey (such as [Nextcloud](nextcloud.md), [PeerTube](peertube.md), and [Funkwhale](funkwhale.md)), it is recommended to install a Valkey instance dedicated to HeyForm.
 
 *See [below](#setting-up-a-shared-valkey-instance) for an instruction to install a shared instance.*
 
 #### Setting up a dedicated Valkey instance
 
-To create a dedicated instance for RSSHub, you can follow the steps below:
+To create a dedicated instance for HeyForm, you can follow the steps below:
 
 1. Adjust the `hosts` file
 2. Create a new `vars.yml` file for the dedicated instance
@@ -91,7 +100,7 @@ To create a dedicated instance for RSSHub, you can follow the steps below:
 
 ##### Adjust `hosts`
 
-At first, you need to adjust `inventory/hosts` file to add a supplementary host for RSSHub.
+At first, you need to adjust `inventory/hosts` file to add a supplementary host for HeyForm.
 
 The content should be something like below. Make sure to replace `mash.example.com` with your hostname and `YOUR_SERVER_IP_ADDRESS_HERE` with the IP address of the host, respectively. The same IP address should be set to both, unless the Valkey instance will be served from a different machine.
 
@@ -102,7 +111,7 @@ mash_example_com
 
 [mash_example_com]
 mash.example.com ansible_host=YOUR_SERVER_IP_ADDRESS_HERE
-mash.example.com-rsshub-deps ansible_host=YOUR_SERVER_IP_ADDRESS_HERE
+mash.example.com-heyform-deps ansible_host=YOUR_SERVER_IP_ADDRESS_HERE
 …
 ```
 
@@ -112,12 +121,12 @@ You can just add an entry for the supplementary host to `[mash_example_com]` if 
 
 ##### Create `vars.yml` for the dedicated instance
 
-Then, create a new directory where `vars.yml` for the supplementary host is stored. If `mash.example.com` is your main host, name the directory as `mash.example.com-rsshub-deps`. Its path therefore will be `inventory/host_vars/mash.example.com-rsshub-deps`.
+Then, create a new directory where `vars.yml` for the supplementary host is stored. If `mash.example.com` is your main host, name the directory as `mash.example.com-heyform-deps`. Its path therefore will be `inventory/host_vars/mash.example.com-heyform-deps`.
 
-After creating the directory, add a new `vars.yml` file inside it with a content below. It will have running the playbook create a `mash-rsshub-valkey` instance on the new host, setting `/mash/rsshub-valkey` to the base directory of the dedicated Valkey instance.
+After creating the directory, add a new `vars.yml` file inside it with a content below. It will have running the playbook create a `mash-heyform-valkey` instance on the new host, setting `/mash/heyform-valkey` to the base directory of the dedicated Valkey instance.
 
 ```yaml
-# This is vars.yml for the supplementary host of RSSHub.
+# This is vars.yml for the supplementary host of HeyForm.
 
 ---
 
@@ -131,8 +140,8 @@ After creating the directory, add a new `vars.yml` file inside it with a content
 mash_playbook_generic_secret_key: ''
 
 # Override service names and directory path prefixes
-mash_playbook_service_identifier_prefix: 'mash-rsshub-'
-mash_playbook_service_base_directory_name_prefix: 'rsshub-'
+mash_playbook_service_identifier_prefix: 'mash-heyform-'
+mash_playbook_service_base_directory_name_prefix: 'heyform-'
 
 ########################################################################
 #                                                                      #
@@ -163,35 +172,37 @@ Having configured `vars.yml` for the dedicated instance, add the following confi
 ```yaml
 ########################################################################
 #                                                                      #
-# rsshub                                                               #
+# heyform                                                              #
 #                                                                      #
 ########################################################################
 
 # Add the base configuration as specified above
 
-rsshub_environment_variables_cache_type: redis
+# Point HeyForm to its dedicated Valkey instance
+heyform_redis_hostname: mash-heyform-valkey
 
-# Point RSSHub to its dedicated Valkey instance
-rsshub_redis_socket_path_host: /mash/rsshub-valkey/run
+# Make sure the HeyForm service (mash-heyform.service) is connected to the container network of its dedicated Valkey service (mash-heyform-valkey)
+heyform_container_additional_networks_custom:
+  - "mash-heyform-valkey"
 
-# Make sure the RSSHub service (mash-rsshub-server.service) starts after its dedicated Valkey service (mash-rsshub-valkey.service)
-rsshub_systemd_required_services_list_custom:
-  - "mash-rsshub-valkey.service"
+# Make sure the HeyForm service (mash-heyform.service) starts after its dedicated Valkey service (mash-heyform-valkey.service)
+heyform_systemd_required_services_list_custom:
+  - "mash-heyform-valkey.service"
 
 ########################################################################
 #                                                                      #
-# /rsshub                                                              #
+# /heyform                                                             #
 #                                                                      #
 ########################################################################
 ```
 
-Running the installation command will create the dedicated Valkey instance named `mash-rsshub-valkey`.
+Running the installation command will create the dedicated Valkey instance named `mash-heyform-valkey`.
 
 #### Setting up a shared Valkey instance
 
-If you host only RSSHub on this server, it is fine to set up a single shared Valkey instance.
+If you host only HeyForm on this server, it is fine to set up a single shared Valkey instance.
 
-To install the single instance and hook RSSHub to it, add the following configuration to `inventory/host_vars/mash.example.com/vars.yml`:
+To install the single instance and hook HeyForm to it, add the following configuration to `inventory/host_vars/mash.example.com/vars.yml`:
 
 ```yaml
 ########################################################################
@@ -211,24 +222,26 @@ valkey_enabled: true
 
 ########################################################################
 #                                                                      #
-# rsshub                                                               #
+# heyform                                                              #
 #                                                                      #
 ########################################################################
 
 # Add the base configuration as specified above
 
-rsshub_environment_variables_cache_type: redis
+# Point HeyForm to the shared Valkey instance
+heyform_redis_hostname: "{{ valkey_identifier }}"
 
-# Point RSSHub to the shared Valkey instance
-rsshub_redis_socket_path_host: "{{ valkey_run_path }}"
+# Make sure the HeyForm container is connected to the container network of the shared Valkey service (mash-valkey)
+heyform_container_additional_networks_custom:
+  - "{{ valkey_container_network }}"
 
-# Make sure the RSSHub service (mash-rsshub-server.service) starts after the shared Valkey service (mash-valkey.service)
-rsshub_systemd_required_services_list_custom:
+# Make sure the HeyForm service (mash-heyform.service) starts after the shared Valkey service (mash-valkey.service)
+heyform_systemd_required_services_list_custom:
   - "{{ valkey_identifier }}.service"
 
 ########################################################################
 #                                                                      #
-# /rsshub                                                              #
+# /heyform                                                             #
 #                                                                      #
 ########################################################################
 ```
@@ -237,20 +250,20 @@ Running the installation command will create the shared Valkey instance named `m
 
 ## Installation
 
-If you have decided to install the dedicated Valkey instance for RSSHub, make sure to run the [installing](../installing.md) command for the supplementary host (`mash.example.com-rsshub-deps`) first, before running it for the main host (`mash.example.com`).
+If you have decided to install the dedicated Valkey instance for HeyForm, make sure to run the [installing](../installing.md) command for the supplementary host (`mash.example.com-heyform-deps`) first, before running it for the main host (`mash.example.com`).
 
 Note that running the `just` commands for installation (`just install-all` or `just setup-all`) automatically takes care of the order. See [here](../running-multiple-instances.md#1-adjust-hosts) for more details about it.
 
 ## Usage
 
-After installation, the RSSHub instance becomes available at the URL specified with `rsshubp_hostname`. With the configuration above, the service is hosted at `https://rsshubp.example.com`.
+After installation, the HeyForm instance becomes available at the URL specified with `heyform_hostname`. With the configuration above, the service is hosted at `https://heyform.example.com`.
 
-See the [official documentation](https://docs.rsshub.app/guide/) for usage.
+To get started, open the URL with a web browser to create an account.
 
 ## Troubleshooting
 
-See [this section](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3Az3yKvCwcEfxn41ozRTcNR8ad6kpUm/tree/docs/configuring-rsshub.md#troubleshooting) on the role's documentation for details.
+See [this section](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzsKztkwnLv9wVMRYbcpoFesx6L5j/tree/docs/configuring-heyform.md#troubleshooting) on the role's documentation for details.
 
 ## Related services
 
-- [RSS-Bridge](rssbridge.md) — Generates web feeds for websites that do not have one
+- [LimeSurvey](limesurvey.md) — Web based forms and surveys

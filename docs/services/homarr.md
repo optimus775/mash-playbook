@@ -64,9 +64,9 @@ homarr_hostname: homarr.example.com
 
 **Note**: hosting Homarr under a subpath (by configuring the `homarr_path_prefix` variable) does not seem to be possible due to Homarr's technical limitations.
 
-### Set 32-byte hex digits for secret key
+### Set random 32-byte hex digits for secret key
 
-You also need to specify **32-byte hex digits** to encrypt integration secrets on the database. To do so, add the following configuration to your `vars.yml` file. The value can be generated with `openssl rand -hex 32` or in another way.
+You also need to set random **32-byte hex digits** to encrypt integration secrets on the database. To do so, add the following configuration to your `vars.yml` file. The value can be generated with `openssl rand -hex 32` or in another way.
 
 ```yaml
 homarr_environment_variables_secret_encryption_key: YOUR_SECRET_KEY_HERE
@@ -82,7 +82,7 @@ By default Homarr is configured to use Postgres, but you can choose other databa
 To use SQLite, add the following configuration to your `vars.yml` file:
 
 ```yaml
-homarr_database_type: better-sqlite3
+homarr_database_type: sqlite
 ```
 
 See [this section](https://github.com/mother-of-all-self-hosting/ansible-role-homarr/blob/main/docs/configuring-homarr.md#specify-database-optional) on the role's documentation for details.
