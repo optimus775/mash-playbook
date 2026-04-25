@@ -32,7 +32,6 @@ mash.met.surf-authentik-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansi
 # mash.met.surf-docmost-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
 mash.met.surf-immich-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
 mash.met.surf-paperless-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
-# mash.met.surf-send-deps ansible_host=85.93.9.152 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global26"
 
 [mash_normus_ru]
 mash.normus.ru ansible_host=89.108.113.143 ansible_ssh_user=root ansible_ssh_private_key_file="~/.ssh/Global36"
