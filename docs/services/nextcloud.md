@@ -30,6 +30,7 @@ Nextcloud is the most popular self-hosted collaboration solution for tens of mil
 See the project's [documentation](https://docs.nextcloud.com/) to learn what Nextcloud does and why it might be useful to you.
 
 For details about configuring the [Ansible role for Nextcloud](https://github.com/mother-of-all-self-hosting/ansible-role-nextcloud), you can check them via:
+
 - 🌐 [the role's documentation](https://github.com/mother-of-all-self-hosting/ansible-role-nextcloud/blob/main/docs/configuring-nextcloud.md) online
 - 📁 `roles/galaxy/nextcloud/docs/configuring-nextcloud.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
@@ -157,7 +158,6 @@ mash_playbook_service_base_directory_name_prefix: 'nextcloud-'
 #                                                                      #
 ########################################################################
 
-
 ########################################################################
 #                                                                      #
 # valkey                                                               #
@@ -231,7 +231,6 @@ valkey_enabled: true
 #                                                                      #
 ########################################################################
 
-
 ########################################################################
 #                                                                      #
 # nextcloud                                                            #
@@ -303,14 +302,15 @@ Nextcloud supports Single-Sign-On (SSO) via LDAP, SAML, and OIDC. To make use of
 
 For example, you can enable SSO with authentik via OIDC by following the steps below:
 
-* Create a new provider in authentik and trim the client secret to less than 64 characters
-* Create an application in authentik using this provider
-* Install the app `user_oidc` in Nextcloud
-* Fill in the details from authentik in the app settings
+- Create a new provider in authentik and trim the client secret to less than 64 characters
+- Create an application in authentik using this provider
+- Install the app `user_oidc` in Nextcloud
+- Fill in the details from authentik in the app settings
 
 Refer to [this blogpost by a third party](https://blog.cubieserver.de/2022/complete-guide-to-nextcloud-oidc-authentication-with-authentik/) for details.
 
-**Notes**:
+💡 **Notes**:
+
 - The official documentation of authentik to connect nextcloud via SAML does not seem to work (as of August 2023).
 - If you cannot log in due to an error (the error message contains `SHA1 mismatch`), make sure that Nextcloud users and authentik users do not have the same name. If they do, check `Use unique user ID` in the OIDC App settings.
 

@@ -31,6 +31,7 @@ The playbook can install and configure [Etherpad](https://etherpad.org), an open
 See the project's [documentation](https://docs.etherpad.org/) to learn what it does and why it might be useful to you.
 
 For details about configuring the [Ansible role for the server](https://github.com/mother-of-all-self-hosting/ansible-role-etherpad), you can check them via:
+
 - 🌐 [the role's documentation](https://github.com/mother-of-all-self-hosting/ansible-role-etherpad/blob/main/docs/configuring-etherpad.md) online
 - 📁 `roles/galaxy/etherpad/docs/configuring-etherpad.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
@@ -38,8 +39,8 @@ For details about configuring the [Ansible role for the server](https://github.c
 
 This service requires the following other services:
 
-- a datapase supported by [ueberdb2](https://www.npmjs.com/package/ueberdb2) such as [CouchDB](couchdb.md) / [Postgres](postgres.md) / MySQL / [MariaDB](mariadb.md) database — Etherpad will default to [SQLite](https://www.sqlite.org/) if Postgres is not enabled
-- a [Traefik](traefik.md) reverse-proxy server
+- Datapase supported by [ueberdb2](https://www.npmjs.com/package/ueberdb2) such as [CouchDB](couchdb.md) / [Postgres](postgres.md) / MySQL / [MariaDB](mariadb.md) database — Etherpad will default to [SQLite](https://www.sqlite.org/) if Postgres is not enabled
+- [Traefik](traefik.md) reverse-proxy server
 
 ## Adjusting the playbook configuration
 

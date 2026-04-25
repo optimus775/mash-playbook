@@ -27,8 +27,9 @@ Borg Web UI is an unofficial web interface for [BorgBackup](https://borgbackup.r
 
 See the project's [documentation](https://karanhudia.github.io/borg-ui/) to learn what Borg Web UI does and why it might be useful to you.
 
-For details about configuring the [Ansible role for Borg Web UI](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v), you can check them via:
-- 🌐 [the role's documentation](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v/tree/docs/configuring-borg-ui.md) online
+For details about configuring the [Ansible role for Borg Web UI](https://radicle.network/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v), you can check them via:
+
+- 🌐 [the role's documentation](https://radicle.network/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v/tree/docs/configuring-borg-ui.md) online
 - 📁 `roles/galaxy/borg_ui/docs/configuring-borg-ui.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
 ## Dependencies
@@ -37,7 +38,7 @@ This service requires the following other services:
 
 - [Traefik](traefik.md) reverse-proxy server
 - (optional) [Apprise API](apprise.md)
-- (optional) [Valkey](valkey.md) data-store; see [below](#configure-valkey) for details about installation
+- (optional) [Valkey](valkey.md) data-store; see [below](#configure-valkey-optional) for details about installation
 
 ## Adjusting the playbook configuration
 
@@ -134,7 +135,6 @@ mash_playbook_service_base_directory_name_prefix: 'borg-ui-'
 #                                                                      #
 ########################################################################
 
-
 ########################################################################
 #                                                                      #
 # valkey                                                               #
@@ -207,7 +207,6 @@ valkey_enabled: true
 # /valkey                                                              #
 #                                                                      #
 ########################################################################
-
 
 ########################################################################
 #                                                                      #
@@ -290,7 +289,7 @@ After installation, the Borg Web UI instance becomes available at the URL specif
 
 To get started, open the URL with a web browser to log in to the instance.
 
-Refer to [this section](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v/tree/docs/configuring-borg-ui.md#usage) on the role's documentation for more information.
+Refer to [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v/tree/docs/configuring-borg-ui.md#usage) on the role's documentation for more information.
 
 To load a source directory to be backed up inside the container, you can add one to `borg_ui_container_additional_volumes_custom` as below:
 
@@ -313,7 +312,7 @@ As the Borg Web UI instance does not support configuring the notification servic
 
 ## Troubleshooting
 
-See [this section](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v/tree/docs/configuring-borg-ui.md#troubleshooting) on the role's documentation for details.
+See [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3AzxNS7XeayGimb4WFfvqmasiZZC3v/tree/docs/configuring-borg-ui.md#troubleshooting) on the role's documentation for details.
 
 ## Related services
 

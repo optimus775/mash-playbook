@@ -30,6 +30,7 @@ Forgejo is a self-hosted lightweight software forge (Git hosting service, etc.),
 See the project's [documentation](https://forgejo.org/docs/latest/) to learn what Forgejo does and why it might be useful to you.
 
 For details about configuring the [Ansible role for Forgejo](https://github.com/mother-of-all-self-hosting/ansible-role-forgejo), you can check them via:
+
 - 🌐 [the role's documentation](https://github.com/mother-of-all-self-hosting/ansible-role-forgejo/blob/main/docs/configuring-forgejo.md) online
 - 📁 `roles/galaxy/forgejo/docs/configuring-forgejo.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
@@ -182,7 +183,7 @@ Nevertheless, upgrades may be possible with some manual work. See [this section]
 
 - [Forgejo Runner](forgejo-runner.md) — Runner to use with Forgejo Actions
 - [Gitea](gitea.md) — Painless self-hosted [Git](https://git-scm.com/) service
-- [Radicle node](radicle-node.md) — Network daemon for the [Radicle](https://radicle.xyz/) network, a peer-to-peer code collaboration stack built on Git
+- [Radicle node](radicle-node.md) — Network daemon for the [Radicle](https://radicle.dev/) network, a peer-to-peer code collaboration stack built on Git
 - [Woodpecker CI](woodpecker-ci.md) — Simple Continuous Integration (CI) engine with great extensibility
 
 ### Integration with Woodpecker CI

@@ -28,6 +28,7 @@ Mobilizon is a ActivityPub/Fediverse server to create and share events.
 See the project's [documentation](https://docs.mobilizon.org/) to learn what Mobilizon does and why it might be useful to you.
 
 For details about configuring the [Ansible role for Mobilizon](https://github.com/mother-of-all-self-hosting/ansible-role-mobilizon), you can check them via:
+
 - 🌐 [the role's documentation](https://github.com/mother-of-all-self-hosting/ansible-role-mobilizon/blob/main/docs/configuring-mobilizon.md) online
 - 📁 `roles/galaxy/mobilizon/docs/configuring-mobilizon.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
@@ -89,7 +90,7 @@ On Mobilizon you can set up a mailer for functions such as password recovery. If
 
 ### Usage
 
-After running the command for installation, the Focalboard instance becomes available at the URL specified with `mobilizon_hostname`. With the configuration above, the service is hosted at `https://mobilizon.example.com`.
+After running the command for installation, the Mobilizon instance becomes available at the URL specified with `mobilizon_hostname`. With the configuration above, the service is hosted at `https://mobilizon.example.com`.
 
 To get started, create a user first and open the URL with a web browser to log in to the instance. You can create one on the web UI if `mobilizon_environment_variables_registrations_open` is set to `true`.
 

@@ -1,15 +1,17 @@
 <!--
 SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
-SPDX-FileCopyrightText: 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 # ILMO
 
-[Ilmo](https://github.com/moan0s/ILMO2) is an open source library management tool.
+The playbook can install and configure [Ilmo](https://github.com/moan0s/ILMO2) for you.
 
-Read [the documentation](https://ilmo2.readthedocs.io/) to learn what you can do with it.
+Ilmo is an open source library management tool.
+
+See the project's [documentation](https://ilmo2.readthedocs.io/) to learn what ILMO does and why it might be useful to you.
 
 > [!WARNING]
 > This service is a custom solution for a small library. Feel free to use it but don't expect a solution that works for every use case
@@ -18,9 +20,8 @@ Read [the documentation](https://ilmo2.readthedocs.io/) to learn what you can do
 
 This service requires the following other services:
 
-- a [Postgres](postgres.md) database
-- a [Traefik](traefik.md) reverse-proxy server
-
+- [Postgres](postgres.md) database
+- [Traefik](traefik.md) reverse-proxy server
 
 ## Configuration
 
@@ -72,6 +73,7 @@ serverA$ systemctl stop ilmo
 ```
 
 Dump the database (depending on your existing setup you might have to adjust this)
+
 ```
 serverA$ pg_dump ilmo > latest.sql
 ```
@@ -103,7 +105,7 @@ Done 🥳
 
 If you by accident started the service before importing the database you should
 
-* stop the service
-* use `/mash/postgres/bin/cli` to get a database interface
-* Delete the existing database (THIS WILL DELETE ALL DATA!) `DROP DATABASE ilmo WITH (FORCE);`
-* Continue from "Install (but don't start) the service and database on the server and import the database."
+- stop the service
+- use `/mash/postgres/bin/cli` to get a database interface
+- Delete the existing database (THIS WILL DELETE ALL DATA!) `DROP DATABASE ilmo WITH (FORCE);`
+- Continue from "Install (but don't start) the service and database on the server and import the database."

@@ -476,6 +476,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (gitea_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gitea_restart_necessary | bool), 'groups': ['mash', 'gitea']} if gitea_enabled else omit) }}
   # /role-specific:gitea
 
+  # role-specific:gotenberg
+  - |-
+    {{ ({'name': (gotenberg_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gotenberg_restart_necessary | bool), 'groups': ['mash', 'gotenberg']} if gotenberg_enabled else omit) }}
+  # /role-specific:gotenberg
+
   # role-specific:gothub
   - |-
     {{ ({'name': (gothub_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gothub_restart_necessary | bool), 'groups': ['mash', 'gothub']} if gothub_enabled else omit) }}
@@ -748,7 +753,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:mobilizon
   - |-
-    {{ ({'name': (mobilizon_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'mobilizon']} if mobilizon_enabled else omit) }}
+    {{ ({'name': (mobilizon_identifier + '.service'), 'priority': 2000, 'restart_necessary': (mobilizon_restart_necessary | bool), 'groups': ['mash', 'mobilizon']} if mobilizon_enabled else omit) }}
   # /role-specific:mobilizon
 
   # role-specific:monerooo
@@ -918,8 +923,6 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   # role-specific:paperless
   - |-
     {{ ({'name': (paperless_identifier + '.service'), 'priority': 2000, 'restart_necessary': (paperless_restart_necessary | bool), 'groups': ['mash', 'paperless']} if paperless_enabled else omit) }}
-  - |-
-    {{ ({'name': (paperless_gotenberg_identifier + '.service'), 'priority': 2000, 'restart_necessary': (paperless_restart_necessary | bool), 'groups': ['mash', 'paperless']} if paperless_enabled and paperless_gotenberg_enabled else omit) }}
   # /role-specific:paperless
 
   # role-specific:papra
@@ -974,7 +977,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:postgis
   - |-
-    {{ ({'name': (postgis_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'postgis']} if postgis_enabled else omit) }}
+    {{ ({'name': (postgis_identifier + '.service'), 'priority': 2000, 'restart_necessary': (postgis_restart_necessary | bool), 'groups': ['mash', 'postgis']} if postgis_enabled else omit) }}
   # /role-specific:postgis
 
   # role-specific:postgres
@@ -1095,6 +1098,13 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (redmine_identifier + '-recurring-tasks.timer'), 'priority': 2000, 'restart_necessary': (redmine_restart_necessary | bool), 'groups': ['mash', 'redmine']} if redmine_enabled and redmine_recurring_tasks_enabled else omit) }}
   # /role-specific:redmine
+
+  # role-specific:reitti
+  - |-
+    {{ ({'name': (reitti_identifier + '.service'), 'priority': 2000, 'restart_necessary': (reitti_restart_necessary | bool), 'groups': ['mash', 'reitti']} if reitti_enabled else omit) }}
+  - |-
+    {{ ({'name': (reitti_tilecache_identifier + '.service'), 'priority': 2000, 'restart_necessary': (reitti_restart_necessary | bool), 'groups': ['mash', 'reitti']} if reitti_enabled else omit) }}
+  # /role-specific:reitti
 
   # role-specific:roundcube
   - |-
@@ -2790,6 +2800,8 @@ adminer_systemd_required_services_list_auto: |
     +
     ([mongodb_identifier ~ '.service'] if mongodb_enabled | default(false) else [])
     +
+    ([postgis_identifier ~ '.service'] if postgis_enabled | default(false) else [])
+    +
     ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) else [])
   }}
 
@@ -2802,6 +2814,8 @@ adminer_container_additional_networks_auto: |
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
     ([mongodb_container_network] if mongodb_enabled | default(false) and adminer_container_network != mongodb_container_network else [])
+    +
+    ([postgis_container_network] if postgis_enabled | default(false) and adminer_container_network != postgis_container_network else [])
     +
     ([postgres_container_network] if postgres_enabled | default(false) and adminer_container_network != postgres_container_network else [])
   }}
@@ -4584,6 +4598,8 @@ databasus_systemd_required_services_list_auto: |
     +
     ([mongodb_identifier ~ '.service'] if mongodb_enabled | default(false) else [])
     +
+    ([postgis_identifier ~ '.service'] if postgis_enabled | default(false) else [])
+    +
     ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) else [])
   }}
 
@@ -4601,6 +4617,8 @@ databasus_container_additional_networks_auto: |
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
     ([mongodb_container_network] if mongodb_enabled | default(false) and databasus_container_network != mongodb_container_network else [])
+    +
+    ([postgis_container_network] if postgis_enabled | default(false) and databasus_container_network != postgis_container_network else [])
     +
     ([postgres_container_network] if postgres_enabled | default(false) and databasus_container_network != postgres_container_network and not databasus_database_postgres_socket_enabled else [])
   }}
@@ -6241,7 +6259,7 @@ ghostfolio_database_hostname: "{{ postgres_connection_hostname if postgres_enabl
 ghostfolio_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 ghostfolio_database_username: ghostfolio
 ghostfolio_database_password: "{{ (mash_playbook_generic_secret_key + ':db.ghostfolio') | hash('sha512') | to_uuid }}"
-ghostfolio_database_sslmode: "{{ 'disable' if postgres_enabled and (ghostfolio_database_hostname == postgres_connection_hostname or ghostfolio_database_socket_enabled) else 'prefer' }}"
+ghostfolio_database_sslmode: "{{ 'disable' if postgres_enabled and (ghostfolio_database_hostname == postgres_connection_hostname or ghostfolio_database_socket_enabled) else 'require' }}"
 ghostfolio_database_socket_path_host: "{{ postgres_run_path }}"
 # /role-specific:postgres
 
@@ -6361,6 +6379,52 @@ gitea_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primar
 #                                                                      #
 ########################################################################
 # /role-specific:gitea
+
+
+
+# role-specific:gotenberg
+########################################################################
+#                                                                      #
+# gotenberg                                                            #
+#                                                                      #
+########################################################################
+
+gotenberg_enabled: false
+
+gotenberg_identifier: "{{ mash_playbook_service_identifier_prefix }}gotenberg"
+
+gotenberg_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}gotenberg"
+
+gotenberg_uid: "{{ mash_playbook_uid }}"
+gotenberg_gid: "{{ mash_playbook_gid }}"
+
+gotenberg_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
+gotenberg_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and gotenberg_hostname | length > 0 }}"
+gotenberg_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:paperless
+# See: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/refs/heads/main/docker/compose/docker-compose.sqlite-tika.yml
+gotenberg_environment_variables_additional_variables: |
+  CHROMIUM_DISABLE_JAVASCRIPT=true
+  CHROMIUM_ALLOW_LIST=file:///tmp/.*
+# /role-specific:paperless
+
+# role-specific:traefik
+gotenberg_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+gotenberg_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /gotenberg                                                           #
+#                                                                      #
+########################################################################
+# /role-specific:gotenberg
 
 
 
@@ -11027,6 +11091,12 @@ neko_container_additional_networks_auto: |
 neko_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 neko_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
+neko_container_labels_traefik_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+neko_container_labels_traefik_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+neko_container_labels_traefik_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ neko_identifier }}"
+neko_container_labels_traefik_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
+neko_container_labels_traefik_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
+
 # role-specific:traefik
 neko_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
 neko_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
@@ -12051,6 +12121,11 @@ owncast_container_additional_networks_auto: |
 owncast_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 owncast_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
+owncast_container_labels_traefik_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+owncast_container_labels_traefik_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+owncast_container_labels_traefik_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ owncast_identifier }}"
+# The variables for HTTP Basic authentication are intentionally not defined, as it is managed by the service itself
+
 # role-specific:traefik
 owncast_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
 owncast_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
@@ -12142,6 +12217,8 @@ paperless_systemd_required_services_list_auto: |
 
 paperless_systemd_wanted_services_list_auto: |
   {{
+    ([gotenberg_identifier ~ '.service'] if gotenberg_enabled | default(false) else [])
+    +
     ([exim_relay_identifier ~ '.service'] if exim_relay_enabled | default(false) and paperless_email_host == exim_relay_identifier else [])
     +
     ([tika_identifier ~ '.service'] if tika_enabled | default(false) else [])
@@ -12150,6 +12227,8 @@ paperless_systemd_wanted_services_list_auto: |
 paperless_container_additional_networks_auto: |
   {{
     ([exim_relay_container_network] if exim_relay_enabled | default(false) and paperless_email_host == exim_relay_identifier and paperless_container_network != exim_relay_container_network else [])
+    +
+    ([gotenberg_container_network] if gotenberg_enabled | default(false) and paperless_container_network != gotenberg_container_network else [])
     +
     ([mariadb_container_network] if mariadb_enabled | default(false) and paperless_database_mariadb_hostname == mariadb_connection_hostname and paperless_container_network != mariadb_container_network and paperless_database_type == 'mariadb' else [])
     +
@@ -12165,6 +12244,8 @@ paperless_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_pro
 
 paperless_database_type: "{{ 'postgres' if postgres_enabled | default(false) else 'sqlite' }}"
 
+paperless_gotenberg_enabled: "{{ paperless_tika_enabled | default(false) }}" # Apache Tika Server requires Gotenberg
+
 paperless_secret_key: "{{ (mash_playbook_generic_secret_key + ':paperless.secret') | hash('sha512') | to_uuid }}"
 
 # role-specific:exim_relay
@@ -12172,6 +12253,11 @@ paperless_email_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}
 paperless_email_port: "{{ 8025 if exim_relay_enabled else '' }}"
 paperless_email_from: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
 # /role-specific:exim_relay
+
+# role-specific:gotenberg
+paperless_gotenberg_bundled_enabled: "{{ false if gotenberg_enabled }}" # Stop ansible-role-paperless from installing Gotenberg bundled with the role if it is managed by ansible-role-gotenberg
+paperless_tika_gotenberg_endpoint: "http://{{ gotenberg_identifier }}:{{ gotenberg_container_http_port }}"
+# /role-specific:gotenberg
 
 # role-specific:mariadb
 paperless_database_mariadb_hostname: "{{ mariadb_connection_hostname if mariadb_enabled else '' }}"
@@ -12189,9 +12275,8 @@ paperless_database_postgres_socket_path_host: "{{ postgres_run_path }}"
 # /role-specific:postgres
 
 # role-specific:tika
-paperless_gotenberg_enabled: "{{ tika_enabled }}"
-paperless_tika_bundled_enabled: "{{ false if tika_enabled }}" # Stop ansible-role-paperless from installing Apache Tika Server bundled with the role if it is managed by ansible-role-tika
 paperless_tika_enabled: "{{ tika_enabled }}"
+paperless_tika_bundled_enabled: "{{ false if tika_enabled }}" # Stop ansible-role-paperless from installing Apache Tika Server bundled with the role if it is managed by ansible-role-tika
 paperless_tika_endpoint: "http://{{ tika_identifier }}:{{ tika_container_http_port }}"
 # /role-specific:tika
 
@@ -12419,7 +12504,9 @@ pgadmin_gid: 5050
 
 pgadmin_systemd_required_services_list_auto: |
   {{
-    ([postgres_identifier ~ '.service'] if postgres_enabled else [])
+    ([postgis_identifier ~ '.service'] if postgis_enabled | default(false) else [])
+    +
+    ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) else [])
   }}
 
 pgadmin_systemd_wanted_services_list_auto: |
@@ -12433,7 +12520,9 @@ pgadmin_container_additional_networks_auto: |
     +
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
-    ([postgres_container_network] if postgres_enabled and pgadmin_container_network != postgres_container_network and not pgadmin_database_socket_enabled else [])
+    ([postgis_container_network] if postgis_enabled | default(false) and pgadmin_container_network != postgis_container_network else [])
+    +
+    ([postgres_container_network] if postgres_enabled | default(false) and pgadmin_container_network != postgres_container_network else [])
   }}
 
 pgadmin_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
@@ -12849,28 +12938,47 @@ poodledonts_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_
 
 postgis_enabled: false
 
-postgis_architecture: "{{ mash_playbook_architecture }}"
-
 postgis_identifier: "{{ mash_playbook_service_identifier_prefix }}postgis"
+
+postgis_architecture: "{{ mash_playbook_architecture }}"
 
 postgis_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}postgis"
 
 postgis_uid: "{{ mash_playbook_uid }}"
 postgis_gid: "{{ mash_playbook_gid }}"
 
-postgis_systemd_services_to_stop_for_maintenance_list: |
-  {{
-    ([(mobilizon_identifier + '.service')] if mobilizon_enabled else [])
-  }}
+# This includes everything for maximum safety.
+# It may not be optimal though, because some services may not be dependent on PostGIS at all, etc.
+postgis_systemd_services_to_stop_for_maintenance_list_auto: "{{ devture_systemd_service_manager_services_list_auto | map(attribute='name') | reject('equalto', (postgis_identifier + '.service')) }}"
 
-postgis_managed_databases_auto: |
-  {{
-    ([{
-      'name': mobilizon_database_name,
-      'username': mobilizon_database_username,
-      'password': mobilizon_database_password,
-    }] if mobilizon_enabled and mobilizon_database_hostname == postgis_identifier and mobilizon_database_type == 'postgis' else [])
-  }}
+mash_playbook_postgis_managed_databases_auto_itemized:
+  # Dummy entry, which is not role-specific.
+  # Ensures there's at least one entry defined in the list.
+  - "{{ omit }}"
+
+  # role-specific:mobilizon
+  - |-
+    {{
+      ({
+        'name': mobilizon_database_name,
+        'username': mobilizon_database_username,
+        'password': mobilizon_database_password,
+      } if mobilizon_enabled and mobilizon_database_hostname == postgis_connection_hostname else omit)
+    }}
+  # /role-specific:mobilizon
+
+  # role-specific:reitti
+  - |-
+    {{
+      ({
+        'name': reitti_database_name,
+        'username': reitti_database_username,
+        'password': reitti_database_password,
+      } if reitti_enabled and reitti_database_hostname == postgis_connection_hostname else omit)
+    }}
+  # /role-specific:reitti
+
+postgis_managed_databases_auto: "{{ mash_playbook_postgis_managed_databases_auto_itemized | reject('equalto', omit) }}"
 
 ########################################################################
 #                                                                      #
@@ -13612,7 +13720,7 @@ radicle_node_identifier: "{{ mash_playbook_service_identifier_prefix }}radicle-n
 radicle_node_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}radicle-node"
 
 # Apparently the UID and GID are fixed
-# Also see: https://app.radicle.xyz/nodes/iris.radicle.xyz/rad%3Az26FDgNVVRUfPpLiUvUksoFPFkwdw/commits/5a095b1816ec75522d59ede8e258844763e1f1ae
+# Also see: https://radicle.network/nodes/iris.radicle.network/rad%3Az26FDgNVVRUfPpLiUvUksoFPFkwdw/commits/5a095b1816ec75522d59ede8e258844763e1f1ae
 radicle_node_uid: "11011"
 radicle_node_gid: "11011"
 
@@ -13881,6 +13989,57 @@ redmine_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prim
 #                                                                      #
 ########################################################################
 # /role-specific:redmine
+
+
+
+# role-specific:reitti
+########################################################################
+#                                                                      #
+# reitti                                                               #
+#                                                                      #
+########################################################################
+
+reitti_enabled: false
+
+reitti_identifier: "{{ mash_playbook_service_identifier_prefix }}reitti"
+
+reitti_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}reitti"
+
+reitti_uid: "{{ mash_playbook_uid }}"
+reitti_gid: "{{ mash_playbook_gid }}"
+
+reitti_systemd_required_services_list_auto: |
+  {{
+    ([postgis_identifier ~ '.service'] if postgis_enabled and reitti_database_hostname == postgis_connection_hostname else [])
+  }}
+
+reitti_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    +
+    ([postgis_container_network] if postgis_enabled and reitti_database_hostname == postgis_connection_hostname and reitti_container_network != postgis_container_network else [])
+  }}
+
+reitti_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+reitti_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:postgis
+reitti_database_hostname: "{{ postgis_connection_hostname if postgis_enabled else '' }}"
+reitti_database_port: "{{ postgis_connection_port if postgis_enabled else '5432' }}"
+reitti_database_password: "{{ (mash_playbook_generic_secret_key + ':reitti') | hash('sha512') | to_uuid }}"
+# /role-specific:postgis
+
+# role-specific:traefik
+reitti_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+reitti_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /reitti                                                              #
+#                                                                      #
+########################################################################
+# /role-specific:reitti
 
 
 
