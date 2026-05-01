@@ -41,7 +41,7 @@ This service requires the following other services:
 >[!NOTE]
 > Currently (as of v1.35.0) MariaDB is not supported but planned. See [this issue at GitHub](https://github.com/homarr-labs/homarr/issues/2305) for the latest information.
 
-## Adjusting the playbook configuration
+## Configuration
 
 To enable this service, add the following configuration to your `vars.yml` file and re-run the [installation](../installing.md) process:
 

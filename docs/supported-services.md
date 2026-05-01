@@ -80,6 +80,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Ergo](https://ergo.chat/) | Modern IRCd (IRC server software) written in Go | [Link](services/ergo.md) |
 | [etcd](https://etcd.io/) | A distributed, reliable key-value store for the most critical data of a distributed system | [Link](services/etcd.md) |
 | [Etherpad](https://etherpad.org) | Collaborative text editor | [Link](services/etherpad.md) |
+| [Euro-Office](https://github.com/Euro-Office/DocumentServer) | Online office suite comprising viewers and editors | [Link](services/eurooffice.md) |
 | [Excalidraw](https://excalidraw.com/) | Virtual whiteboard for sketching hand-drawn like diagrams | [Link](services/excalidraw.md) |
 | [Excalidraw collaboration server](https://github.com/excalidraw/excalidraw-room) | Collaboration server for Excalidraw instance | [Link](services/excalidraw-room.md) |
 | [exim-relay](https://github.com/devture/exim-relay) | A lightweight [Exim](https://www.exim.org/) SMTP mail relay server | [Link](services/exim-relay.md) |
@@ -132,6 +133,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [LabelStudio](https://labelstud.io/) | Data labeling tool that supports multiple projects, users, and data types in one platform | [Link](services/labelstudio.md) |
 | [Lago](https://www.getlago.com/) | Metering and usage-based billing | [Link](services/lago.md) |
 | [LanguageTool](https://languagetool.org/) | An online grammar, style and spell checker | [Link](services/languagetool.md) |
+| [LibreBooking](https://github.com/LibreBooking/librebooking) | Resource scheduling and booking application | [Link](services/librebooking.md) |
 | [LimeSurvey](https://www.limesurvey.org) | Web based forms and surveys | [Link](services/limesurvey.md) |
 | [linkding](https://github.com/sissbruecker/linkding/) | Bookmark manager designed to be minimal and fast | [Link](services/linkding.md) |
 | [Linkwarden](https://github.com/linkwarden/linkwarden) | Collaborative bookmark manager to collect, organize and archive webpages | [Link](services/linkwarden.md) |
@@ -240,6 +242,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Tinyauth](https://tinyauth.app/) | Simple authentication middleware that adds a login screen or OAuth with providers to your Docker services | [Link](services/tinyauth.md) |
 | [Traefik](https://doc.traefik.io/traefik/) | A container-aware reverse-proxy server | [Link](services/traefik.md) |
 | [traefik-certs-dumper](https://github.com/ldez/traefik-certs-dumper) | Dump ACME data from Traefik to certificates | [Link](services/traefik-certs-dumper.md) |
+| [transfer.sh](https://github.com/dutchcoders/transfer.sh) | File sharing with the command-line | [Link](services/transfersh.md) |
 | [TSDProxy](https://almeidapaulopt.github.io/tsdproxy/) | A proxy for virtual services in Tailscale | [Link](services/tsdproxy.md) |
 | [Typesense](https://typesense.org) | Fast and typo-tolerant fulltext search engine | [Link](services/typesense.md) |
 | [Uptime Kuma](https://uptime.kuma.pet/) | A fancy monitoring tool | [Link](services/uptime-kuma.md) |

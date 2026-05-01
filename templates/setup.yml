@@ -302,6 +302,10 @@
     - role: galaxy/etherpad
     # /role-specific:etherpad
 
+    # role-specific:eurooffice
+    - role: galaxy/eurooffice
+    # /role-specific:eurooffice
+
     # role-specific:excalidraw
     - role: galaxy/excalidraw
     # /role-specific:excalidraw
@@ -501,6 +505,10 @@
     # role-specific:languagetool
     - role: galaxy/languagetool
     # /role-specific:languagetool
+
+    # role-specific:librebooking
+    - role: galaxy/librebooking
+    # /role-specific:librebooking
 
     # role-specific:limesurvey
     - role: galaxy/limesurvey
@@ -949,6 +957,10 @@
     # role-specific:traefik_certs_dumper
     - role: galaxy/traefik_certs_dumper
     # /role-specific:traefik_certs_dumper
+
+    # role-specific:transfersh
+    - role: galaxy/transfersh
+    # /role-specific:transfersh
 
     # role-specific:tsdproxy
     - role: galaxy/tsdproxy

@@ -21,7 +21,7 @@
     <outline text="authentik" title="authentik" type="rss" htmlUrl="https://github.com/goauthentik/authentik" xmlUrl="https://github.com/goauthentik/authentik/releases.atom" />
     <outline text="autobrr" title="autobrr" type="rss" htmlUrl="https://github.com/autobrr/autobrr" xmlUrl="https://github.com/autobrr/autobrr/releases.atom" />
     <outline text="backup_borg" title="backup_borg" type="rss" htmlUrl="https://github.com/etkecc/borgmatic" xmlUrl="https://github.com/etkecc/borgmatic/releases.atom" />
-    <outline text="barassistant" title="barassistant" type="rss" htmlUrl="https://github.com/karlomikus/bar-assistant/" xmlUrl="https://github.com/karlomikus/bar-assistant//releases.atom" />
+    <outline text="barassistant" title="barassistant" type="rss" htmlUrl="https://github.com/karlomikus/bar-assistant" xmlUrl="https://github.com/karlomikus/bar-assistant/releases.atom" />
     <outline text="bentopdf" title="bentopdf" type="rss" htmlUrl="https://github.com/alam00000/bentopdf" xmlUrl="https://github.com/alam00000/bentopdf/releases.atom" />
     <outline text="bind" title="bind" type="rss" htmlUrl="https://gitlab.isc.org/isc-projects/bind9" xmlUrl="https://gitlab.isc.org/isc-projects/bind9/-/tags?format=atom" />
     <outline text="bitmagnet" title="bitmagnet" type="rss" htmlUrl="https://github.com/bitmagnet-io/bitmagnet" xmlUrl="https://github.com/bitmagnet-io/bitmagnet/releases.atom" />
@@ -55,6 +55,7 @@
     <outline text="ergo" title="ergo" type="rss" htmlUrl="https://github.com/ergochat/ergo" xmlUrl="https://github.com/ergochat/ergo/releases.atom" />
     <outline text="etcd" title="etcd" type="rss" htmlUrl="https://github.com/etcd-io/etcd" xmlUrl="https://github.com/etcd-io/etcd/releases.atom" />
     <outline text="etherpad" title="etherpad" type="rss" htmlUrl="https://github.com/ether/etherpad-lite" xmlUrl="https://github.com/ether/etherpad-lite/releases.atom" />
+    <outline text="eurooffice" title="eurooffice" type="rss" htmlUrl="https://github.com/Euro-Office/DocumentServer" xmlUrl="https://github.com/Euro-Office/DocumentServer/releases.atom" />
     <outline text="excalidraw" title="excalidraw" type="rss" htmlUrl="https://github.com/excalidraw/excalidraw" xmlUrl="https://github.com/excalidraw/excalidraw/releases.atom" />
     <outline text="excalidraw_room" title="excalidraw_room" type="rss" htmlUrl="https://github.com/excalidraw/excalidraw-room" xmlUrl="https://github.com/excalidraw/excalidraw-room/releases.atom" />
     <outline text="exim_relay" title="exim_relay" type="rss" htmlUrl="https://github.com/devture/exim-relay" xmlUrl="https://github.com/devture/exim-relay/releases.atom" />
@@ -73,6 +74,7 @@
     <outline text="funkwhale" title="funkwhale" type="rss" htmlUrl="https://dev.funkwhale.audio/funkwhale/funkwhale" xmlUrl="https://dev.funkwhale.audio/funkwhale/funkwhale/-/tags?format=atom" />
     <outline text="ghostfolio" title="ghostfolio" type="rss" htmlUrl="https://github.com/ghostfolio/ghostfolio" xmlUrl="https://github.com/ghostfolio/ghostfolio/releases.atom" />
     <outline text="gitea" title="gitea" type="rss" htmlUrl="https://github.com/go-gitea/gitea" xmlUrl="https://github.com/go-gitea/gitea/releases.atom" />
+    <outline text="gotenberg" title="gotenberg" type="rss" htmlUrl="https://github.com/gotenberg/gotenberg" xmlUrl="https://github.com/gotenberg/gotenberg/releases.atom" />
     <outline text="gothub" title="gothub" type="rss" htmlUrl="https://codeberg.org/gothub/gothub" xmlUrl="https://codeberg.org/gothub/gothub/releases.atom" />
     <outline text="gotify" title="gotify" type="rss" htmlUrl="https://github.com/gotify/server" xmlUrl="https://github.com/gotify/server/releases.atom" />
     <outline text="gotosocial" title="gotosocial" type="rss" htmlUrl="https://codeberg.org/superseriousbusiness/gotosocial" xmlUrl="https://codeberg.org/superseriousbusiness/gotosocial/releases.atom" />
@@ -179,6 +181,7 @@
     <outline text="redis" title="redis" type="rss" htmlUrl="https://github.com/redis/redis" xmlUrl="https://github.com/redis/redis/releases.atom" />
     <outline text="redlib" title="redlib" type="rss" htmlUrl="https://github.com/redlib-org/redlib" xmlUrl="https://github.com/redlib-org/redlib/releases.atom" />
     <outline text="redmine" title="redmine" type="rss" htmlUrl="https://github.com/redmine/redmine" xmlUrl="https://github.com/redmine/redmine/releases.atom" />
+    <outline text="reitti" title="reitti" type="rss" htmlUrl="https://github.com/dedicatedcode/reitti" xmlUrl="https://github.com/dedicatedcode/reitti/releases.atom" />
     <outline text="roundcube" title="roundcube" type="rss" htmlUrl="https://github.com/roundcube/roundcubemail" xmlUrl="https://github.com/roundcube/roundcubemail/releases.atom" />
     <outline text="rssbridge" title="rssbridge" type="rss" htmlUrl="https://github.com/RSS-Bridge/rss-bridge" xmlUrl="https://github.com/RSS-Bridge/rss-bridge/releases.atom" />
     <outline text="rsshub" title="rsshub" type="rss" htmlUrl="https://github.com/DIYgod/RSSHub" xmlUrl="https://github.com/DIYgod/RSSHub/releases.atom" />
