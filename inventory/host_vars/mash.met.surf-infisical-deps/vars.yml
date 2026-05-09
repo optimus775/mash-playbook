@@ -1,0 +1,36 @@
+# This is vars.yml for the supplementary host of Infisical.
+
+---
+
+########################################################################
+#                                                                      #
+# Playbook                                                             #
+#                                                                      #
+########################################################################
+
+# Put a strong secret below, generated with `pwgen -s 64 1` or in another way
+mash_playbook_generic_secret_key: '1O4bTQyQz4JkoXKLcBgBUKuOF4P2Kh5AsbClW5BCP05t5H6hpnnvPFHTRiaeNoim'
+
+# Override service names and directory path prefixes
+mash_playbook_service_identifier_prefix: 'mash-infisical-'
+mash_playbook_service_base_directory_name_prefix: 'infisical-'
+
+########################################################################
+#                                                                      #
+# /Playbook                                                            #
+#                                                                      #
+########################################################################
+
+########################################################################
+#                                                                      #
+# valkey                                                               #
+#                                                                      #
+########################################################################
+
+valkey_enabled: true
+
+########################################################################
+#                                                                      #
+# /valkey                                                              #
+#                                                                      #
+########################################################################
