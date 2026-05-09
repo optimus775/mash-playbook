@@ -179,7 +179,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:autobrr
   - |-
-    {{ ({'name': (autobrr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'autobrr']} if autobrr_enabled else omit) }}
+    {{ ({'name': (autobrr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (autobrr_restart_necessary | bool), 'groups': ['mash', 'autobrr']} if autobrr_enabled else omit) }}
   # /role-specific:autobrr
 
   # role-specific:backup_borg
@@ -208,6 +208,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (bitmagnet_identifier + '.service'), 'priority': 2000, 'restart_necessary': (bitmagnet_restart_necessary | bool), 'groups': ['mash', 'bitmagnet']} if bitmagnet_enabled else omit) }}
   # /role-specific:bitmagnet
+
+  # role-specific:bookstack
+  - |-
+    {{ ({'name': (bookstack_identifier + '.service'), 'priority': 2000, 'restart_necessary': (bookstack_restart_necessary | bool), 'groups': ['mash', 'bookstack']} if bookstack_enabled else omit) }}
+  # /role-specific:bookstack
 
   # role-specific:borg_ui
   - |-
@@ -508,7 +513,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:headplane
   - |-
-    {{ ({'name': (headplane_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'headplane']} if headplane_enabled else omit) }}
+    {{ ({'name': (headplane_identifier + '.service'), 'priority': 2000, 'restart_necessary': (headplane_restart_necessary | bool), 'groups': ['mash', 'headplane']} if headplane_enabled else omit) }}
   # /role-specific:headplane
 
   # role-specific:headscale
@@ -520,6 +525,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (healthchecks_identifier + '.service'), 'priority': 2000, 'restart_necessary': (healthchecks_restart_necessary | bool), 'groups': ['mash', 'healthchecks']} if healthchecks_enabled else omit) }}
   # /role-specific:healthchecks
+
+  # role-specific:heimdall
+  - |-
+    {{ ({'name': (heimdall_identifier + '.service'), 'priority': 2000, 'restart_necessary': (heimdall_restart_necessary | bool), 'groups': ['mash', 'heimdall']} if heimdall_enabled else omit) }}
+  # /role-specific:heimdall
 
   # role-specific:heyform
   - |-
@@ -584,11 +594,6 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (jellyfin_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'jellyfin']} if jellyfin_enabled else omit) }}
   # /role-specific:jellyfin
-
-  # role-specific:jellyseerr
-  - |-
-    {{ ({'name': (jellyseerr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'jellyseerr']} if jellyseerr_enabled else omit) }}
-  # /role-specific:jellyseerr
 
   # role-specific:jitsi
   - |-
@@ -915,11 +920,6 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (outline_identifier + '.service'), 'priority': 2000, 'restart_necessary': (outline_restart_necessary | bool), 'groups': ['mash', 'outline']} if outline_enabled else omit) }}
   # /role-specific:outline
 
-  # role-specific:overseerr
-  - |-
-    {{ ({'name': (overseerr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'overseerr']} if overseerr_enabled else omit) }}
-  # /role-specific:overseerr
-
   # role-specific:owncast
   - |-
     {{ ({'name': (owncast_identifier + '.service'), 'priority': 2000, 'restart_necessary': (owncast_restart_necessary | bool), 'groups': ['mash', 'owncast']} if owncast_enabled else omit) }}
@@ -1140,6 +1140,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (searxng_identifier + '.service'), 'priority': 2000, 'restart_necessary': (searxng_restart_necessary | bool), 'groups': ['mash', 'searxng']} if searxng_enabled else omit) }}
   # /role-specific:searxng
+
+  # role-specific:seerr
+  - |-
+    {{ ({'name': (seerr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (seerr_restart_necessary | bool), 'groups': ['mash', 'seerr']} if seerr_enabled else omit) }}
+  # /role-specific:seerr
 
   # role-specific:semaphore
   - |-
@@ -3836,6 +3841,72 @@ bitmagnet_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pr
 #                                                                      #
 ########################################################################
 # /role-specific:bitmagnet
+
+
+
+# role-specific:bookstack
+########################################################################
+#                                                                      #
+# bookstack                                                            #
+#                                                                      #
+########################################################################
+
+bookstack_enabled: false
+
+bookstack_identifier: "{{ mash_playbook_service_identifier_prefix }}bookstack"
+
+bookstack_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}bookstack"
+
+# Run as www-data:www-data
+bookstack_uid: 33
+bookstack_gid: 33
+
+bookstack_systemd_required_services_list_auto: |
+  {{
+    ([mariadb_identifier ~ '.service'] if mariadb_enabled and bookstack_database_hostname == mariadb_connection_hostname else [])
+  }}
+
+bookstack_systemd_wanted_services_list_auto: |
+  {{
+    ([exim_relay_identifier ~ '.service'] if exim_relay_enabled | default(false) and bookstack_environment_variables_mail_driver == 'smtp' else [])
+  }}
+
+bookstack_container_additional_networks_auto: |
+  {{
+    ([exim_relay_container_network] if exim_relay_enabled | default(false) and bookstack_environment_variables_mail_driver == 'smtp' and bookstack_container_network != exim_relay_container_network else [])
+    +
+    ([mariadb_container_network] if mariadb_enabled and bookstack_database_hostname == mariadb_connection_hostname and bookstack_container_network != mariadb_container_network else [])
+    +
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+bookstack_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+bookstack_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:exim_relay
+bookstack_environment_variables_mail_driver: "{{ 'smtp' if exim_relay_enabled }}"
+bookstack_environment_variables_mail_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
+bookstack_environment_variables_mail_port: 8025
+bookstack_environment_variables_mail_from: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
+# /role-specific:exim_relay
+
+# role-specific:mariadb
+bookstack_database_hostname: "{{ mariadb_connection_hostname if mariadb_enabled else '' }}"
+bookstack_database_port: "{{ mariadb_connection_port if mariadb_enabled else '3306' }}"
+bookstack_database_password: "{{ (mash_playbook_generic_secret_key + ':bookstack.db') | hash('sha512') | to_uuid }}"
+# /role-specific:mariadb
+
+# role-specific:traefik
+bookstack_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+bookstack_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /bookstack                                                           #
+#                                                                      #
+########################################################################
+# /role-specific:bookstack
 
 
 
@@ -6921,6 +6992,44 @@ healthchecks_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver
 
 
 
+# role-specific:heimdall
+########################################################################
+#                                                                      #
+# heimdall                                                             #
+#                                                                      #
+########################################################################
+
+heimdall_enabled: false
+
+heimdall_identifier: "{{ mash_playbook_service_identifier_prefix }}heimdall"
+
+heimdall_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}heimdall"
+
+heimdall_uid: "{{ mash_playbook_uid }}"
+heimdall_gid: "{{ mash_playbook_gid }}"
+
+heimdall_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+heimdall_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+heimdall_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+heimdall_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+heimdall_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /heimdall                                                            #
+#                                                                      #
+########################################################################
+# /role-specific:heimdall
+
+
+
 # role-specific:heyform
 ########################################################################
 #                                                                      #
@@ -8515,43 +8624,6 @@ jellyfin_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pri
 
 
 
-# role-specific:jellyseerr
-########################################################################
-#                                                                      #
-# jellyseerr                                                           #
-#                                                                      #
-########################################################################
-
-jellyseerr_enabled: false
-
-jellyseerr_identifier: "{{ mash_playbook_service_identifier_prefix }}jellyseerr"
-
-jellyseerr_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}jellyseerr"
-
-jellyseerr_uid: "{{ mash_playbook_uid }}"
-jellyseerr_gid: "{{ mash_playbook_gid }}"
-
-jellyseerr_container_additional_networks_auto: |
-  {{
-    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
-  }}
-
-jellyseerr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-jellyseerr_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
-# role-specific:traefik
-jellyseerr_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-jellyseerr_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
-# /role-specific:traefik
-
-########################################################################
-#                                                                      #
-# /jellyseerr                                                          #
-#                                                                      #
-########################################################################
-# /role-specific:jellyseerr
-
-
 
 # role-specific:jitsi
 ########################################################################
@@ -9771,6 +9843,17 @@ mash_playbook_mariadb_managed_databases_auto_itemized:
       } if authelia_enabled and authelia_config_storage_mysql_hostname == mariadb_connection_hostname else omit)
     }}
   # /role-specific:authelia
+
+  # role-specific:bookstack
+  - |-
+    {{
+      ({
+        'name': bookstack_database_name,
+        'username': bookstack_database_username,
+        'password': bookstack_database_password,
+      } if bookstack_enabled and bookstack_database_hostname == mariadb_connection_hostname else omit)
+    }}
+  # /role-specific:bookstack
 
   # role-specific:codimd
   - |-
@@ -12174,43 +12257,6 @@ outline_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prim
 
 
 
-# role-specific:overseerr
-########################################################################
-#                                                                      #
-# overseerr                                                            #
-#                                                                      #
-########################################################################
-
-overseerr_enabled: false
-
-overseerr_identifier: "{{ mash_playbook_service_identifier_prefix }}overseerr"
-
-overseerr_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}overseerr"
-
-overseerr_uid: "{{ mash_playbook_uid }}"
-overseerr_gid: "{{ mash_playbook_gid }}"
-
-overseerr_container_additional_networks_auto: |
-  {{
-    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
-  }}
-
-overseerr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-overseerr_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
-# role-specific:traefik
-overseerr_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-overseerr_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
-# /role-specific:traefik
-
-########################################################################
-#                                                                      #
-# /overseerr                                                           #
-#                                                                      #
-########################################################################
-# /role-specific:overseerr
-
-
 
 # role-specific:owncast
 ########################################################################
@@ -14384,6 +14430,44 @@ searxng_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prim
 #                                                                      #
 ########################################################################
 # /role-specific:searxng
+
+
+
+# role-specific:seerr
+########################################################################
+#                                                                      #
+# seerr                                                                #
+#                                                                      #
+########################################################################
+
+seerr_enabled: false
+
+seerr_identifier: "{{ mash_playbook_service_identifier_prefix }}seerr"
+
+seerr_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}seerr"
+
+seerr_uid: "{{ mash_playbook_uid }}"
+seerr_gid: "{{ mash_playbook_gid }}"
+
+seerr_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+seerr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+seerr_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+seerr_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+seerr_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /seerr                                                               #
+#                                                                      #
+########################################################################
+# /role-specific:seerr
 
 
 
