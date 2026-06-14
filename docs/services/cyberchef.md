@@ -21,13 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [CyberChef](https://github.com/gchq/CyberChef) for you.
 
-CyberChef is an intuitive application for carrying out encryption, encoding, and data analysis operations inside a browser locally. These operations include simple encoding like XOR and Base64, more complex encryption like AES, DES and Blowfish, creating binary and hexdumps, and so on.
+CyberChef is an intuitive web application for carrying out encryption, encoding, and data analysis operations inside a browser locally. These operations include simple encoding like XOR and Base64, more complex encryption like AES, DES and Blowfish, creating binary and hexdumps, and so on.
 
 See the project's [documentation](https://github.com/gchq/CyberChef/blob/master/README.md) to learn what CyberChef does and why it might be useful to you.
 
-For details about configuring the [Ansible role for CyberChef](https://radicle.network/nodes/seed.radicle.garden/rad%3Az2zgHMDh4Pb8yr4DH8BVkMcdboBXd), you can check them via:
+For details about configuring the [Ansible role for CyberChef](https://radicle.network/nodes/iris.radicle.network/rad%3Az2zgHMDh4Pb8yr4DH8BVkMcdboBXd), you can check them via:
 
-- 🌐 [the role's documentation](https://radicle.network/nodes/seed.radicle.garden/rad%3Az2zgHMDh4Pb8yr4DH8BVkMcdboBXd/tree/docs/configuring-cyberchef.md) online
+- 🌐 [the role's documentation](https://radicle.network/nodes/iris.radicle.network/rad%3Az2zgHMDh4Pb8yr4DH8BVkMcdboBXd/tree/docs/configuring-cyberchef.md) online
 - 📁 `roles/galaxy/cyberchef/docs/configuring-cyberchef.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
 ## Dependencies
@@ -66,4 +66,4 @@ After running the command for installation, the CyberChef instance becomes avail
 
 ## Troubleshooting
 
-See [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3Az2zgHMDh4Pb8yr4DH8BVkMcdboBXd/tree/docs/configuring-cyberchef.md#troubleshooting) on the role's documentation for details.
+See [this section](https://radicle.network/nodes/iris.radicle.network/rad%3Az2zgHMDh4Pb8yr4DH8BVkMcdboBXd/tree/docs/configuring-cyberchef.md#troubleshooting) on the role's documentation for details.

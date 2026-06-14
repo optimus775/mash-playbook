@@ -22,13 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [Adminer](https://www.adminer.org/) for you.
 
-Adminer is a full-featured database management tool written in PHP. It supports MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, and Oracle out of the box. Elasticsearch, SimpleDB, MongoDB, Firebird, and Clickhouse can be supported via plugins.
+Adminer is a full-featured database server administration software written in PHP. It supports MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, and Oracle out of the box. Elasticsearch, SimpleDB, MongoDB, Firebird, and Clickhouse can be supported via plugins.
 
 See the project's [documentation](https://github.com/vrana/adminer/blob/master/README.md) to learn what Adminer does and why it might be useful to you.
 
-For details about configuring the [Ansible role for Adminer](https://radicle.network/nodes/seed.radicle.garden/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu), you can check them via:
+For details about configuring the [Ansible role for Adminer](https://radicle.network/nodes/iris.radicle.network/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu), you can check them via:
 
-- 🌐 [the role's documentation](https://radicle.network/nodes/seed.radicle.garden/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu/tree/docs/configuring-adminer.md) online
+- 🌐 [the role's documentation](https://radicle.network/nodes/iris.radicle.network/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu/tree/docs/configuring-adminer.md) online
 - 📁 `roles/galaxy/adminer/docs/configuring-adminer.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
 ## Dependencies
@@ -59,7 +59,7 @@ adminer_hostname: adminer.example.com
 ########################################################################
 ```
 
-It is optionally possible to edit settings about the default server to connect, plugins to load (ones for loading databases), etc. See [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu/tree/docs/configuring-adminer.md#adjusting-the-playbook-configuration) for details.
+It is optionally possible to edit settings about the default server to connect, plugins to load (ones for loading databases), etc. See [this section](https://radicle.network/nodes/iris.radicle.network/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu/tree/docs/configuring-adminer.md#adjusting-the-playbook-configuration) for details.
 
 ## Usage
 
@@ -74,9 +74,9 @@ To log in to database servers which this playbook manages, you need to specify i
 
 ## Troubleshooting
 
-See [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu/tree/docs/configuring-adminer.md#troubleshooting) on the role's documentation for details.
+See [this section](https://radicle.network/nodes/iris.radicle.network/rad%3Az3px8gLDo2opjQZW7qFiLoNuk4eSu/tree/docs/configuring-adminer.md#troubleshooting) on the role's documentation for details.
 
 ## Related services
 
 - [pgAdmin](pgadmin.md) — Management tool for Postgres with a graphical interface
-- [phpMyAdmin](phpmyadmin.md) — Free software written in PHP to handle the administration of a MySQL or MariaDB database server over the web
+- [phpMyAdmin](phpmyadmin.md) — Web-based MySQL or MariaDB database server administration software

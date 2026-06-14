@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [GoToSocial](https://gotosocial.org/) for you.
 
-GoToSocial is a self-hosted [ActivityPub](https://activitypub.rocks/) social network server. With GoToSocial, you can keep in touch with your friends, post, read, and share images and articles.
+GoToSocial is an ActivityPub federated microblogging platform. With GoToSocial, you can keep in touch with your friends, post, read, and share images and articles.
 
 See the project's [documentation](https://docs.gotosocial.org/) to learn what GoToSocial does and why it might be useful to you.
 
@@ -105,6 +105,6 @@ See [this section](https://github.com/mother-of-all-self-hosting/ansible-role-go
 
 ## Related services
 
-- [Funkwhale](funkwhale.md) — Community-driven project that lets you listen and share music and audio in the Fediverse
-- [Misskey](misskey.md) — Free decentralized microblogging platform based on the ActivityPub protocol
-- [PeerTube](peertube.md) — Tool for sharing online videos
+- [Funkwhale](funkwhale.md) — ActivityPub federated streaming server for listening and sharing music
+- [Misskey](misskey.md) — ActivityPub federated microblogging platform
+- [PeerTube](peertube.md) — ActivityPub federated video platform

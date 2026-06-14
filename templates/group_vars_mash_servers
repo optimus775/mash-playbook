@@ -194,10 +194,20 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (barassistant_server_identifier + '.service'), 'priority': 2000, 'restart_necessary': (barassistant_restart_necessary | bool), 'groups': ['mash', 'barassistant']} if barassistant_enabled else omit) }}
   # /role-specific:barassistant
 
+  # role-specific:bazarr
+  - |-
+    {{ ({'name': (bazarr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (bazarr_restart_necessary | bool), 'groups': ['mash', 'bazarr']} if bazarr_enabled else omit) }}
+  # /role-specific:bazarr
+
   # role-specific:bentopdf
   - |-
     {{ ({'name': (bentopdf_identifier + '.service'), 'priority': 2000, 'restart_necessary': (bentopdf_restart_necessary | bool), 'groups': ['mash', 'bentopdf']} if bentopdf_enabled else omit) }}
   # /role-specific:bentopdf
+
+  # role-specific:bichon
+  - |-
+    {{ ({'name': (bichon_identifier + '.service'), 'priority': 2000, 'restart_necessary': (bichon_restart_necessary | bool), 'groups': ['mash', 'bichon']} if bichon_enabled else omit) }}
+  # /role-specific:bichon
 
   # role-specific:bind
   - |-
@@ -255,6 +265,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (cinny_identifier + '.service'), 'priority': 2000, 'restart_necessary': (cinny_restart_necessary | bool), 'groups': ['mash', 'cinny']} if cinny_enabled else omit) }}
   # /role-specific:cinny
+
+  # role-specific:civicrm
+  - |-
+    {{ ({'name': (civicrm_identifier + '.service'), 'priority': 2000, 'restart_necessary': (civicrm_restart_necessary | bool), 'groups': ['mash', 'civicrm']} if civicrm_enabled else omit) }}
+  # /role-specific:civicrm
 
   # role-specific:clickhouse
   - |-
@@ -348,6 +363,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (dokuwiki_identifier + '.service'), 'priority': 2000, 'restart_necessary': (dokuwiki_restart_necessary | bool), 'groups': ['mash', 'dokuwiki']} if dokuwiki_enabled else omit) }}
   # /role-specific:dokuwiki
 
+  # role-specific:donetick
+  - |-
+    {{ ({'name': (donetick_identifier + '.service'), 'priority': 2000, 'restart_necessary': (donetick_restart_necessary | bool), 'groups': ['mash', 'donetick']} if donetick_enabled else omit) }}
+  # /role-specific:donetick
+
   # role-specific:duplicati
   - |-
     {{ ({'name': (duplicati_identifier + '.service'), 'priority': 2000, 'restart_necessary': (duplicati_restart_necessary | bool), 'groups': ['mash', 'duplicati']} if duplicati_enabled else omit) }}
@@ -425,7 +445,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:flaresolverr
   - |-
-    {{ ({'name': (flaresolverr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'flaresolverr']} if flaresolverr_enabled else omit) }}
+    {{ ({'name': (flaresolverr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (flaresolverr_restart_necessary | bool), 'groups': ['mash', 'flaresolverr']} if flaresolverr_enabled else omit) }}
   # /role-specific:flaresolverr
 
   # role-specific:flatnotes
@@ -485,6 +505,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (gitea_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gitea_restart_necessary | bool), 'groups': ['mash', 'gitea']} if gitea_enabled else omit) }}
   # /role-specific:gitea
+
+  # role-specific:gokapi
+  - |-
+    {{ ({'name': (gokapi_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gokapi_restart_necessary | bool), 'groups': ['mash', 'gokapi']} if gokapi_enabled else omit) }}
+  # /role-specific:gokapi
 
   # role-specific:gotenberg
   - |-
@@ -587,12 +612,12 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:jackett
   - |-
-    {{ ({'name': (jackett_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'jackett']} if jackett_enabled else omit) }}
+    {{ ({'name': (jackett_identifier + '.service'), 'priority': 2000, 'restart_necessary': (jackett_restart_necessary | bool), 'groups': ['mash', 'jackett']} if jackett_enabled else omit) }}
   # /role-specific:jackett
 
   # role-specific:jellyfin
   - |-
-    {{ ({'name': (jellyfin_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'jellyfin']} if jellyfin_enabled else omit) }}
+    {{ ({'name': (jellyfin_identifier + '.service'), 'priority': 2000, 'restart_necessary': (jellyfin_restart_necessary | bool), 'groups': ['mash', 'jellyfin']} if jellyfin_enabled else omit) }}
   # /role-specific:jellyfin
 
   # role-specific:jitsi
@@ -755,6 +780,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (memos_identifier + '.service'), 'priority': 2000, 'restart_necessary': (memos_restart_necessary | bool), 'groups': ['mash', 'memos']} if memos_enabled else omit) }}
   # /role-specific:memos
+
+  # role-specific:mermaid
+  - |-
+    {{ ({'name': (mermaid_identifier + '.service'), 'priority': 2000, 'restart_necessary': (mermaid_restart_necessary | bool), 'groups': ['mash', 'mermaid']} if mermaid_enabled else omit) }}
+  # /role-specific:mermaid
 
   # role-specific:minecraft
   - |-
@@ -990,6 +1020,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (pocket_id_identifier + '.service'), 'priority': 2000, 'restart_necessary': (pocket_id_restart_necessary | bool), 'groups': ['mash', 'pocket-id']} if pocket_id_enabled else omit) }}
   # /role-specific:pocket_id
 
+  # role-specific:polaris
+  - |-
+    {{ ({'name': (polaris_identifier + '.service'), 'priority': 2000, 'restart_necessary': (polaris_restart_necessary | bool), 'groups': ['mash', 'polaris']} if polaris_enabled else omit) }}
+  # /role-specific:polaris
+
   # role-specific:poodledonts
   - |-
     {{ ({'name': (poodledonts_identifier + '.service'), 'priority': 2000, 'restart_necessary': (poodledonts_restart_necessary | bool), 'groups': ['mash', 'poodledonts']} if poodledonts_enabled else omit) }}
@@ -1067,7 +1102,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:radarr
   - |-
-    {{ ({'name': (radarr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'radarr']} if radarr_enabled else omit) }}
+    {{ ({'name': (radarr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (radarr_restart_necessary | bool), 'groups': ['mash', 'radarr']} if radarr_enabled else omit) }}
   # /role-specific:radarr
 
   # role-specific:radicale
@@ -1198,13 +1233,18 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:sonarr
   - |-
-    {{ ({'name': (sonarr_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'sonarr']} if sonarr_enabled else omit) }}
+    {{ ({'name': (sonarr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (sonarr_restart_necessary | bool), 'groups': ['mash', 'sonarr']} if sonarr_enabled else omit) }}
   # /role-specific:sonarr
 
   # role-specific:soundcloak
   - |-
     {{ ({'name': (soundcloak_identifier + '.service'), 'priority': 2000, 'restart_necessary': (soundcloak_restart_necessary | bool), 'groups': ['mash', 'soundcloak']} if soundcloak_enabled else omit) }}
   # /role-specific:soundcloak
+
+  # role-specific:sqlpage
+  - |-
+    {{ ({'name': (sqlpage_identifier + '.service'), 'priority': 2000, 'restart_necessary': (sqlpage_restart_necessary | bool), 'groups': ['mash', 'sqlpage']} if sqlpage_enabled else omit) }}
+  # /role-specific:sqlpage
 
   # role-specific:statusnook
   - |-
@@ -1213,7 +1253,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:stirling_pdf
   - |-
-    {{ ({'name': (stirling_pdf_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'stirling-pdf']} if stirling_pdf_enabled else omit) }}
+    {{ ({'name': (stirling_pdf_identifier + '.service'), 'priority': 2000, 'restart_necessary': (stirling_pdf_restart_necessary | bool), 'groups': ['mash', 'stirling-pdf']} if stirling_pdf_enabled else omit) }}
   # /role-specific:stirling_pdf
 
   # role-specific:syncstorage_rs_docker
@@ -1311,6 +1351,15 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (vikunja_identifier + '.service'), 'priority': 2000, 'restart_necessary': (vikunja_restart_necessary | bool), 'groups': ['mash', 'vikunja']} if vikunja_enabled else omit) }}
   # /role-specific:vikunja
 
+  # role-specific:wazuh
+  - |-
+    {{ ({'name': (wazuh_manager_identifier + '.service'), 'priority': 2000, 'restart_necessary': (wazuh_manager_restart_necessary | bool), 'groups': ['mash', 'wazuh']} if wazuh_enabled else omit) }}
+  - |-
+    {{ ({'name': (wazuh_indexer_identifier + '.service'), 'priority': 2000, 'restart_necessary': (wazuh_indexer_restart_necessary | bool), 'groups': ['mash', 'wazuh']} if wazuh_enabled else omit) }}
+  - |-
+    {{ ({'name': (wazuh_dashboard_identifier + '.service'), 'priority': 2000, 'restart_necessary': (wazuh_dashboard_restart_necessary | bool), 'groups': ['mash', 'wazuh']} if wazuh_enabled else omit) }}
+  # /role-specific:wazuh
+
   # role-specific:weblate
   - |-
     {{ ({'name': (weblate_identifier + '.service'), 'priority': 2000, 'restart_necessary': (weblate_restart_necessary | bool), 'groups': ['mash', 'weblate']} if weblate_enabled else omit) }}
@@ -1318,7 +1367,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:wetty
   - |-
-    {{ ({'name': (wetty_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'wetty']} if wetty_enabled else omit) }}
+    {{ ({'name': (wetty_identifier + '.service'), 'priority': 2000, 'restart_necessary': (wetty_restart_necessary | bool), 'groups': ['mash', 'wetty']} if wetty_enabled else omit) }}
   # /role-specific:wetty
 
   # role-specific:wg_easy
@@ -1515,6 +1564,17 @@ mash_playbook_postgres_managed_databases_auto_itemized:
       } if docuseal_enabled and (docuseal_database_postgres_hostname == postgres_connection_hostname or docuseal_database_postgres_socket_enabled) and docuseal_database_type == 'postgres' else omit)
     }}
   # /role-specific:docuseal
+
+  # role-specific:donetick
+  - |-
+    {{
+      ({
+        'name': donetick_database_name,
+        'username': donetick_database_username,
+        'password': donetick_database_password,
+      } if donetick_enabled and donetick_database_hostname == postgres_connection_hostname and donetick_database_type == 'postgres' else omit)
+    }}
+  # /role-specific:donetick
 
   # role-specific:ergo
   - |-
@@ -3725,6 +3785,44 @@ barassistant_server_container_labels_traefik_tls_certResolver: "{{ traefik_certR
 
 
 
+# role-specific:bazarr
+########################################################################
+#                                                                      #
+# bazarr                                                               #
+#                                                                      #
+########################################################################
+
+bazarr_enabled: false
+
+bazarr_identifier: "{{ mash_playbook_service_identifier_prefix }}bazarr"
+
+bazarr_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}bazarr"
+
+bazarr_uid: "{{ mash_playbook_uid }}"
+bazarr_gid: "{{ mash_playbook_gid }}"
+
+bazarr_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+bazarr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+bazarr_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+bazarr_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+bazarr_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /bazarr                                                              #
+#                                                                      #
+########################################################################
+# /role-specific:bazarr
+
+
+
 # role-specific:bentopdf
 ########################################################################
 #                                                                      #
@@ -3761,6 +3859,44 @@ bentopdf_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pri
 #                                                                      #
 ########################################################################
 # /role-specific:bentopdf
+
+
+
+# role-specific:bichon
+########################################################################
+#                                                                      #
+# bichon                                                               #
+#                                                                      #
+########################################################################
+
+bichon_enabled: false
+
+bichon_identifier: "{{ mash_playbook_service_identifier_prefix }}bichon"
+
+bichon_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}bichon"
+
+bichon_uid: "{{ mash_playbook_uid }}"
+bichon_gid: "{{ mash_playbook_gid }}"
+
+bichon_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+bichon_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+bichon_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+bichon_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+bichon_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /bichon                                                              #
+#                                                                      #
+########################################################################
+# /role-specific:bichon
 
 
 
@@ -4309,6 +4445,64 @@ cinny_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primar
 #                                                                      #
 ########################################################################
 # /role-specific:cinny
+
+
+
+# role-specific:civicrm
+########################################################################
+#                                                                      #
+# civicrm                                                              #
+#                                                                      #
+########################################################################
+
+civicrm_enabled: false
+
+civicrm_identifier: "{{ mash_playbook_service_identifier_prefix }}civicrm"
+
+civicrm_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}civicrm"
+
+civicrm_uid: 33
+civicrm_gid: 33
+
+civicrm_systemd_required_services_list_auto: |
+  {{
+    ([mariadb_identifier ~ '.service'] if mariadb_enabled and civicrm_database_hostname == mariadb_connection_hostname else [])
+  }}
+
+civicrm_systemd_wanted_services_list_auto: |
+  {{
+    ([exim_relay_identifier ~ '.service'] if exim_relay_enabled | default(false) else [])
+  }}
+
+civicrm_container_additional_networks_auto: |
+  {{
+    ([exim_relay_container_network] if exim_relay_enabled | default(false) and civicrm_container_network != exim_relay_container_network else [])
+    +
+    ([mariadb_container_network] if mariadb_enabled and civicrm_database_hostname == mariadb_connection_hostname and civicrm_container_network != mariadb_container_network else [])
+    +
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+civicrm_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+civicrm_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:mariadb
+civicrm_database_hostname: "{{ mariadb_connection_hostname if mariadb_enabled else '' }}"
+civicrm_database_port: "{{ mariadb_connection_port if mariadb_enabled else '3306' }}"
+civicrm_database_password: "{{ (mash_playbook_generic_secret_key + ':civicrm.db') | hash('sha512') | to_uuid }}"
+# /role-specific:mariadb
+
+# role-specific:traefik
+civicrm_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+civicrm_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /civicrm                                                             #
+#                                                                      #
+########################################################################
+# /role-specific:civicrm
 
 
 
@@ -5105,6 +5299,73 @@ dokuwiki_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pri
 
 
 
+# role-specific:donetick
+########################################################################
+#                                                                      #
+# donetick                                                             #
+#                                                                      #
+########################################################################
+
+donetick_enabled: false
+
+donetick_identifier: "{{ mash_playbook_service_identifier_prefix }}donetick"
+
+donetick_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}donetick"
+
+donetick_uid: "{{ mash_playbook_uid }}"
+donetick_gid: "{{ mash_playbook_gid }}"
+
+donetick_systemd_required_services_list_auto: |
+  {{
+    ([postgres_identifier ~ '.service'] if postgres_enabled and donetick_database_hostname == postgres_connection_hostname and donetick_database_type == 'postgres' else [])
+  }}
+
+donetick_systemd_wanted_services_list_auto: |
+  {{
+    ([exim_relay_identifier ~ '.service'] if exim_relay_enabled | default(false) and donetick_config_email_host == exim_relay_identifier else [])
+  }}
+
+donetick_container_additional_networks_auto: |
+  {{
+    ([exim_relay_container_network] if exim_relay_enabled | default(false) and donetick_config_email_host == exim_relay_identifier and donetick_container_network != exim_relay_container_network else [])
+    +
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    +
+    ([postgres_container_network] if postgres_enabled and donetick_database_hostname == postgres_connection_hostname and donetick_container_network != postgres_container_network and donetick_database_type == 'postgres' else [])
+  }}
+
+donetick_config_jwt_secret: "{{ (mash_playbook_generic_secret_key + ':jwt.donetick') | hash('sha512') | to_uuid }}"
+
+donetick_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+donetick_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:exim_relay
+donetick_config_email_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
+donetick_config_email_port: "{{ 8025 if exim_relay_enabled else '587' }}"
+donetick_config_email_email: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
+# /role-specific:exim_relay
+
+# role-specific:postgres
+donetick_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
+donetick_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
+donetick_database_username: "{{ donetick_identifier }}"
+donetick_database_password: "{{ (mash_playbook_generic_secret_key + ':db.donetick') | hash('sha512') | to_uuid }}"
+# /role-specific:postgres
+
+# role-specific:traefik
+donetick_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+donetick_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /donetick                                                            #
+#                                                                      #
+########################################################################
+# /role-specific:donetick
+
+
+
 # role-specific:duplicati
 ########################################################################
 #                                                                      #
@@ -5841,7 +6102,8 @@ flaresolverr_container_additional_networks_auto: |
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
   }}
 
-flaresolverr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
+flaresolverr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and flaresolverr_hostname | length > 0 }}"
 flaresolverr_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
 # role-specific:traefik
@@ -6514,6 +6776,44 @@ gitea_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primar
 #                                                                      #
 ########################################################################
 # /role-specific:gitea
+
+
+
+# role-specific:gokapi
+########################################################################
+#                                                                      #
+# gokapi                                                               #
+#                                                                      #
+########################################################################
+
+gokapi_enabled: false
+
+gokapi_identifier: "{{ mash_playbook_service_identifier_prefix }}gokapi"
+
+gokapi_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}gokapi"
+
+gokapi_uid: "{{ mash_playbook_uid }}"
+gokapi_gid: "{{ mash_playbook_gid }}"
+
+gokapi_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+gokapi_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+gokapi_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+gokapi_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+gokapi_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /gokapi                                                              #
+#                                                                      #
+########################################################################
+# /role-specific:gokapi
 
 
 
@@ -7246,7 +7546,7 @@ hubsite_service_authentik_enabled: "{{ authentik_enabled }}"
 hubsite_service_authentik_name: authentik
 hubsite_service_authentik_url: "https://{{ authentik_hostname }}"
 hubsite_service_authentik_logo_location: "{{ role_path }}/assets/authentik.png"
-hubsite_service_authentik_description: "An open source identity provider"
+hubsite_service_authentik_description: "An open-source identity provider"
 hubsite_service_authentik_priority: 1000
 # /role-specific:authentik
 
@@ -7276,7 +7576,7 @@ hubsite_service_etherpad_enabled: "{{ etherpad_enabled }}"
 hubsite_service_etherpad_name: Etherpad
 hubsite_service_etherpad_url: "{{ etherpad_scheme }}://{{ etherpad_hostname }}{{ etherpad_path_prefix }}"
 hubsite_service_etherpad_logo_location: "{{ role_path }}/assets/etherpad.png"
-hubsite_service_etherpad_description: "Open source collaborative text editor"
+hubsite_service_etherpad_description: "open-source collaborative text editor"
 hubsite_service_etherpad_priority: 1000
 # /role-specific:etherpad
 
@@ -7306,7 +7606,7 @@ hubsite_service_focalboard_enabled: "{{ focalboard_enabled }}"
 hubsite_service_focalboard_name: Focalboard
 hubsite_service_focalboard_url: "https://{{ focalboard_hostname }}{{ focalboard_path_prefix }}"
 hubsite_service_focalboard_logo_location: "{{ role_path }}/assets/focalboard.png"
-hubsite_service_focalboard_description: "An open source, self-hosted alternative to Trello, Notion, and Asana."
+hubsite_service_focalboard_description: "An open-source, self-hosted alternative to Trello, Notion, and Asana."
 hubsite_service_focalboard_priority: 1000
 # /role-specific:focalboard
 
@@ -7406,7 +7706,7 @@ hubsite_service_keycloak_enabled: "{{ keycloak_enabled }}"
 hubsite_service_keycloak_name: Keycloak
 hubsite_service_keycloak_url: "{{ keycloak_scheme }}://{{ keycloak_hostname }}{{ keycloak_path_prefix }}"
 hubsite_service_keycloak_logo_location: "{{ role_path }}/assets/keycloak.png"
-hubsite_service_keycloak_description: "An open source identity and access management solution."
+hubsite_service_keycloak_description: "An open-source identity and access management solution."
 hubsite_service_keycloak_priority: 1000
 # /role-specific:keycloak
 
@@ -7426,7 +7726,7 @@ hubsite_service_languagetool_enabled: "{{ languagetool_enabled }}"
 hubsite_service_languagetool_name: LanguageTool
 hubsite_service_languagetool_url: "https://{{ languagetool_hostname }}{{ languagetool_path_prefix }}"
 hubsite_service_languagetool_logo_location: "{{ role_path }}/assets/languagetool.png"
-hubsite_service_languagetool_description: "An open source online grammar, style and spell checker"
+hubsite_service_languagetool_description: "An open-source online grammar, style and spell checker"
 hubsite_service_languagetool_priority: 1000
 # /role-specific:languagetool
 
@@ -7516,7 +7816,7 @@ hubsite_service_privatebin_enabled: "{{ privatebin_enabled }}"
 hubsite_service_privatebin_name: PrivateBin
 hubsite_service_privatebin_url: "{{ privatebin_scheme }}://{{ privatebin_hostname }}{{ privatebin_path_prefix }}"
 hubsite_service_privatebin_logo_location: ""
-hubsite_service_privatebin_description: "Minimalist, open source online pastebin where the server has zero knowledge of pasted data."
+hubsite_service_privatebin_description: "Minimalist, open-source online pastebin where the server has zero knowledge of pasted data."
 hubsite_service_privatebin_priority: 1000
 # /role-specific:privatebin
 
@@ -9876,6 +10176,17 @@ mash_playbook_mariadb_managed_databases_auto_itemized:
     }}
   # /role-specific:bookstack
 
+  # role-specific:civicrm
+  - |-
+    {{
+      ({
+        'name': civicrm_database_name,
+        'username': civicrm_database_username,
+        'password': civicrm_database_password,
+      } if civicrm_enabled and civicrm_database_hostname == mariadb_connection_hostname else omit)
+    }}
+  # /role-specific:civicrm
+
   # role-specific:codimd
   - |-
     {{
@@ -10659,6 +10970,45 @@ memos_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primar
 #                                                                      #
 ########################################################################
 # /role-specific:memos
+
+
+
+# role-specific:mermaid
+########################################################################
+#                                                                      #
+# mermaid                                                              #
+#                                                                      #
+########################################################################
+
+mermaid_enabled: false
+
+mermaid_identifier: "{{ mash_playbook_service_identifier_prefix }}mermaid"
+
+mermaid_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}mermaid"
+
+# Run as root
+mermaid_uid: 0
+mermaid_gid: 0
+
+mermaid_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+mermaid_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+mermaid_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+mermaid_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+mermaid_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /mermaid                                                             #
+#                                                                      #
+########################################################################
+# /role-specific:mermaid
 
 
 
@@ -11456,6 +11806,8 @@ nextcloud_systemd_required_services_list_auto: |
 
 nextcloud_systemd_wanted_services_list_auto: |
   {{
+    ([eurooffice_identifier ~ '.service'] if eurooffice_enabled | default(false) else [])
+    +
     ([exim_relay_identifier ~ '.service'] if exim_relay_enabled | default(false) and nextcloud_environment_variables_smtp_host == exim_relay_identifier else [])
     +
     ([lldap_identifier ~ '.service'] if lldap_enabled | default(false) and nextcloud_lldap_enabled else [])
@@ -11493,6 +11845,11 @@ nextcloud_database_type: "{{ 'postgres' if postgres_enabled | default(false) els
 nextcloud_app_richdocuments_wopi_client_url: "{{ collabora_online_url if collabora_online_enabled }}"
 nextcloud_app_richdocuments_wopi_client_network: "{{ collabora_online_container_network }}"
 # /role-specific:collabora_online
+
+# role-specific:eurooffice
+nextcloud_app_eurooffice_documentserverurl: "{{ eurooffice_scheme }}://{{ eurooffice_hostname }}"
+nextcloud_app_eurooffice_jwt_secret: "{{ eurooffice_environment_variables_jwt_secret }}"
+# /role-specific:eurooffice
 
 # role-specific:exim_relay
 nextcloud_environment_variables_smtp_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
@@ -13157,6 +13514,44 @@ pocket_id_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pr
 #                                                                      #
 ########################################################################
 # /role-specific:pocket_id
+
+
+
+# role-specific:polaris
+########################################################################
+#                                                                      #
+# polaris                                                              #
+#                                                                      #
+########################################################################
+
+polaris_enabled: false
+
+polaris_identifier: "{{ mash_playbook_service_identifier_prefix }}polaris"
+
+polaris_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}polaris"
+
+polaris_uid: 100
+polaris_gid: 100
+
+polaris_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+polaris_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+polaris_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+polaris_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+polaris_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /polaris                                                             #
+#                                                                      #
+########################################################################
+# /role-specific:polaris
 
 
 
@@ -15081,6 +15476,44 @@ soundcloak_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_p
 
 
 
+# role-specific:sqlpage
+########################################################################
+#                                                                      #
+# sqlpage                                                              #
+#                                                                      #
+########################################################################
+
+sqlpage_enabled: false
+
+sqlpage_identifier: "{{ mash_playbook_service_identifier_prefix }}sqlpage"
+
+sqlpage_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}sqlpage"
+
+sqlpage_uid: "{{ mash_playbook_uid }}"
+sqlpage_gid: "{{ mash_playbook_gid }}"
+
+sqlpage_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+sqlpage_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+sqlpage_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+sqlpage_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+sqlpage_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /sqlpage                                                             #
+#                                                                      #
+########################################################################
+# /role-specific:sqlpage
+
+
+
 # role-specific:statusnook
 ########################################################################
 #                                                                      #
@@ -16062,6 +16495,44 @@ vikunja_environment_variables_typesense_apikey: "{{ typesense_environment_variab
 #                                                                      #
 ########################################################################
 # /role-specific:vikunja
+
+
+
+# role-specific:wazuh
+########################################################################
+#                                                                      #
+# wazuh                                                                #
+#                                                                      #
+########################################################################
+
+wazuh_enabled: false
+
+wazuh_identifier: "{{ mash_playbook_service_identifier_prefix }}wazuh"
+
+wazuh_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}wazuh"
+
+# wazuh_uid and wazuh_gid are intentionally not set here — they are
+# hardcoded upstream due to container requirements and are non-configurable.
+
+wazuh_dashboard_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+wazuh_dashboard_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+wazuh_dashboard_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+wazuh_dashboard_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+wazuh_dashboard_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /wazuh                                                               #
+#                                                                      #
+########################################################################
+# /role-specific:wazuh
 
 
 

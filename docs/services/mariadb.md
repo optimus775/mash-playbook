@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [MariaDB](https://mariadb.org) for you.
 
-MariaDB is a powerful, open source object-relational database system.
+MariaDB is a powerful, open-source object-relational database system.
 
 See the project's [documentation](https://mariadb.org/documentation/) to learn what MariaDB does and why it might be useful to you.
 
@@ -67,4 +67,4 @@ See [this section](https://github.com/mother-of-all-self-hosting/ansible-role-ma
 
 ## Related services
 
-- [phpMyAdmin](phpmyadmin.md) — Free software written in PHP to handle the administration of a MySQL or MariaDB database server over the web
+- [phpMyAdmin](phpmyadmin.md) — Web-based MySQL or MariaDB database server administration software

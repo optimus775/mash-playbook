@@ -24,13 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [File Browser](https://filebrowser.org/) for you.
 
-File Browser provides a file managing interface within a specified directory and it can be used to upload, delete, preview and edit your files.
+File Browser is a free self-hosted web-based file manager.
 
 See the project's [documentation](https://filebrowser.org/) to learn what File Browser does and why it might be useful to you.
 
-For details about configuring the [Ansible role for File Browser](https://radicle.network/nodes/seed.radicle.garden/rad%3Az318zbpe2RNjFqVzXqPoDDJvvohbw), you can check them via:
+For details about configuring the [Ansible role for File Browser](https://radicle.network/nodes/iris.radicle.network/rad%3Az318zbpe2RNjFqVzXqPoDDJvvohbw), you can check them via:
 
-- 🌐 [the role's documentation](https://radicle.network/nodes/seed.radicle.garden/rad%3Az318zbpe2RNjFqVzXqPoDDJvvohbw/tree/docs/configuring-filebrowser.md) online
+- 🌐 [the role's documentation](https://radicle.network/nodes/iris.radicle.network/rad%3Az318zbpe2RNjFqVzXqPoDDJvvohbw/tree/docs/configuring-filebrowser.md) online
 - 📁 `roles/galaxy/filebrowser/docs/configuring-filebrowser.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
 ## Dependencies
@@ -81,8 +81,8 @@ You can create additional users (admin-privileged or not) after logging in via t
 
 ## Troubleshooting
 
-See [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3Az318zbpe2RNjFqVzXqPoDDJvvohbw/tree/docs/configuring-filebrowser.md#troubleshooting) on the role's documentation for details.
+See [this section](https://radicle.network/nodes/iris.radicle.network/rad%3Az318zbpe2RNjFqVzXqPoDDJvvohbw/tree/docs/configuring-filebrowser.md#troubleshooting) on the role's documentation for details.
 
 ## Related services
 
-- [FileBrowser Quantum](filebrowser-quantum.md) — Free self-hosted web-based file manager
+- [FileBrowser Quantum](filebrowser-quantum.md) — Web-based file manager

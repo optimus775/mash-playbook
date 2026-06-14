@@ -22,13 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [phpMyAdmin](https://www.phpmyadmin.net/) for you.
 
-phpMyAdmin is a free software tool written in PHP that is intended to handle the administration of a MySQL or MariaDB database server.
+phpMyAdmin is a free web-based MySQL or MariaDB database server administration software, written in PHP.
 
 See the project's [documentation](https://docs.phpmyadmin.net/en/latest/) to learn what phpMyAdmin does and why it might be useful to you.
 
-For details about configuring the [Ansible role for phpMyAdmin](https://radicle.network/nodes/seed.radicle.garden/rad%3Azby9EmMBhyNe8Nj4f66izwrmhk5g), you can check them via:
+For details about configuring the [Ansible role for phpMyAdmin](https://radicle.network/nodes/iris.radicle.network/rad%3Azby9EmMBhyNe8Nj4f66izwrmhk5g), you can check them via:
 
-- 🌐 [the role's documentation](https://radicle.network/nodes/seed.radicle.garden/rad%3Azby9EmMBhyNe8Nj4f66izwrmhk5g/tree/docs/configuring-phpmyadmin.md) online
+- 🌐 [the role's documentation](https://radicle.network/nodes/iris.radicle.network/rad%3Azby9EmMBhyNe8Nj4f66izwrmhk5g/tree/docs/configuring-phpmyadmin.md) online
 - 📁 `roles/galaxy/phpmyadmin/docs/configuring-phpmyadmin.md` locally, if you have [fetched the Ansible roles](../installing.md)
 
 ## Dependencies
@@ -82,10 +82,10 @@ To get started, open the URL with a web browser to log in to the instance with t
 
 ## Troubleshooting
 
-See [this section](https://radicle.network/nodes/seed.radicle.garden/rad%3Azby9EmMBhyNe8Nj4f66izwrmhk5g/tree/docs/configuring-phpmyadmin.md#troubleshooting) on the role's documentation for details.
+See [this section](https://radicle.network/nodes/iris.radicle.network/rad%3Azby9EmMBhyNe8Nj4f66izwrmhk5g/tree/docs/configuring-phpmyadmin.md#troubleshooting) on the role's documentation for details.
 
 ## Related services
 
 - [Adminer](adminer.md) — Full-featured database management tool written in PHP
-- [MariaDB](mariadb.md) — Powerful, open source object-relational database system
+- [MariaDB](mariadb.md) — Powerful object-relational database system
 - [pgAdmin](pgadmin.md) — Management tool for Postgres with a graphical interface

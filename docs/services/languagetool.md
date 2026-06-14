@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [LanguageTool](https://languagetool.org/) for you.
 
-LanguageTool is an open source online grammar, style and spell checker.
+LanguageTool is an open-source online grammar, style and spell checker.
 
 See the project's [documentation](https://languagetool.org/dev) to learn what LanguageTool does and why it might be useful to you.
 
@@ -35,7 +35,7 @@ For details about configuring the [Ansible role for LanguageTool](https://github
 
 This service requires the following other services:
 
-- [Traefik](traefik.md) — a reverse-proxy server
+- [Traefik](traefik.md) reverse-proxy server
 
 ## Configuration
 

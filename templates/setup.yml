@@ -166,9 +166,17 @@
     - role: galaxy/barassistant
     # /role-specific:barassistant
 
+    # role-specific:bazarr
+    - role: galaxy/bazarr
+    # /role-specific:bazarr
+
     # role-specific:bentopdf
     - role: galaxy/bentopdf
     # /role-specific:bentopdf
+
+    # role-specific:bichon
+    - role: galaxy/bichon
+    # /role-specific:bichon
 
     # role-specific:bind
     - role: galaxy/bind
@@ -213,6 +221,10 @@
     # role-specific:cinny
     - role: galaxy/cinny
     # /role-specific:cinny
+
+    # role-specific:civicrm
+    - role: galaxy/civicrm
+    # /role-specific:civicrm
 
     # role-specific:clickhouse
     - role: galaxy/clickhouse
@@ -281,6 +293,10 @@
     # role-specific:dokuwiki
     - role: galaxy/dokuwiki
     # /role-specific:dokuwiki
+
+    # role-specific:donetick
+    - role: galaxy/donetick
+    # /role-specific:donetick
 
     # role-specific:duplicati
     - role: galaxy/duplicati
@@ -381,6 +397,10 @@
     # role-specific:gitea
     - role: galaxy/gitea
     # /role-specific:gitea
+
+    # role-specific:gokapi
+    - role: galaxy/gokapi
+    # /role-specific:gokapi
 
     # role-specific:gotenberg
     - role: galaxy/gotenberg
@@ -582,6 +602,10 @@
     - role: galaxy/memos
     # /role-specific:memos
 
+    # role-specific:mermaid
+    - role: galaxy/mermaid
+    # /role-specific:mermaid
+
     # role-specific:minecraft
     - role: galaxy/minecraft
     # /role-specific:minecraft
@@ -762,6 +786,10 @@
     - role: galaxy/poodledonts
     # /role-specific:poodledonts
 
+    # role-specific:polaris
+    - role: galaxy/polaris
+    # /role-specific:polaris
+
     # role-specific:postgis
     - role: galaxy/postgis
     # /role-specific:postgis
@@ -922,6 +950,10 @@
     - role: galaxy/soundcloak
     # /role-specific:soundcloak
 
+    # role-specific:sqlpage
+    - role: galaxy/sqlpage
+    # /role-specific:sqlpage
+
     # role-specific:statusnook
     - role: galaxy/statusnook
     # /role-specific:statusnook
@@ -1001,6 +1033,10 @@
     # role-specific:vikunja
     - role: galaxy/vikunja
     # /role-specific:vikunja
+
+    # role-specific:wazuh
+    - role: galaxy/wazuh
+    # /role-specific:wazuh
 
     # role-specific:weblate
     - role: galaxy/weblate

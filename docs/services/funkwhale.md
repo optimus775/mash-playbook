@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [Funkwhale](https://funkwhale.audio/) for you.
 
-Funkwhale is a community-driven project that lets you listen and share music and audio within a decentralized, open network.
+Funkwhale is an ActivityPub federated streaming server for listening and sharing music.
 
 See the project's [documentation](https://docs.funkwhale.audio) to learn what Funkwhale does and why it might be useful to you.
 
@@ -256,6 +256,6 @@ To get started, create **an administrator user** first and open the URL with a w
 ## Related services
 
 - [Feishin](feishin.md) — Music player for Navidrome, Jellyfin, Funkwhale, etc.
-- [GoToSocial](gotosocial.md) — Self-hosted ActivityPub social network server
-- [Misskey](misskey.md) — Free decentralized microblogging platform based on the ActivityPub protocol
-- [PeerTube](peertube.md) — Tool for sharing online videos
+- [GoToSocial](gotosocial.md) — ActivityPub federated microblogging platform
+- [Misskey](misskey.md) — ActivityPub federated microblogging platform
+- [PeerTube](peertube.md) — ActivityPub federated video platform

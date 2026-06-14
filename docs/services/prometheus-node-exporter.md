@@ -31,9 +31,9 @@ See the project's [documentation](https://github.com/prometheus/node_exporter/bl
 
 This service requires the following other services:
 
-- [Prometheus](prometheus.md) — database for storing metrics
-- (optional) [Grafana](grafana.md) — web UI that can query the Prometheus datasource (connection) and display the logs
-- (optional) [Traefik](traefik.md) — reverse-proxy server for exposing Prometheus Node Exporter
+- [Prometheus](prometheus.md) — Metrics collection and alerting monitoring solution
+- (optional) [Grafana](grafana.md) — Web-based tool for visualizing your Prometheus metrics (time-series)
+- (optional) [Traefik](traefik.md) — Reverse-proxy server for exposing Prometheus Node Exporter
 
 ## Configuration
 
@@ -96,4 +96,4 @@ prometheus_node_exporter_container_labels_metrics_middleware_basic_auth_users: "
 
 ## Related services
 
-- [Promtail](promtail.md) — an agent which ships the contents of local logs to a private [Grafana Loki](grafana-loki.md) instance
+- [Promtail](promtail.md) — Agent which ships the contents of local logs to a private Grafana Loki instance

@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The playbook can install and configure [PeerTube](https://joinpeertube.org/) for you.
 
-PeerTube is a tool for sharing online videos developed by [Framasoft](https://framasoft.org/), a french non-profit.
+PeerTube is an ActivityPub federated video platform developed by [Framasoft](https://framasoft.org/), a french non-profit.
 
 See the project's [documentation](https://docs.joinpeertube.org/) to learn what PeerTube does and why it might be useful to you.
 
@@ -275,6 +275,6 @@ You should then be able to log in with:
 
 ## Related services
 
-- [Funkwhale](funkwhale.md) — Community-driven project that lets you listen and share music and audio in the Fediverse
-- [GoToSocial](gotosocial.md) — Self-hosted ActivityPub social network server
-- [Misskey](misskey.md) — Free decentralized microblogging platform based on the ActivityPub protocol
+- [Funkwhale](funkwhale.md) — ActivityPub federated streaming server for listening and sharing music
+- [GoToSocial](gotosocial.md) — ActivityPub federated microblogging platform
+- [Misskey](misskey.md) — ActivityPub federated microblogging platform
