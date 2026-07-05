@@ -443,6 +443,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (filebrowser_quantum_identifier + '.service'), 'priority': 2000, 'restart_necessary': (filebrowser_quantum_restart_necessary | bool), 'groups': ['mash', 'filebrowser-quantum']} if filebrowser_quantum_enabled else omit) }}
   # /role-specific:filebrowser_quantum
 
+  # role-specific:filegator
+  - |-
+    {{ ({'name': (filegator_identifier + '.service'), 'priority': 2000, 'restart_necessary': (filegator_restart_necessary | bool), 'groups': ['mash', 'filegator']} if filegator_enabled else omit) }}
+  # /role-specific:filegator
+
   # role-specific:flaresolverr
   - |-
     {{ ({'name': (flaresolverr_identifier + '.service'), 'priority': 2000, 'restart_necessary': (flaresolverr_restart_necessary | bool), 'groups': ['mash', 'flaresolverr']} if flaresolverr_enabled else omit) }}
@@ -670,7 +675,7 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
 
   # role-specific:labelstudio
   - |-
-    {{ ({'name': (labelstudio_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'labelstudio']} if labelstudio_enabled else omit) }}
+    {{ ({'name': (labelstudio_identifier + '.service'), 'priority': 2000, 'restart_necessary': (labelstudio_restart_necessary | bool), 'groups': ['mash', 'labelstudio']} if labelstudio_enabled else omit) }}
   # /role-specific:labelstudio
 
   # role-specific:lago
@@ -725,6 +730,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (loki_identifier + '.service'), 'priority': 2000, 'restart_necessary': (loki_restart_necessary | bool), 'groups': ['mash', 'loki']} if loki_enabled else omit) }}
   # /role-specific:loki
+
+  # role-specific:lute
+  - |-
+    {{ ({'name': (lute_identifier + '.service'), 'priority': 2000, 'restart_necessary': (lute_restart_necessary | bool), 'groups': ['mash', 'lute']} if lute_enabled else omit) }}
+  # /role-specific:lute
 
   # role-specific:mailcatcher
   - |-
@@ -888,6 +898,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (nodebb_identifier + '.service'), 'priority': 2000, 'restart_necessary': (nodebb_restart_necessary | bool), 'groups': ['mash', 'nodebb']} if nodebb_enabled else omit) }}
   # /role-specific:nodebb
+
+  # role-specific:nodered
+  - |-
+    {{ ({'name': (nodered_identifier + '.service'), 'priority': 2000, 'restart_necessary': (nodered_restart_necessary | bool), 'groups': ['mash', 'nodered']} if nodered_enabled else omit) }}
+  # /role-specific:nodered
 
   # role-specific:notfellchen
   - |-
@@ -1271,6 +1286,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (tandoor_identifier + '.service'), 'priority': 2000, 'restart_necessary': (tandoor_restart_necessary | bool), 'groups': ['mash', 'tandoor']} if tandoor_enabled else omit) }}
   # /role-specific:tandoor
 
+  # role-specific:tasksmd
+  - |-
+    {{ ({'name': (tasksmd_identifier + '.service'), 'priority': 2000, 'restart_necessary': (tasksmd_restart_necessary | bool), 'groups': ['mash', 'tasksmd']} if tasksmd_enabled else omit) }}
+  # /role-specific:tasksmd
+
   # role-specific:teable
   - |-
     {{ ({'name': (teable_identifier + '.service'), 'priority': 2000, 'restart_necessary': (teable_restart_necessary | bool), 'groups': ['mash', 'teable']} if teable_enabled else omit) }}
@@ -1340,6 +1360,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (vaultwarden_identifier + '.service'), 'priority': 2000, 'restart_necessary': (vaultwarden_restart_necessary | bool), 'groups': ['mash', 'vaultwarden']} if vaultwarden_enabled else omit) }}
   # /role-specific:vaultwarden
+
+  # role-specific:vector
+  - |-
+    {{ ({'name': (vector_identifier + '.service'), 'priority': 2000, 'restart_necessary': (vector_restart_necessary | bool), 'groups': ['mash', 'vector']} if vector_enabled else omit) }}
+  # /role-specific:vector
 
   # role-specific:versatiles
   - |-
@@ -1827,7 +1852,7 @@ mash_playbook_postgres_managed_databases_auto_itemized:
         'name': labelstudio_database_name,
         'username': labelstudio_database_username,
         'password': labelstudio_database_password,
-      } if labelstudio_enabled and labelstudio_database_hostname == postgres_connection_hostname else omit)
+      } if labelstudio_enabled and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_postgres_backend_enabled else omit)
     }}
   # /role-specific:labelstudio
 
@@ -6081,6 +6106,45 @@ filebrowser_quantum_container_labels_traefik_tls_certResolver: "{{ traefik_certR
 
 
 
+# role-specific:filegator
+########################################################################
+#                                                                      #
+# filegator                                                            #
+#                                                                      #
+########################################################################
+
+filegator_enabled: false
+
+filegator_identifier: "{{ mash_playbook_service_identifier_prefix }}filegator"
+
+filegator_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}filegator"
+
+# Run as www-data:www-data
+filegator_uid: 33
+filegator_gid: 33
+
+filegator_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+filegator_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+filegator_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+filegator_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+filegator_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /filegator                                                           #
+#                                                                      #
+########################################################################
+# /role-specific:filegator
+
+
+
 # role-specific:flaresolverr
 ########################################################################
 #                                                                      #
@@ -6574,8 +6638,6 @@ funkwhale_frontend_container_additional_networks_auto: |
     ([postgres_container_network] if postgres_enabled and (funkwhale_database_hostname == postgres_connection_hostname and funkwhale_frontend_container_network != postgres_container_network and not funkwhale_database_socket_enabled) else [])
   }}
 
-funkwhale_api_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-funkwhale_api_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 funkwhale_frontend_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 funkwhale_frontend_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
@@ -6598,8 +6660,6 @@ funkwhale_database_socket_path_host: "{{ postgres_run_path }}"
 # /role-specific:postgres
 
 # role-specific:traefik
-funkwhale_api_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-funkwhale_api_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
 funkwhale_frontend_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
 funkwhale_frontend_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
 # /role-specific:traefik
@@ -9457,14 +9517,14 @@ labelstudio_gid: "{{ mash_playbook_gid }}"
 
 labelstudio_systemd_required_services_list_auto: |
   {{
-    ([postgres_identifier ~ '.service'] if postgres_enabled and labelstudio_database_hostname == postgres_identifier else [])
+    ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_postgres_backend_enabled else [])
   }}
 
 labelstudio_container_additional_networks_auto: |
   {{
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
-    ([postgres_container_network] if postgres_enabled and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_container_network != postgres_container_network else [])
+    ([postgres_container_network] if postgres_enabled | default(false) and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_container_network != postgres_container_network and labelstudio_postgres_backend_enabled else [])
   }}
 
 labelstudio_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
@@ -9472,9 +9532,8 @@ labelstudio_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_p
 labelstudio_container_labels_traefik_compression_middleware_enabled: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_enabled }}"
 labelstudio_container_labels_traefik_compression_middleware_name: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_name if mash_playbook_reverse_proxy_traefik_middleware_compession_enabled else '' }}"
 
-labelstudio_postgres_backend_enabled: "{{ postgres_enabled }}"
-
 # role-specific:postgres
+labelstudio_postgres_backend_enabled: "{{ postgres_enabled }}"
 labelstudio_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 labelstudio_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
 labelstudio_database_username: "labelstudio"
@@ -9993,6 +10052,44 @@ loki_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary
 #                                                                      #
 ########################################################################
 # /role-specific:loki
+
+
+
+# role-specific:lute
+########################################################################
+#                                                                      #
+# lute                                                                 #
+#                                                                      #
+########################################################################
+
+lute_enabled: false
+
+lute_identifier: "{{ mash_playbook_service_identifier_prefix }}lute"
+
+lute_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}lute"
+
+lute_uid: "{{ mash_playbook_uid }}"
+lute_gid: "{{ mash_playbook_gid }}"
+
+lute_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+lute_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+lute_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+lute_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+lute_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /lute                                                                #
+#                                                                      #
+########################################################################
+# /role-specific:lute
 
 
 
@@ -11235,7 +11332,7 @@ mobilizon_environment_variables_secret_key: "{{ (mash_playbook_generic_secret_ke
 # role-specific:exim_relay
 mobilizon_environment_variables_email_smtp_server: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
 mobilizon_environment_variables_email_smtp_port: 8025
-mobilizon_environment_variables_email_smtp_ssl: "{{ false if exim_relay_enabled }}"
+mobilizon_environment_variables_email_smtp_ssl: "{{ false if exim_relay_enabled else true }}"
 mobilizon_environment_variables_email_smtp_tls: "{{ 'never' if exim_relay_enabled }}"
 mobilizon_environment_variables_instance_email: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
 # /role-specific:exim_relay
@@ -11244,6 +11341,7 @@ mobilizon_environment_variables_instance_email: "{{ exim_relay_sender_address if
 mobilizon_database_hostname: "{{ postgis_identifier if postgis_enabled else '' }}"
 mobilizon_database_port: "{{ '5432' if postgis_enabled else '' }}"
 mobilizon_database_password: "{{ (mash_playbook_generic_secret_key + ':db.mobilizon') | hash('sha512') | to_uuid }}"
+mobilizon_database_sslmode: "{{ 'false' if postgis_enabled and mobilizon_database_hostname == postgis_connection_hostname else 'prefer' }}"
 # /role-specific:postgis
 
 # role-specific:traefik
@@ -12028,6 +12126,44 @@ nodebb_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prima
 #                                                                      #
 ########################################################################
 # /role-specific:nodebb
+
+
+
+# role-specific:nodered
+########################################################################
+#                                                                      #
+# node-red                                                             #
+#                                                                      #
+########################################################################
+
+nodered_enabled: false
+
+nodered_identifier: "{{ mash_playbook_service_identifier_prefix }}nodered"
+
+nodered_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}nodered"
+
+nodered_uid: "{{ mash_playbook_uid }}"
+nodered_gid: "{{ mash_playbook_gid }}"
+
+nodered_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+nodered_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+nodered_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+nodered_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+nodered_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /node-red                                                            #
+#                                                                      #
+########################################################################
+# /role-specific:nodered
 
 
 
@@ -12955,7 +13091,7 @@ papra_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyab
 papra_environment_variables_emails_driver: "{{ 'smtp' if exim_relay_enabled }}"
 papra_environment_variables_smtp_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
 papra_environment_variables_smtp_port: "{{ 8025 if exim_relay_enabled else '' }}"
-papra_environment_variables_smtp_secure: "{{ false if exim_relay_enabled }}"
+papra_environment_variables_smtp_secure: "{{ false if exim_relay_enabled else true }}"
 papra_environment_variables_emails_from_address: "Papra <{{ exim_relay_sender_address if exim_relay_enabled else '' }}>"
 # /role-specific:exim_relay
 
@@ -13020,7 +13156,7 @@ pdfding_environment_variables_email_backend: "{{ 'smtp' if exim_relay_enabled }}
 pdfding_environment_variables_smtp_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
 pdfding_environment_variables_smtp_port: "{{ 8025 if exim_relay_enabled else '' }}"
 pdfding_environment_variables_email_address: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
-pdfding_environment_variables_smtp_use_tls: "{{ false if exim_relay_enabled }}"
+pdfding_environment_variables_smtp_use_tls: "{{ false if exim_relay_enabled else true }}"
 # /role-specific:exim_relay
 
 # role-specific:postgres
@@ -15758,6 +15894,44 @@ tandoor_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prim
 
 
 
+# role-specific:tasksmd
+########################################################################
+#                                                                      #
+# tasks.md                                                             #
+#                                                                      #
+########################################################################
+
+tasksmd_enabled: false
+
+tasksmd_identifier: "{{ mash_playbook_service_identifier_prefix }}tasksmd"
+
+tasksmd_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}tasksmd"
+
+tasksmd_uid: "{{ mash_playbook_uid }}"
+tasksmd_gid: "{{ mash_playbook_gid }}"
+
+tasksmd_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+tasksmd_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+tasksmd_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+tasksmd_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+tasksmd_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /tasks.md                                                            #
+#                                                                      #
+########################################################################
+# /role-specific:tasksmd
+
+
+
 # role-specific:teable
 ########################################################################
 #                                                                      #
@@ -16356,6 +16530,49 @@ vaultwarden_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_
 
 
 
+# role-specific:vector
+########################################################################
+#                                                                      #
+# vector                                                               #
+#                                                                      #
+########################################################################
+
+vector_enabled: false
+
+vector_identifier: "{{ mash_playbook_service_identifier_prefix }}vector"
+
+vector_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}vector"
+
+vector_uid: "{{ mash_playbook_uid }}"
+vector_gid: "{{ mash_playbook_gid }}"
+
+vector_container_additional_networks_auto: |
+  {{
+    (
+      ([loki_container_network] if (loki_enabled | default(false) and loki_container_network | default('') != vector_container_network) else [])
+      +
+      ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    ) | unique
+  }}
+
+# Only enable Traefik labels if a hostname is set (indicating that this will be exposed publicly)
+vector_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled and vector_hostname | length > 0 }}"
+vector_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+vector_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+vector_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /vector                                                              #
+#                                                                      #
+########################################################################
+# /role-specific:vector
+
+
+
 # role-specific:versatiles
 ########################################################################
 #                                                                      #
@@ -16925,7 +17142,7 @@ writefreely_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_p
 writefreely_environment_variables_domain: "{{ exim_relay_hostname }}"
 writefreely_environment_variables_smtp_host: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
 writefreely_environment_variables_smtp_port: "{{ 8025 if exim_relay_enabled else '587' }}"
-writefreely_environment_variables_smtp_enable_start_tls: "{{ false if exim_relay_enabled else '' }}"
+writefreely_environment_variables_smtp_enable_start_tls: "{{ false if exim_relay_enabled else true }}"
 writefreely_environment_variables_smtp_username: mash # dummy random username — without a value specified the SMTP mailer is not enabled
 writefreely_environment_variables_smtp_password: mash # dummy random password — without a value specified the SMTP mailer is not enabled
 # /role-specific:exim_relay

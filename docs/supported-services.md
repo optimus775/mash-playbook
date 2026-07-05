@@ -94,6 +94,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Fider](https://github.com/getfider/fider) | Feedback portal for feature requests and suggestions | [Link](services/fider.md) |
 | [File Browser](https://filebrowser.org/) | Web-based file manager | [Link](services/filebrowser.md) |
 | [FileBrowser Quantum](https://filebrowserquantum.com/) | Web-based file manager | [Link](services/filebrowser-quantum.md) |
+| [FileGator](https://filegator.io/) | Web-based file manager | [Link](services/filegator.md) |
 | [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) | A proxy server to bypass Cloudflare protection | [Link](services/flaresolverr.md) |
 | [flatnotes](https://flatnotes.io/) | Database-less note taking web app that utilises a flat folder of markdown files for storage | [Link](services/flatnotes.md) |
 | [FMD Server](https://gitlab.com/fmd-foss/fmd-server) | Official server for FMD (FindMyDevice) | [Link](services/fmd-server.md) |
@@ -136,7 +137,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [KeyDB](https://docs.keydb.dev/) | An in-memory data store used as a database, cache, streaming engine, and message broker | [Link](services/keydb.md) |
 | [keyoxide-web](https://codeberg.org/keyoxide/keyoxide-web) | Web client for [Keyoxide](https://keyoxide.org/), a decentralized tool to create and verify decentralized online identities | [Link](services/keyoxide.md) |
 | [Kutt](https://kutt.to/) | Modern URL shortener with support for custom domains | [Link](services/kutt.md) |
-| [LabelStudio](https://labelstud.io/) | Data labeling tool that supports multiple projects, users, and data types in one platform | [Link](services/labelstudio.md) |
+| [Label Studio](https://labelstud.io/) | Data labeling tool that supports multiple projects, users, and data types in one platform | [Link](services/labelstudio.md) |
 | [Lago](https://www.getlago.com/) | Metering and usage-based billing | [Link](services/lago.md) |
 | [LanguageTool](https://languagetool.org/) | An online grammar, style and spell checker | [Link](services/languagetool.md) |
 | [LibreBooking](https://github.com/LibreBooking/librebooking) | Resource scheduling and booking application | [Link](services/librebooking.md) |
@@ -145,6 +146,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Linkwarden](https://github.com/linkwarden/linkwarden) | Collaborative bookmark manager | [Link](services/linkwarden.md) |
 | [listmonk](https://listmonk.app) | One-way mailing list and newsletter manager | [Link](services/listmonk.md) |
 | [LLDAP](https://github.com/lldap/lldap/) | Lightweight authentication server that provides an opinionated, simplified LDAP interface for authentication | [Link](services/lldap.md) |
+| [Lute](https://github.com/LuteOrg/lute-v3) | Learning foreign languages through reading | [Link](services/lute.md) |
 | [MailCatcher](http://mailcatcher.me/) | SMTP server which catches messages sent to it and displays in a web interface | [Link](services/mailcatcher.md) |
 | [MailCrab](https://github.com/tweedegolf/mailcrab) | SMTP test server for development | [Link](services/mailcrab.md) |
 | [Mailpit](https://mailpit.axllent.org/) | Email testing tool & API | [Link](services/mailpit.md) |
@@ -173,6 +175,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Nextcloud](https://nextcloud.com/) | Popular collaboration solution | [Link](services/nextcloud.md) |
 | [noCDNbs](https://git.private.coffee/PrivateCoffee/nocdnbs) | Privacy-friendly cdnjs proxy | [Link](services/nocdnbs.md) |
 | [NodeBB](https://github.com/NodeBB/NodeBB) | Node.js based forum software | [Link](services/nodebb.md) |
+| [Node-RED](https://nodered.org) | Flow-based programming tool | [Link](services/nodered.md) |
 | [Notfellchen](https://codeberg.org/moanos/notfellchen) | List animals available for adoption to increase their chance of finding a forever-home | [Link](services/notfellchen.md) |
 | [ntfy](https://ntfy.sh/) | HTTP-based pub-sub notification service to send you push notifications from any computer | [Link](services/ntfy.md) |
 | [OAuth2-Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) | A reverse proxy and static file server that provides authentication using OpenID Connect Providers | [Link](services/oauth2-proxy.md) |
@@ -245,6 +248,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [syncstorage-rs](https://github.com/mozilla-services/syncstorage-rs) | Mozilla Sync Storage server for Firefox Sync | [Link](services/syncstorage-rs.md) |
 | [Syncthing](https://syncthing.net/) | A continuous file synchronization program which synchronizes files between two or more computers in real time | [Link](services/syncthing.md) |
 | [Tandoor](https://docs.tandoor.dev/) | The recipe manager that allows you to manage your ever growing collection of digital recipes | [Link](services/tandoor.md) |
+| [Tasks.md](https://hub.docker.com/r/baldissaramatheus/tasks.md) | Markdown file-based task management board | [Link](services/tasksmd.md) |
 | [Teable](https://github.com/teableio/teable) | No-code database management platform with spreadsheet-like interface | [Link](services/teable.md) |
 | [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) | A server agent to help you collect metrics from your stacks, sensors, and systems | [Link](services/telegraf.md) |
 | [Termix](https://docs.termix.site/) | Server management platform with SSH terminal | [Link](services/termix.md) |
@@ -258,6 +262,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Uptime Kuma](https://uptime.kuma.pet/) | A fancy monitoring tool | [Link](services/uptime-kuma.md) |
 | [Valkey](https://valkey.io/) | A flexible distributed key-value datastore that is optimized for caching and other realtime workloads | [Link](services/valkey.md) |
 | [Vaultwarden](https://github.com/dani-garcia/vaultwarden) | A lightweight unofficial and compatible implementation of the [Bitwarden](https://bitwarden.com/) password manager | [Link](services/vaultwarden.md) |
+| [Vector](https://vector.dev/) | A high-performance observability data pipeline for collecting, transforming, and routing logs and metrics | [Link](services/vector.md) |
 | [VersaTiles](https://versatiles.org) | Vector tile generator & server from OpenStreetMap | [Link](services/versatiles.md) |
 | [Vikunja](https://vikunja.io/) | To-do app | [Link](services/vikunja.md) |
 | [Wazuh](https://wazuh.com/) | Security platform providing SIEM, threat detection, and compliance monitoring | [Link](services/wazuh.md) |
