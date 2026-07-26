@@ -1176,6 +1176,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (reitti_tilecache_identifier + '.service'), 'priority': 2000, 'restart_necessary': (reitti_restart_necessary | bool), 'groups': ['mash', 'reitti']} if reitti_enabled else omit) }}
   # /role-specific:reitti
 
+  # role-specific:restserver
+  - |-
+    {{ ({'name': (restserver_identifier + '.service'), 'priority': 2000, 'restart_necessary': (restserver_restart_necessary | bool), 'groups': ['mash', 'restserver']} if restserver_enabled else omit) }}
+  # /role-specific:restserver
+
   # role-specific:roundcube
   - |-
     {{ ({'name': (roundcube_identifier + '.service'), 'priority': 2000, 'restart_necessary': (roundcube_restart_necessary | bool), 'groups': ['mash', 'roundcube']} if roundcube_enabled else omit) }}
@@ -1852,7 +1857,7 @@ mash_playbook_postgres_managed_databases_auto_itemized:
         'name': labelstudio_database_name,
         'username': labelstudio_database_username,
         'password': labelstudio_database_password,
-      } if labelstudio_enabled and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_postgres_backend_enabled else omit)
+      } if labelstudio_enabled and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_database_type == 'postgres' else omit)
     }}
   # /role-specific:labelstudio
 
@@ -5498,15 +5503,15 @@ endlessh_container_additional_networks_auto: |
 endlessh_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 endlessh_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
-endlessh_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
-endlessh_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-endlessh_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ endlessh_identifier }}"
-endlessh_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
-endlessh_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
+endlessh_container_labels_traefik_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+endlessh_container_labels_traefik_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+endlessh_container_labels_traefik_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ endlessh_identifier }}"
+endlessh_container_labels_traefik_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
+endlessh_container_labels_traefik_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
 # role-specific:traefik
-endlessh_container_labels_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
-endlessh_container_labels_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
+endlessh_container_labels_traefik_metrics_entrypoints: "{{ traefik_entrypoint_primary }}"
+endlessh_container_labels_traefik_metrics_tls_certResolver: "{{ traefik_certResolver_primary }}"
 endlessh_container_labels_traefik_tcp_loadbalancer_serverstransport: "{{ traefik_config_tcp_servertransports_default_proxyprotocol_name }}@file"
 # /role-specific:traefik
 
@@ -9311,10 +9316,10 @@ keycloak_container_additional_networks_auto: |
 keycloak_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 keycloak_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
-keycloak_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-keycloak_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ keycloak_identifier }}"
-keycloak_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
-keycloak_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
+keycloak_container_labels_traefik_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+keycloak_container_labels_traefik_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ keycloak_identifier }}"
+keycloak_container_labels_traefik_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
+keycloak_container_labels_traefik_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
 keycloak_environment_variable_kc_metrics_enabled: "{{ prometheus_enabled | default(false) or mash_playbook_metrics_exposure_enabled }}"
 
@@ -9517,14 +9522,14 @@ labelstudio_gid: "{{ mash_playbook_gid }}"
 
 labelstudio_systemd_required_services_list_auto: |
   {{
-    ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_postgres_backend_enabled else [])
+    ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_database_type == 'postgres' else [])
   }}
 
 labelstudio_container_additional_networks_auto: |
   {{
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
-    ([postgres_container_network] if postgres_enabled | default(false) and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_container_network != postgres_container_network and labelstudio_postgres_backend_enabled else [])
+    ([postgres_container_network] if postgres_enabled | default(false) and labelstudio_database_hostname == postgres_connection_hostname and labelstudio_container_network != postgres_container_network and labelstudio_database_type == 'postgres' else [])
   }}
 
 labelstudio_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
@@ -9533,10 +9538,8 @@ labelstudio_container_labels_traefik_compression_middleware_enabled: "{{ mash_pl
 labelstudio_container_labels_traefik_compression_middleware_name: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_name if mash_playbook_reverse_proxy_traefik_middleware_compession_enabled else '' }}"
 
 # role-specific:postgres
-labelstudio_postgres_backend_enabled: "{{ postgres_enabled }}"
 labelstudio_database_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
 labelstudio_database_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
-labelstudio_database_username: "labelstudio"
 labelstudio_database_password: "{{ (mash_playbook_generic_secret_key + ':db.labelstudio') | hash('sha512') | to_uuid }}"
 # /role-specific:postgres
 
@@ -10632,7 +10635,7 @@ mash_playbook_mariadb_managed_databases_auto_itemized:
         'name': sftpgo_database_name,
         'username': sftpgo_database_mysql_username,
         'password': sftpgo_database_mysql_password,
-      } if sftpgo_enabled and sftpgo_database_mysql_hostname == mariadb_connection_hostname and sftpgo_environment_variables_data_provider_driver == 'mysql' else omit)
+      } if sftpgo_enabled and (sftpgo_database_mysql_hostname == mariadb_connection_hostname or sftpgo_database_mysql_socket_enabled) and sftpgo_environment_variables_data_provider_driver == 'mysql' else omit)
     }}
   # /role-specific:sftpgo
 
@@ -14171,11 +14174,11 @@ promtail_container_additional_networks_auto: |
 promtail_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 promtail_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
 
-promtail_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
-promtail_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-promtail_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ promtail_identifier }}"
-promtail_container_labels_metrics_traefik_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
-promtail_container_labels_metrics_traefik_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
+promtail_container_labels_traefik_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+promtail_container_labels_traefik_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+promtail_container_labels_traefik_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ promtail_identifier }}"
+promtail_container_labels_traefik_metrics_traefik_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
+promtail_container_labels_traefik_metrics_traefik_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
 # role-specific:loki
 promtail_config_clients_auto: |
@@ -14843,6 +14846,44 @@ reitti_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prima
 
 
 
+# role-specific:restserver
+########################################################################
+#                                                                      #
+# restserver                                                           #
+#                                                                      #
+########################################################################
+
+restserver_enabled: false
+
+restserver_identifier: "{{ mash_playbook_service_identifier_prefix }}restserver"
+
+restserver_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}restserver"
+
+restserver_uid: "{{ mash_playbook_uid }}"
+restserver_gid: "{{ mash_playbook_gid }}"
+
+restserver_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+restserver_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+restserver_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+restserver_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+restserver_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /restserver                                                          #
+#                                                                      #
+########################################################################
+# /role-specific:restserver
+
+
+
 # role-specific:roundcube
 ########################################################################
 #                                                                      #
@@ -15244,7 +15285,7 @@ sftpgo_gid: "{{ mash_playbook_gid }}"
 
 sftpgo_systemd_required_services_list_auto: |
   {{
-    ([mariadb_identifier ~ '.service'] if mariadb_enabled | default(false) and sftpgo_database_mysql_hostname == mariadb_connection_hostname and sftpgo_environment_variables_data_provider_driver == 'mysql' else [])
+    ([mariadb_identifier ~ '.service'] if mariadb_enabled | default(false) and (sftpgo_database_mysql_hostname == mariadb_connection_hostname or sftpgo_database_mysql_socket_enabled) and sftpgo_environment_variables_data_provider_driver == 'mysql' else [])
     +
     ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and (sftpgo_database_postgres_hostname == postgres_connection_hostname or sftpgo_database_postgres_socket_enabled) and sftpgo_environment_variables_data_provider_driver == 'postgres' else [])
     +
@@ -15260,7 +15301,7 @@ sftpgo_container_additional_networks_auto: |
   {{
     ([exim_relay_container_network] if exim_relay_enabled | default(false) and sftpgo_mailer_smtp_enabled | default(false) and sftpgo_environment_variables_smtp_host == exim_relay_identifier and sftpgo_container_network != exim_relay_container_network else [])
     +
-    ([mariadb_container_network] if mariadb_enabled | default(false) and sftpgo_database_mysql_hostname == mariadb_connection_hostname and sftpgo_container_network != mariadb_container_network and sftpgo_environment_variables_data_provider_driver == 'mysql' else [])
+    ([mariadb_container_network] if mariadb_enabled | default(false) and (sftpgo_database_mysql_hostname == mariadb_connection_hostname and sftpgo_container_network != mariadb_container_network and not sftpgo_database_mysql_socket_enabled) and sftpgo_environment_variables_data_provider_driver == 'mysql' else [])
     +
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
@@ -15292,7 +15333,8 @@ sftpgo_database_mysql_hostname: "{{ mariadb_connection_hostname if mariadb_enabl
 sftpgo_database_mysql_port: "{{ mariadb_connection_port if mariadb_enabled and sftpgo_environment_variables_data_provider_driver == 'mysql' else '3306' }}"
 sftpgo_database_mysql_username: "{{ sftpgo_identifier }}"
 sftpgo_database_mysql_password: "{{ (mash_playbook_generic_secret_key + ':db.sftpgo') | hash('sha512') | to_uuid }}"
-sftpgo_database_mysql_sslmode: "{{ '0' if mariadb_enabled and sftpgo_database_mysql_hostname == mariadb_connection_hostname else '3' }}"
+sftpgo_database_mysql_sslmode: "{{ '0' if mariadb_enabled and (sftpgo_database_mysql_hostname == mariadb_connection_hostname or sftpgo_database_mysql_socket_enabled) else '3' }}"
+sftpgo_database_mysql_socket_path_host: "{{ mariadb_run_path }}"
 # /role-specific:mariadb
 
 # role-specific:postgres
@@ -15300,7 +15342,7 @@ sftpgo_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_
 sftpgo_database_postgres_port: "{{ postgres_connection_port if postgres_enabled and sftpgo_environment_variables_data_provider_driver == 'postgres' else '5432' }}"
 sftpgo_database_postgres_username: "{{ sftpgo_identifier }}"
 sftpgo_database_postgres_password: "{{ (mash_playbook_generic_secret_key + ':db.sftpgo') | hash('sha512') | to_uuid }}"
-sftpgo_database_postgres_sslmode: "{{ '0' if postgres_enabled and (sftpgo_database_postgres_hostname == postgres_connection_hostname or sftpgo_database_postgres_socket_enabled) else '4' }}"
+sftpgo_database_postgres_sslmode: "{{ 'disable' if postgres_enabled and (sftpgo_database_postgres_hostname == postgres_connection_hostname or sftpgo_database_postgres_socket_enabled) else 'prefer' }}"
 sftpgo_database_postgres_socket_path_host: "{{ postgres_run_path }}"
 # /role-specific:postgres
 

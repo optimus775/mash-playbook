@@ -52,7 +52,6 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [BookStack](https://www.bookstackapp.com) | Information organizer and storage | [Link](services/bookstack.md) |
 | [BorgBackup](https://www.borgbackup.org/) (via [borgmatic](https://torsion.org/borgmatic/)) | A deduplicating backup program with optional compression and encryption | [Link](services/backup-borg.md) |
 | [Borg Web UI](https://karanhudia.github.io/borg-ui/) | Unofficial web interface for BorgBackup | [Link](services/borg-ui.md) |
-| [Browserless](https://docs.browserless.io) | Deploy headless browsers in Docker | [Link](services/browserless.md) |
 | [Calibre-Web](https://github.com/janeczku/calibre-web) | Web app for browsing, reading and downloading eBooks stored in a [Calibre](https://calibre-ebook.com/) database | [Link](services/calibre-web.md) |
 | [Calibre-Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated) | Web application based on [Calibre-Web](https://github.com/janeczku/calibre-web) with additional features and automation | [Link](services/calibre-web-automated.md) |
 | [Cap Standalone](https://capjs.js.org/guide/standalone/) | Backend of Cap, a POW Captcha | [Link](services/cap.md) |
@@ -226,6 +225,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Redlib](https://github.com/redlib-org/redlib) | Frontend for Reddit | [Link](services/redlib.md) |
 | [Redmine](https://redmine.org/) | A flexible project management web application | [Link](services/redmine.md) |
 | [Reitti](https://www.dedicatedcode.com/projects/reitti/) | Personal location tracking and analysis application | [Link](services/reitti.md) |
+| [Rest Server](https://github.com/restic/rest-server) | HTTP server that implements restic's REST backend API to backup data remotely | [Link](services/restserver.md) |
 | [Roundcube](https://roundcube.net/) | A browser-based multilingual IMAP client with an application-like user interface | [Link](services/roundcube.md) |
 | [RSS-Bridge](https://rss-bridge.github.io/rss-bridge/) | RSS feed generator for websites that do not have one | [Link](services/rssbridge.md) |
 | [RSSHub](https://docs.rsshub.app/) | RSS feed generator for websites | [Link](services/rsshub.md) |
@@ -284,6 +284,7 @@ Below is a list of non-free (i.e. licensed under a non-free license) software wh
 
 | Name | Description | Documentation |
 | ---- | ----------- | ------------- |
+| [Browserless](https://docs.browserless.io) | Deploy headless browsers in Docker | [Link](services/browserless.md) |
 | [MongoDB](https://www.mongodb.com/) | A source-available cross-platform document-oriented (NoSQL) database program | [Link](services/mongodb.md) |
 | [n8n](https://n8n.io/) | Workflow automation for technical people | [Link](services/n8n.md) |
 | [Plex](https://www.plex.tv/) | A personal media server | [Link](services/plex.md) |
