@@ -1,3 +1,42 @@
+# 2026-08-06
+
+## (Backward Compatibility Break) Jitsi no longer uses Colibri WebSockets
+
+This only affects you if you have [Jitsi](docs/services/jitsi.md) enabled.
+
+Jitsi has been updated to `stable-11146-1`, which [removes Colibri WebSocket support](https://github.com/jitsi/docker-jitsi-meet/pull/2285) in favour of SCTP data channels. The Jitsi Video Bridge no longer serves HTTP at all, so a few `jitsi_jvb_*` variables are gone. The playbook will tell you which ones, if your configuration still sets them.
+
+If you run [additional JVBs on other hosts](https://github.com/mother-of-all-self-hosting/ansible-role-jitsi/blob/main/docs/configuring-jitsi.md#set-up-additional-jvbs-for-more-video-conferences-optional), the Traefik configuration which routed `/colibri-ws/<server-id>/` to them is now dead and can be removed. Nothing will warn you about that one, as it lives in a free-form `traefik_provider_configuration_extension_yaml` block.
+
+# 2026-07-28
+
+## (Backward Compatibility Break) ntfy users are now declared with hashed passwords
+
+This only affects you if you have enabled authentication for [ntfy](docs/services/ntfy.md) via `ntfy_credentials`.
+
+The ntfy role used to create users by invoking `ntfy user` commands against the running container. Since v2.14.0, ntfy can provision users and access-control entries from its own configuration file, so the role now does that instead. Besides being a lot simpler, this fixes passwords containing spaces never arriving intact.
+
+Replace `ntfy_credentials` with `ntfy_auth_users_custom`, which takes bcrypt password hashes rather than plaintext passwords:
+
+```yaml
+ntfy_auth_users_custom:
+  - username: alice
+    password_hash: $2a$10$YLiO8U21sX1uhZamTLJXHuxgVC0Z/GKISibrKCLohPgtG7yIxSk4C
+    role: admin
+```
+
+Generate a hash for each of your passwords by running the following command on any machine which has Docker installed. It asks for the password and prints its hash:
+
+```sh
+docker run --rm -it docker.io/binwiederhier/ntfy:latest user hash
+```
+
+The playbook will let you know if your configuration still uses `ntfy_credentials`.
+
+Your existing ntfy users are left alone and keep working until you declare them again this way. Note that ntfy manages declared users and access-control entries declaratively, so removing one from your configuration later deletes it from ntfy's user database.
+
+Users with the `admin` role get access to all topics. Others start with no access at all, and can be granted access to specific topics via `ntfy_auth_access_custom`. It is also now possible to control what unauthenticated visitors may do (`ntfy_auth_default_access`) and whether users may log in at all (`ntfy_enable_login`, which follows your authentication setup by default). See the role's [documentation on access control](https://github.com/mother-of-all-self-hosting/ansible-role-ntfy/blob/main/docs/configuring-ntfy.md#enable-access-control-with-authentication-optional) for details.
+
 # 2026-03-19
 
 ## Firezone has been removed from the playbook
