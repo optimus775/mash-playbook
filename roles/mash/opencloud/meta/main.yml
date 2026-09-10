@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2026 MASH project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+---
+galaxy_info:
+  author: MASH project contributors
+  role_name: opencloud
+  namespace: mash
+  description: OpenCloud with an existing WOPI office suite and Apache Tika
+  license: AGPL-3.0-or-later
+  min_ansible_version: '2.16'
+  platforms:
+    - name: Debian
+      versions: [all]
+    - name: Ubuntu
+      versions: [all]
+dependencies: []

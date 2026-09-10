@@ -718,6 +718,9 @@
     - role: galaxy/onlyoffice_docs
     # /role-specific:onlyoffice_docs
 
+    # Local roles remain available in optimized playbooks.
+    - role: mash/opencloud
+
     # role-specific:openarchiver
     - role: galaxy/openarchiver
     # /role-specific:openarchiver

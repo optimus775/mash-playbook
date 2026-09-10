@@ -1,0 +1,67 @@
+{#
+SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+SPDX-FileCopyrightText: 2024 noah
+SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+#}
+
+[Unit]
+Description=OpenCloud ({{ opencloud_identifier }})
+{% for service in opencloud_systemd_required_services_list %}
+Requires={{ service }}
+After={{ service }}
+{% endfor %}
+{% for service in opencloud_systemd_wanted_services_list %}
+Wants={{ service }}
+{% endfor %}
+RequiresMountsFor={{ opencloud_config_path }} {{ opencloud_data_path }}
+{% if opencloud_required_mount_path %}
+ConditionPathIsMountPoint={{ opencloud_required_mount_path }}
+{% endif %}
+DefaultDependencies=no
+
+[Service]
+Type=simple
+Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
+ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c '{{ opencloud_container_cleanup_command | trim | replace("\n", " ") }}'
+
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
+      --rm \
+      --name={{ opencloud_identifier }} \
+      --log-driver=none \
+      --user={{ opencloud_uid }}:{{ opencloud_gid }} \
+      --cap-drop=ALL \
+      --read-only \
+      --network={{ opencloud_container_network }} \
+      {% if opencloud_container_http_host_bind_port %}
+      -p {{ opencloud_container_http_host_bind_port }}:{{ opencloud_container_http_port }} \
+      {% endif %}
+      --env-file={{ opencloud_base_path }}/env \
+      --label-file={{ opencloud_base_path }}/labels \
+      --mount type=bind,src={{ opencloud_config_path }},dst=/etc/opencloud \
+      --mount type=bind,src={{ opencloud_data_path }},dst=/var/lib/opencloud \
+      --tmpfs /tmp:rw,noexec,nosuid,size=256m \
+      {% for volume in opencloud_container_additional_volumes %}
+      --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options | default('') else '' }} \
+      {% endfor %}
+      {% for arg in opencloud_container_extra_arguments %}
+      {{ arg }} \
+      {% endfor %}
+      {{ opencloud_container_image }} server
+
+{% for network in opencloud_container_additional_networks %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ opencloud_identifier }}
+{% endfor %}
+
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ opencloud_identifier }}
+
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ opencloud_container_stop_grace_time_seconds }} {{ opencloud_identifier }} 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ opencloud_identifier }} 2>/dev/null || true'
+
+Restart=always
+RestartSec=30
+SyslogIdentifier={{ opencloud_identifier }}
+
+[Install]
+WantedBy=multi-user.target

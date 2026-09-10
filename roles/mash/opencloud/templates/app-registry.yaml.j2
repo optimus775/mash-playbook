@@ -1,0 +1,43 @@
+{# SPDX-FileCopyrightText: 2026 MASH project contributors
+SPDX-License-Identifier: AGPL-3.0-or-later #}
+---
+app_registry:
+  mimetypes:
+{% for document in [
+  {'mime': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'ext': 'docx', 'name': 'Word'},
+  {'mime': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'ext': 'xlsx', 'name': 'Excel'},
+  {'mime': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'ext': 'pptx', 'name': 'PowerPoint'}
+] %}
+    - mime_type: {{ document.mime }}
+      extension: {{ document.ext }}
+      name: {{ document.name }}
+      description: {{ document.name }} document
+      icon: ''
+      default_app: {{ (opencloud_collaboration_app_name if opencloud_collaboration_enabled else '') | to_json }}
+      allow_creation: {{ opencloud_collaboration_enabled | to_json }}
+{% endfor %}
+    - mime_type: application/pdf
+      extension: pdf
+      name: PDF
+      description: PDF document
+      icon: ''
+      default_app: ''
+      allow_creation: false
+{% for document in [
+  {'mime': 'application/vnd.oasis.opendocument.text', 'ext': 'odt', 'name': 'Document', 'create': true},
+  {'mime': 'application/vnd.oasis.opendocument.spreadsheet', 'ext': 'ods', 'name': 'Spreadsheet', 'create': true},
+  {'mime': 'application/vnd.oasis.opendocument.presentation', 'ext': 'odp', 'name': 'Presentation', 'create': true},
+  {'mime': 'application/vnd.openxmlformats-officedocument.wordprocessingml.form', 'ext': 'docxf', 'name': 'Form Document', 'create': false},
+  {'mime': 'application/vnd.jupyter', 'ext': 'ipynb', 'name': 'Jupyter Notebook', 'create': false},
+  {'mime': 'text/markdown', 'ext': 'md', 'name': 'Markdown file', 'create': true},
+  {'mime': 'application/compressed-markdown', 'ext': 'zmd', 'name': 'Compressed markdown file', 'create': false},
+  {'mime': 'application/vnd.geogebra.slides', 'ext': 'ggs', 'name': 'GeoGebra Slides', 'create': false}
+] %}
+    - mime_type: {{ document.mime }}
+      extension: {{ document.ext }}
+      name: {{ document.name }}
+      description: {{ document.name }}
+      icon: ''
+      default_app: ''
+      allow_creation: {{ document.create | to_json }}
+{% endfor %}

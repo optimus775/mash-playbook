@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 noah
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Ensure OpenCloud paths exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+    owner: "{{ opencloud_uid }}"
+    group: "{{ opencloud_gid }}"
+  with_items:
+    - "{{ opencloud_base_path }}"
+    - "{{ opencloud_config_path }}"
+    - "{{ opencloud_data_path }}"
+
+- name: Ensure OpenCloud support files installed
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/{{ item.name }}.j2"
+    dest: "{{ item.dest }}"
+    mode: "0640"
+    owner: "{{ opencloud_uid }}"
+    group: "{{ opencloud_gid }}"
+  with_items:
+    - {name: env, dest: "{{ opencloud_base_path }}/env"}
+    - {name: labels, dest: "{{ opencloud_base_path }}/labels"}
+    - {name: csp.yaml, dest: "{{ opencloud_config_path }}/csp.yaml"}
+    - {name: app-registry.yaml, dest: "{{ opencloud_config_path }}/app-registry.yaml"}
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: "{{ item.name == 'env' }}"
+  register: opencloud_support_files_result
+
+- name: Ensure OpenCloud container image is pulled via community.docker.docker_image_pull
+  when: devture_systemd_docker_base_container_image_pull_method == 'ansible-module'
+  community.docker.docker_image_pull:
+    name: "{{ opencloud_container_image }}"
+    pull: always
+  register: opencloud_container_image_pull_result_ansible_module
+  retries: "{{ devture_playbook_help_container_retries_count }}"
+  delay: "{{ devture_playbook_help_container_retries_delay }}"
+  until: opencloud_container_image_pull_result_ansible_module is not failed
+
+- name: Ensure OpenCloud container image is pulled via ansible.builtin.command
+  when: devture_systemd_docker_base_container_image_pull_method == 'command'
+  ansible.builtin.command:
+    cmd: "{{ devture_systemd_docker_base_host_command_docker }} pull {{ opencloud_container_image }}"
+  register: opencloud_container_image_pull_result_command
+  retries: "{{ devture_playbook_help_container_retries_count }}"
+  delay: "{{ devture_playbook_help_container_retries_delay }}"
+  until: opencloud_container_image_pull_result_command is not failed
+  changed_when: "'Downloaded newer image' in opencloud_container_image_pull_result_command.stdout"
+
+- name: Ensure OpenCloud container network is created via community.docker.docker_network
+  when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
+  community.docker.docker_network:
+    enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
+    name: "{{ opencloud_container_network }}"
+    driver: bridge
+    driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
+  register: opencloud_network_creation_result
+
+- name: Ensure OpenCloud container network is created via ansible.builtin.command
+  when: devture_systemd_docker_base_container_network_creation_method == 'command'
+  ansible.builtin.command:
+    cmd: >-
+      {{ devture_systemd_docker_base_host_command_docker }} network create
+      {% if devture_systemd_docker_base_ipv6_enabled %}--ipv6{% endif %}
+      {{ devture_systemd_docker_base_container_networks_driver_options_string }}
+      {{ opencloud_container_network }}
+  register: opencloud_network_creation_result
+  changed_when: opencloud_network_creation_result.rc == 0
+  failed_when: opencloud_network_creation_result.rc != 0 and 'already exists' not in opencloud_network_creation_result.stderr
+
+- name: Initialize OpenCloud persistent instance configuration once
+  ansible.builtin.command:
+    argv: >-
+      {{ devture_systemd_docker_base_host_command_docker.split() + [
+        'run', '--rm', '--user=' ~ opencloud_uid ~ ':' ~ opencloud_gid,
+        '--network=none', '--env-file=' ~ opencloud_base_path ~ '/env',
+        '--mount', 'type=bind,src=' ~ opencloud_config_path ~ ',dst=/etc/opencloud',
+        '--mount', 'type=bind,src=' ~ opencloud_data_path ~ ',dst=/var/lib/opencloud',
+        opencloud_container_image, 'init', '--insecure=false', '--config-path=/etc/opencloud', '--quiet'
+      ] }}
+    creates: "{{ opencloud_config_path }}/opencloud.yaml"
+  no_log: true
+  register: opencloud_init_result
+
+- name: Ensure OpenCloud systemd service is present
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/systemd/opencloud.service.j2"
+    dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ opencloud_identifier }}.service"
+    mode: "0644"
+  register: opencloud_systemd_service_result
+
+- name: Determine whether OpenCloud needs a restart
+  ansible.builtin.set_fact:
+    opencloud_restart_necessary: >-
+      {{
+        opencloud_support_files_result.changed | default(false)
+        or opencloud_init_result.changed | default(false)
+        or opencloud_systemd_service_result.changed | default(false)
+        or opencloud_container_image_pull_result_ansible_module.changed | default(false)
+        or opencloud_container_image_pull_result_command.changed | default(false)
+      }}

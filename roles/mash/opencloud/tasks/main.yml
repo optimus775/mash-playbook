@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 noah
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Perform OpenCloud installation tasks
+  when: opencloud_enabled | bool
+  tags:
+    - setup-all
+    - setup-opencloud
+    - install-all
+    - install-opencloud
+  block:
+    - name: Validate OpenCloud configuration
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install OpenCloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+
+- name: Perform OpenCloud uninstallation tasks
+  when: not opencloud_enabled | bool
+  tags:
+    - setup-all
+    - setup-opencloud
+  block:
+    - name: Uninstall OpenCloud
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
+
+- name: Check installed OpenCloud
+  when: opencloud_enabled | bool
+  tags:
+    - never
+    - check-opencloud
+  block:
+    - name: Run OpenCloud readiness checks
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/check.yml"

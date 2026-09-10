@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2026 MASH project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+---
+# Дополните общими настройками из examples/vars.yml.
+mash_playbook_reverse_proxy_type: playbook-managed-traefik
+opencloud_enabled: true
+opencloud_hostname: cloud.example.com
+opencloud_base_path: /srv/storage/opencloud
+opencloud_required_mount_path: /srv/storage
+# Храните настоящий пароль в зашифрованном инвентори.
+opencloud_admin_password: ''
+
+# Существующие сервисы MASH на том же сервере.
+eurooffice_enabled: true
+eurooffice_hostname: office.example.com
+eurooffice_environment_variables_jwt_secret: ''
+eurooffice_environment_variables_additional_variables: |
+  WOPI_ENABLED=true
+
+tika_enabled: true

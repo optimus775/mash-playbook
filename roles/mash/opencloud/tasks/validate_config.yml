@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2026 MASH project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+---
+- name: Validate required OpenCloud settings
+  ansible.builtin.assert:
+    that:
+      - opencloud_uid | string | length > 0
+      - opencloud_gid | string | length > 0
+      - opencloud_hostname | length > 0
+      - opencloud_scheme == 'https'
+      - opencloud_path_prefix == '/'
+      - opencloud_container_network | length > 0
+      - opencloud_base_path.startswith('/')
+      - opencloud_base_path != '/'
+      - opencloud_config_path != opencloud_data_path
+      - not opencloud_collaboration_enabled or opencloud_collaboration_app_url.startswith('https://')
+      - not opencloud_collaboration_enabled or opencloud_collaboration_app_name is match('^[A-Za-z][A-Za-z0-9]*$')
+      - not opencloud_search_enabled or opencloud_search_tika_url is match('^https?://')
+      - not opencloud_smtp_enabled or (opencloud_smtp_host | length > 0 and opencloud_smtp_sender | length > 0)
+    fail_msg: OpenCloud requires UID/GID, an HTTPS hostname, storage paths and enabled integration endpoints.
+
+- name: Validate OpenCloud administrator password
+  ansible.builtin.assert:
+    that:
+      - opencloud_admin_password | length >= 16
+      - "'\n' not in opencloud_admin_password"
+      - "'\r' not in opencloud_admin_password"
+    fail_msg: Set a strong single-line opencloud_admin_password in encrypted inventory.
+  no_log: true
+
+- name: Verify the required OpenCloud storage filesystem is mounted
+  ansible.builtin.command:
+    argv: [findmnt, --mountpoint, "{{ opencloud_required_mount_path }}", --noheadings, --output, TARGET]
+  when: opencloud_required_mount_path | length > 0
+  changed_when: false
+  check_mode: false

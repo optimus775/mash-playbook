@@ -938,6 +938,10 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (onlyoffice_docs_identifier + '.service'), 'priority': 2000, 'restart_necessary': (onlyoffice_docs_restart_necessary | bool), 'groups': ['mash', 'onlyoffice-docs']} if onlyoffice_docs_enabled else omit) }}
   # /role-specific:onlyoffice_docs
 
+  # Local OpenCloud role (always available, disabled by default).
+  - |-
+    {{ ({'name': (opencloud_identifier + '.service'), 'priority': 2200, 'restart_necessary': (opencloud_restart_necessary | bool), 'groups': ['mash', 'opencloud']} if opencloud_enabled else omit) }}
+
   # role-specific:openarchiver
   - |-
     {{ ({'name': (openarchiver_identifier + '.service'), 'priority': 2000, 'restart_necessary': (openarchiver_restart_necessary | bool), 'groups': ['mash', 'openarchiver']} if openarchiver_enabled else omit) }}
@@ -12522,6 +12526,52 @@ onlyoffice_docs_container_labels_traefik_tls_certResolver: "{{ traefik_certResol
 # /role-specific:onlyoffice_docs
 
 
+
+# Local role: OpenCloud. Do not wrap in role-specific optimizer markers.
+########################################################################
+# OpenCloud
+########################################################################
+
+opencloud_enabled: false
+opencloud_identifier: "{{ mash_playbook_service_identifier_prefix }}opencloud"
+opencloud_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}opencloud"
+opencloud_uid: "{{ mash_playbook_uid }}"
+opencloud_gid: "{{ mash_playbook_gid }}"
+opencloud_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+opencloud_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+# role-specific:traefik
+opencloud_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+opencloud_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+opencloud_collaboration_enabled: "{{ eurooffice_enabled | default(false) }}"
+opencloud_collaboration_app_url: "{{ (eurooffice_scheme ~ '://' ~ eurooffice_hostname) if eurooffice_enabled | default(false) else '' }}"
+opencloud_search_enabled: "{{ tika_enabled | default(false) }}"
+opencloud_search_tika_url: "{{ ('http://' ~ tika_identifier ~ ':' ~ tika_container_http_port | string) if tika_enabled | default(false) else '' }}"
+opencloud_smtp_enabled: "{{ exim_relay_enabled | default(false) }}"
+opencloud_smtp_host: "{{ exim_relay_identifier if exim_relay_enabled | default(false) else '' }}"
+opencloud_smtp_sender: "{{ exim_relay_sender_address if exim_relay_enabled | default(false) else '' }}"
+
+opencloud_container_additional_networks_auto: |
+  {{
+    (
+      ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+      + ([tika_container_network] if opencloud_search_enabled and tika_enabled | default(false) else [])
+      + ([exim_relay_container_network] if opencloud_smtp_enabled and exim_relay_enabled | default(false) else [])
+    ) | unique | reject('equalto', opencloud_container_network) | list
+  }}
+opencloud_systemd_required_services_list_auto: |
+  {{
+    ([traefik_identifier ~ '.service'] if traefik_enabled | default(false) else [])
+    + ([eurooffice_identifier ~ '.service'] if opencloud_collaboration_enabled and eurooffice_enabled | default(false) else [])
+    + ([tika_identifier ~ '.service'] if opencloud_search_enabled and tika_enabled | default(false) else [])
+  }}
+opencloud_systemd_wanted_services_list_auto: |
+  {{ ([exim_relay_identifier ~ '.service'] if opencloud_smtp_enabled and exim_relay_enabled | default(false) else []) }}
+
+########################################################################
+# /OpenCloud
+########################################################################
 
 # role-specific:openarchiver
 ########################################################################

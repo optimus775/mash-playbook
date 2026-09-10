@@ -183,6 +183,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Onion Service with C Tor](https://community.torproject.org/onion-services/) | Run Onion Service with [C Tor](https://gitlab.torproject.org/tpo/core/tor) | [Link](services/onion-service-tor.md) |
 | [ONLYOFFICE Docs](https://helpcenter.onlyoffice.com/docs) | Online office suite comprising viewers and editors | [Link](services/onlyoffice-docs.md) |
 | [Open Archiver](https://github.com/LogicLabs-OU/OpenArchiver) | Archive, store, index, and search emails from various platforms, including generic IMAP-enabled email inboxes | [Link](services/openarchiver.md) |
+| [OpenCloud](https://github.com/opencloud-eu/opencloud) | Файловое хранилище с EuroOffice и полнотекстовым поиском через Tika | [Link](services/opencloud.md) |
 | [Opengist](https://opengist.io/) | Pastebin powered by Git | [Link](services/opengist.md) |
 | [OpenRegex](https://github.com/SunneV/OpenRegex) | Web-based regular expression (regex) tester and debugger | [Link](services/openregex.md) |
 | [OrigamiVault](https://github.com/origamivault/origamivault) | Encrypted paper storage | [Link](services/origamivault.md) |
