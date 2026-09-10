@@ -130,15 +130,10 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (answer_identifier + '.service'), 'priority': 2000, 'restart_necessary': (answer_restart_necessary | bool), 'groups': ['mash', 'answer']} if answer_enabled else omit) }}
   # /role-specific:answer
 
-  # role-specific:apisix_dashboard
+  # role-specific:apisix
   - |-
-    {{ ({'name': (apisix_dashboard_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'apisix-dashboard']} if apisix_dashboard_enabled else omit) }}
-  # /role-specific:apisix_dashboard
-
-  # role-specific:apisix_gateway
-  - |-
-    {{ ({'name': (apisix_gateway_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'apisix-gateway']} if apisix_gateway_enabled else omit) }}
-  # /role-specific:apisix_gateway
+    {{ ({'name': (apisix_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'apisix']} if apisix_enabled else omit) }}
+  # /role-specific:apisix
 
   # role-specific:apprise
   - |-
@@ -654,11 +649,6 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (keycloak_identifier + '.service'), 'priority': 1000, 'restart_necessary': (keycloak_restart_necessary | bool), 'groups': ['mash', 'keycloak']} if keycloak_enabled else omit) }}
   # /role-specific:keycloak
 
-  # role-specific:keydb
-  - |-
-    {{ ({'name': (keydb_identifier + '.service'), 'priority': 750, 'restart_necessary': (keydb_restart_necessary | bool), 'groups': ['mash', 'keydb']} if keydb_enabled else omit) }}
-  # /role-specific:keydb
-
   # role-specific:keyoxide
   - |-
     {{ ({'name': (keyoxide_identifier + '.service'), 'priority': 2000, 'restart_necessary': (keyoxide_restart_necessary | bool), 'groups': ['mash', 'keyoxide']} if keyoxide_enabled else omit) }}
@@ -818,6 +808,11 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
   - |-
     {{ ({'name': (mobilizon_identifier + '.service'), 'priority': 2000, 'restart_necessary': (mobilizon_restart_necessary | bool), 'groups': ['mash', 'mobilizon']} if mobilizon_enabled else omit) }}
   # /role-specific:mobilizon
+
+  # role-specific:mollysocket
+  - |-
+    {{ ({'name': (mollysocket_identifier + '.service'), 'priority': 2000, 'restart_necessary': (mollysocket_restart_necessary | bool), 'groups': ['mash', 'mollysocket']} if mollysocket_enabled else omit) }}
+  # /role-specific:mollysocket
 
   # role-specific:monerooo
   - |-
@@ -3135,125 +3130,72 @@ answer_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_prima
 
 
 
-# role-specific:apisix_dashboard
+# role-specific:apisix
 ########################################################################
 #                                                                      #
-# apisix_dashboard                                                     #
+# apisix                                                               #
 #                                                                      #
 ########################################################################
 
-apisix_dashboard_enabled: false
+apisix_enabled: false
 
-apisix_dashboard_identifier: "{{ mash_playbook_service_identifier_prefix }}apisix-dashboard"
+# Deliberately still `apisix-gateway`, even though the role and its variables
+# are now called `apisix`. These name the systemd service, the container, the
+# container network and the data path of every existing installation. Changing
+# them would not rename any of those - it would create a second set beside them
+# and leave the old ones running and unmanaged.
+apisix_identifier: "{{ mash_playbook_service_identifier_prefix }}apisix-gateway"
 
-apisix_dashboard_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}apisix-dashboard"
+apisix_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}apisix-gateway"
 
-apisix_dashboard_uid: "{{ mash_playbook_uid }}"
-apisix_dashboard_gid: "{{ mash_playbook_gid }}"
+apisix_uid: "{{ mash_playbook_uid }}"
+apisix_gid: "{{ mash_playbook_gid }}"
 
-apisix_dashboard_container_additional_networks_auto: |
+apisix_container_additional_networks_auto: |
   {{
-    ([mash_playbook_reverse_proxyable_services_additional_network] if (mash_playbook_reverse_proxyable_services_additional_network and apisix_dashboard_container_labels_traefik_enabled) else [])
+    ([mash_playbook_reverse_proxyable_services_additional_network] if (mash_playbook_reverse_proxyable_services_additional_network and apisix_container_labels_traefik_enabled) else [])
   }}
 
-apisix_dashboard_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-apisix_dashboard_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+apisix_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+apisix_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+apisix_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+apisix_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+apisix_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ apisix_identifier }}"
+apisix_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
+apisix_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
 
 # role-specific:etcd
-apisix_dashboard_config_conf_etcd_endpoints: |
-  {{
-    ([(etcd_identifier + ':2379')] if etcd_enabled else [])
-  }}
-
-apisix_dashboard_config_conf_etcd_username: "{{ ('root' if (etcd_enabled and not etcd_environment_variable_allow_none_authentication) else '') }}"
-apisix_dashboard_config_conf_etcd_password: "{{ (etcd_environment_variable_etcd_root_password if (etcd_enabled and not etcd_environment_variable_allow_none_authentication) else '') }}"
-
-apisix_dashboard_container_additional_networks_custom: |
-  {{
-    ([etcd_container_network] if etcd_enabled else [])
-  }}
-
-apisix_dashboard_systemd_required_services_list_auto: |
-  {{
-    ([(etcd_identifier + '.service')] if etcd_enabled else [])
-  }}
-# /role-specific:etcd
-
-# role-specific:traefik
-apisix_dashboard_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-apisix_dashboard_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
-# /role-specific:traefik
-
-########################################################################
-#                                                                      #
-# /apisix_dashboard                                                    #
-#                                                                      #
-########################################################################
-# /role-specific:apisix_dashboard
-
-
-
-# role-specific:apisix_gateway
-########################################################################
-#                                                                      #
-# apisix_gateway                                                       #
-#                                                                      #
-########################################################################
-
-apisix_gateway_enabled: false
-
-apisix_gateway_identifier: "{{ mash_playbook_service_identifier_prefix }}apisix-gateway"
-
-apisix_gateway_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}apisix-gateway"
-
-apisix_gateway_uid: "{{ mash_playbook_uid }}"
-apisix_gateway_gid: "{{ mash_playbook_gid }}"
-
-apisix_gateway_container_additional_networks_auto: |
-  {{
-    ([mash_playbook_reverse_proxyable_services_additional_network] if (mash_playbook_reverse_proxyable_services_additional_network and apisix_gateway_container_labels_traefik_enabled) else [])
-  }}
-
-apisix_gateway_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
-apisix_gateway_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
-
-apisix_gateway_container_labels_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
-apisix_gateway_container_labels_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
-apisix_gateway_container_labels_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ apisix_gateway_identifier }}"
-apisix_gateway_container_labels_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
-apisix_gateway_container_labels_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
-
-# role-specific:etcd
-apisix_gateway_config_deployment_etcd_host: |
+apisix_config_deployment_etcd_host: |
   {{
     ([('http://' + etcd_identifier + ':2379')] if etcd_enabled else [])
   }}
 
-apisix_gateway_config_deployment_etcd_user: "{{ ('root' if (etcd_enabled and not etcd_environment_variable_allow_none_authentication) else '') }}"
-apisix_gateway_config_deployment_etcd_password: "{{ (etcd_environment_variable_etcd_root_password if (etcd_enabled and not etcd_environment_variable_allow_none_authentication) else '') }}"
+apisix_config_deployment_etcd_user: "{{ ('root' if (etcd_enabled and not etcd_environment_variable_allow_none_authentication) else '') }}"
+apisix_config_deployment_etcd_password: "{{ (etcd_environment_variable_etcd_root_password if (etcd_enabled and not etcd_environment_variable_allow_none_authentication) else '') }}"
 
-apisix_gateway_container_additional_networks_custom: |
+apisix_container_additional_networks_custom: |
   {{
     ([etcd_container_network] if etcd_enabled else [])
   }}
 
-apisix_gateway_systemd_required_services_list_auto: |
+apisix_systemd_required_services_list_auto: |
   {{
     ([(etcd_identifier + '.service')] if etcd_enabled else [])
   }}
 # /role-specific:etcd
 
 # role-specific:traefik
-apisix_gateway_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
-apisix_gateway_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+apisix_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+apisix_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
 # /role-specific:traefik
 
 ########################################################################
 #                                                                      #
-# /apisix_gateway                                                      #
+# /apisix                                                              #
 #                                                                      #
 ########################################################################
-# /role-specific:apisix_gateway
+# /role-specific:apisix
 
 
 
@@ -5221,7 +5163,7 @@ docmost_environment_variable_app_secret: "{{ (mash_playbook_generic_secret_key +
 # Disable Telemetry by default
 docmost_environment_variable_disable_telemetry: true
 
-# Required for a Redis / KeyDB / Valkey instance
+# Required for a Redis / Valkey instance
 docmost_environment_variable_redis_url: "redis://{{ docmost_redis_hostname }}:{{ docmost_redis_port }}"
 
 docmost_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
@@ -7239,9 +7181,12 @@ headplane_gid: "{{ mash_playbook_gid }}"
 
 headplane_systemd_required_services_list_auto: |
   {{
-    ([headscale_identifier ~ '.service'] if headscale_enabled | default(false) and headplane_headscale_hostname == headscale_identifier and headplane_container_network != headscale_container_network else [])
-    +
     ([container_socket_proxy_identifier + '.service'] if container_socket_proxy_enabled | default(false) else [])
+  }}
+
+headplane_systemd_wanted_services_list_auto: |
+  {{
+    ([headscale_identifier ~ '.service'] if headscale_enabled | default(false) and headplane_headscale_hostname == headscale_identifier and headplane_container_network != headscale_container_network else [])
   }}
 
 headplane_container_additional_networks_auto: |
@@ -9396,39 +9341,6 @@ keycloak_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pri
 
 
 
-# role-specific:keydb
-########################################################################
-#                                                                      #
-# keydb                                                                #
-#                                                                      #
-########################################################################
-
-keydb_enabled: false
-
-keydb_identifier: "{{ mash_playbook_service_identifier_prefix }}keydb"
-
-keydb_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}keydb"
-
-keydb_uid: "{{ mash_playbook_uid }}"
-keydb_gid: "{{ mash_playbook_gid }}"
-
-keydb_arch: |-
-  {{
-    ({
-      'amd64': 'x86_64',
-      'arm32': 'arm32',
-      'arm64': 'arm64',
-    })[mash_playbook_architecture]
-  }}
-
-########################################################################
-#                                                                      #
-# /keydb                                                               #
-#                                                                      #
-########################################################################
-# /role-specific:keydb
-
-
 
 # role-specific:keyoxide
 ########################################################################
@@ -11177,9 +11089,8 @@ mermaid_identifier: "{{ mash_playbook_service_identifier_prefix }}mermaid"
 
 mermaid_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}mermaid"
 
-# Run as root
-mermaid_uid: 0
-mermaid_gid: 0
+mermaid_uid: "{{ mash_playbook_uid }}"
+mermaid_gid: "{{ mash_playbook_gid }}"
 
 mermaid_container_additional_networks_auto: |
   {{
@@ -11449,6 +11360,58 @@ mobilizon_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pr
 #                                                                      #
 ########################################################################
 # /role-specific:mobilizon
+
+
+
+# role-specific:mollysocket
+########################################################################
+#                                                                      #
+# mollysocket                                                          #
+#                                                                      #
+########################################################################
+
+mollysocket_enabled: false
+
+mollysocket_identifier: "{{ mash_playbook_service_identifier_prefix }}mollysocket"
+
+mollysocket_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}mollysocket"
+
+mollysocket_uid: "{{ mash_playbook_uid }}"
+mollysocket_gid: "{{ mash_playbook_gid }}"
+
+mollysocket_systemd_wanted_services_list_auto: |
+  {{
+    ([ntfy_identifier ~ '.service'] if ntfy_enabled | default(false) else [])
+  }}
+
+mollysocket_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    +
+    ([ntfy_container_network] if ntfy_enabled | default(false) and mollysocket_container_network != ntfy_container_network else [])
+  }}
+
+mollysocket_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+mollysocket_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:ntfy
+mollysocket_environment_variables_molly_allowed_endpoints: |
+  {{
+    (['https://' ~ ntfy_hostname] if ntfy_enabled else [])
+  }}
+# /role-specific:ntfy
+
+# role-specific:traefik
+mollysocket_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+mollysocket_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /mollysocket                                                         #
+#                                                                      #
+########################################################################
+# /role-specific:mollysocket
 
 
 
@@ -13107,7 +13070,6 @@ paperless_email_from: "{{ exim_relay_sender_address if exim_relay_enabled else '
 # /role-specific:exim_relay
 
 # role-specific:gotenberg
-paperless_gotenberg_bundled_enabled: "{{ false if gotenberg_enabled }}" # Stop ansible-role-paperless from installing Gotenberg bundled with the role if it is managed by ansible-role-gotenberg
 paperless_tika_gotenberg_endpoint: "http://{{ gotenberg_identifier }}:{{ gotenberg_container_http_port }}"
 # /role-specific:gotenberg
 
@@ -13128,7 +13090,6 @@ paperless_database_postgres_socket_path_host: "{{ postgres_run_path }}"
 
 # role-specific:tika
 paperless_tika_enabled: "{{ tika_enabled }}"
-paperless_tika_bundled_enabled: "{{ false if tika_enabled }}" # Stop ansible-role-paperless from installing Apache Tika Server bundled with the role if it is managed by ansible-role-tika
 paperless_tika_endpoint: "http://{{ tika_identifier }}:{{ tika_container_http_port }}"
 # /role-specific:tika
 
@@ -15827,7 +15788,7 @@ statusnook_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_p
 # role-specific:stirling_pdf
 ########################################################################
 #                                                                      #
-# stirling-pdf                                                         #
+# stirling_pdf                                                         #
 #                                                                      #
 ########################################################################
 
@@ -15855,7 +15816,7 @@ stirling_pdf_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver
 
 ########################################################################
 #                                                                      #
-# /stirling-pdf                                                        #
+# /stirling_pdf                                                        #
 #                                                                      #
 ########################################################################
 # /role-specific:stirling_pdf

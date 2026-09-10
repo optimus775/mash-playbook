@@ -118,13 +118,9 @@
     - role: galaxy/answer
     # /role-specific:answer
 
-    # role-specific:apisix_dashboard
-    - role: galaxy/apisix_dashboard
-    # /role-specific:apisix_dashboard
-
-    # role-specific:apisix_gateway
-    - role: galaxy/apisix_gateway
-    # /role-specific:apisix_gateway
+    # role-specific:apisix
+    - role: galaxy/apisix
+    # /role-specific:apisix
 
     # role-specific:apprise
     - role: galaxy/apprise
@@ -510,10 +506,6 @@
     - role: galaxy/keycloak
     # /role-specific:keycloak
 
-    # role-specific:keydb
-    - role: galaxy/keydb
-    # /role-specific:keydb
-
     # role-specific:keyoxide
     - role: galaxy/keyoxide
     # /role-specific:keyoxide
@@ -633,6 +625,10 @@
     # role-specific:mobilizon
     - role: galaxy/mobilizon
     # /role-specific:mobilizon
+
+    # role-specific:mollysocket
+    - role: galaxy/mollysocket
+    # /role-specific:mollysocket
 
     # role-specific:monerooo
     - role: galaxy/monerooo
