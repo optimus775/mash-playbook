@@ -36,10 +36,10 @@ This service requires the following other services:
 
 - [Postgres](postgres.md) / [MariaDB](mariadb.md) database
 - [Traefik](traefik.md) reverse-proxy server
+- [Valkey](valkey.md) data-store; see [below](#configuring-valkey-optional) for details about installation
 - (optional) [exim-relay](exim-relay.md) mailer — PinePods is compatible with other email delivery services
 - (optional) [Gotify](gotify.md)
 - (optional) [ntfy](ntfy.md)
-- (optional) [Valkey](valkey.md) data-store; see [below](#configuring-valkey-optional) for details about installation
 
 ## Configuration
 
@@ -69,9 +69,9 @@ pinepods_hostname: pinepods.example.com
 
 It is necessary to select a database used by PinePods from MariaDB and Postgres. See [this section](https://radicle.network/nodes/iris.radicle.network/rad%3AzKNyeEtymCZc7yio6JnHxY2AteZu/tree/docs/configuring-pinepods.md#specify-database) on the role's documentation for details.
 
-### Configuring Valkey (optional)
+### Configure Valkey
 
-Valkey can optionally be enabled for caching data. This playbook supports it, and you can set up a Valkey instance by enabling it on `vars.yml`.
+PinePods requires a Valkey data-store to work. This playbook supports it, and you can set up a Valkey instance by enabling it on `vars.yml`.
 
 If PinePods is the sole service which requires Valkey on your server, it is fine to set up just a single Valkey instance. However, **it is not recommended if there are other services which require it, because sharing the Valkey instance has security concerns and possibly causes data conflicts**, as described on the [documentation for configuring Valkey](valkey.md). In this case, you should install a dedicated Valkey instance for each of them.
 

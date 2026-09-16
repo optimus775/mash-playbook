@@ -1,6 +1,6 @@
 <!--
 SPDX-FileCopyrightText: 2024 Bergrübe
-SPDX-FileCopyrightText: 2024 Slavi Pantaleev
+SPDX-FileCopyrightText: 2024, 2026 Slavi Pantaleev
 SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
@@ -285,7 +285,7 @@ Our pick is to add a Molecule test framework. It is versatile, simulates install
 
 **If you are not familiar with Molecule, it is fine not to implement a test with it.** Please avoid making something up which you cannot confirm by yourself that it really works as expected (by using Gen-AI / LLM, etc). A defected test is worse than not having one in the first place.
 
-## Maintain your role
+### 5. Maintain your role
 
 While the roles managed under [the MASH organization](https://github.com/orgs/mother-of-all-self-hosting) are maintained and updated when necessary by the organization in general, it is essentially your responsibility to maintain yours, though an organization member might send a push request to your role's repository to apply such changes that have been added to the MASH roles in order to improve maintainability (by sharing codebase).
 
@@ -294,3 +294,23 @@ If the role is regarded to have been abandoned by the author from the viewpoint 
 Please keep an eye on the roles maintained by the MASH organization to keep yours up-to-date by adding proper changes if any. Since the background of the decision for the changes are usually not announced (though you may find references in a commit message), you might as well to ask an organization member on the Matrix room about changes you are expected to apply.
 
 Please do not hesitate to ask for help to let the community members help you! 👋
+
+## Maintaining the Renovate runner
+
+The self-hosted runner version is pinned in [`.github/workflows/renovate.yml`](../.github/workflows/renovate.yml). Renovate updates this pin and automerges passing updates during the monthly window configured in [`.github/renovate.json`](../.github/renovate.json).
+
+The `Renovate smoke test` workflow tests the candidate image on branch pushes and fork pull requests. It validates configuration and starts the real Renovate runtime to extract dependencies from the checked-out repository. It requires results from every manager currently used here, including the custom manager that updates Renovate itself, and rejects errors or missing completion logs. The containers have no network access, receive no credentials, and mount the checkout read-only.
+
+Run the same check locally with Docker, Bash, and jq installed:
+
+```sh
+bin/renovate-smoke-test.sh
+# Test a candidate image without changing the workflow pin:
+bin/renovate-smoke-test.sh 44.64.0
+```
+
+Version `44.64.0` is deliberately excluded from runner updates: its APK datasource imports `tar`, which was only declared as a development dependency and is missing from the production image. It passed configuration validation and `--version`, then crashed at startup with exit code 0 ([incident log](https://github.com/mother-of-all-self-hosting/mash-playbook/actions/runs/34634294937/job/103378353720)). The runner was reverted to `44.61.6`. Both production and the smoke test set `NODE_OPTIONS=--unhandled-rejections=strict` so unhandled startup failures return a failing exit code.
+
+Upstream corrected the packaging in [Renovate PR #45699](https://github.com/renovatebot/renovate/pull/45699). A runner that crashes before processing the repository cannot discover its own replacement, so recovery requires manually changing the pin to a working version.
+
+This smoke test would have blocked that upgrade. It does not exercise registry lookups, GitHub authentication, or branch/PR writes. For live integration checks, manually dispatch the `Renovate` workflow on `main` with `dry_run` enabled and `log_level` set to `debug`. That tests the pin already on `main`; it is not a pre-merge test of a candidate branch. GitHub's current default-branch rules protect against deletion and force pushes, but do not require CI checks, so manual merges must also check the smoke-test result.

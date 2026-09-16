@@ -65,6 +65,7 @@
       "description": "Automerge updates of the self-hosted Renovate runner (via branch push - no PR) monthly",
       "matchManagers": ["custom.regex"],
       "matchDepNames": ["mash-renovate-runner"],
+      "allowedVersions": "!/^44\\.64\\.0$/",
       "automerge": true,
       "automergeType": "branch",
       "schedule": ["* 0-3 1 * *"],
