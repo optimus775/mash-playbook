@@ -1129,6 +1129,14 @@
       role: galaxy/systemd_service_manager
     # /role-specific:systemd_service_manager
 
+    # Local role: migrations must run after systemd has started the target image.
+    - role: mash/opencloud_migrations
+      tags:
+        - start
+        - start-all
+        - start-group
+        - migrate-opencloud
+
     # role-specific:playbook_state_preserver
     # This is pretty much last, because we want it to better serve as a "last known good configuration".
     # See: https://github.com/spantaleev/matrix-docker-ansible-deploy/pull/2217#issuecomment-1301487601

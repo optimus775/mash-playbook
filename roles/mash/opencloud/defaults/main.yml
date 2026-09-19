@@ -33,7 +33,8 @@ opencloud_hostname: ""
 # OpenCloud requires the root path `/`.
 opencloud_path_prefix: /
 
-opencloud_container_image: "{{ opencloud_container_image_registry_prefix }}opencloudeu/opencloud:{{ opencloud_container_image_tag }}"
+opencloud_container_image_repository: opencloudeu/opencloud
+opencloud_container_image: "{{ opencloud_container_image_registry_prefix }}{{ opencloud_container_image_repository }}:{{ opencloud_container_image_tag }}"
 opencloud_container_image_tag: "{{ opencloud_version }}"
 opencloud_container_image_registry_prefix: "{{ opencloud_container_image_registry_prefix_upstream }}"
 opencloud_container_image_registry_prefix_upstream: "{{ opencloud_container_image_registry_prefix_upstream_default }}"
@@ -239,6 +240,15 @@ opencloud_collaboration_app_proof_disable: true
 
 opencloud_search_enabled: false
 opencloud_search_tika_url: ""
+
+# Set to the upstream search schema generation when an upgrade requires a rescan.
+# Keep it unchanged for patch releases; completion is persisted outside the index.
+opencloud_search_index_generation: ""
+opencloud_migrations_path: "{{ opencloud_base_path }}/migrations"
+opencloud_search_reindex_timeout: 86400
+opencloud_search_reindex_concurrency: 3
+# The internal gRPC endpoint uses plaintext by default; this does not affect HTTPS.
+opencloud_search_reindex_insecure: true
 
 opencloud_smtp_enabled: false
 opencloud_smtp_host: ""

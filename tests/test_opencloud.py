@@ -37,6 +37,10 @@ class OpenCloudTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         play = yaml.safe_load((self.path / 'setup.yml').read_text())
         self.assertIn('mash/opencloud', [r['role'] for r in play[0]['roles']])
+        migration = next(r for r in play[0]['roles'] if r['role'] == 'mash/opencloud_migrations')
+        if any(r['role'] == 'galaxy/systemd_service_manager' for r in play[0]['roles']):
+            manager = next(r for r in play[0]['roles'] if r['role'] == 'galaxy/systemd_service_manager')
+            self.assertGreater(play[0]['roles'].index(migration), play[0]['roles'].index(manager))
         requirements = yaml.safe_load((self.path / 'requirements.yml').read_text())
         self.assertNotIn('opencloud', [r['name'] for r in requirements])
         return yaml.safe_load((self.path / 'group-vars.yml').read_text())

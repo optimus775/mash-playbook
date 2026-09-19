@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: 2026 MASH project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+---
+- name: Complete the OpenCloud search migration after service startup
+  when:
+    - opencloud_enabled | bool
+    - opencloud_search_index_generation | length > 0
+    - group | default('mash') in ['mash', 'opencloud']
+  block:
+    - name: Validate the OpenCloud search migration settings
+      ansible.builtin.assert:
+        that:
+          - opencloud_search_index_generation is match('^[A-Za-z0-9_-]+$')
+          - opencloud_version is version('8.0.1', '>=')
+          - opencloud_search_reindex_timeout | int > 0
+          - opencloud_search_reindex_concurrency | int > 0
+
+    - name: Check whether this OpenCloud search migration is complete
+      ansible.builtin.stat:
+        path: "{{ opencloud_migrations_path }}/search-{{ opencloud_search_index_generation }}.done"
+      register: opencloud_search_migration_marker
+
+    - name: Reindex existing OpenCloud resources once per search schema
+      when:
+        - not opencloud_search_migration_marker.stat.exists
+        - not ansible_check_mode
+      block:
+        - name: Wait for the upgraded OpenCloud API
+          ansible.builtin.uri:
+            url: "{{ opencloud_url }}/status.php"
+            return_content: true
+            validate_certs: true
+          register: opencloud_upgrade_status
+          until: >-
+            opencloud_upgrade_status.status | default(0) == 200
+            and opencloud_upgrade_status.json.productversion | default('') == opencloud_version
+          retries: 60
+          delay: 5
+
+        - name: Ensure the OpenCloud migration state directory exists
+          ansible.builtin.file:
+            path: "{{ opencloud_migrations_path }}"
+            state: directory
+            owner: root
+            group: root
+            mode: "0700"
+
+        - name: Install the OpenCloud search migration runner
+          ansible.builtin.template:
+            src: "{{ role_path }}/templates/search-migration.sh.j2"
+            dest: "{{ opencloud_migrations_path }}/search-{{ opencloud_search_index_generation }}.sh"
+            owner: root
+            group: root
+            mode: "0700"
+
+        - name: Rebuild the OpenCloud search index and record successful completion
+          ansible.builtin.command:
+            argv:
+              - /bin/sh
+              - "{{ opencloud_migrations_path }}/search-{{ opencloud_search_index_generation }}.sh"
+            creates: "{{ opencloud_migrations_path }}/search-{{ opencloud_search_index_generation }}.done"
+          async: "{{ opencloud_search_reindex_timeout }}"
+          poll: 15
+          register: opencloud_search_migration_result
+          changed_when: "'OPENCLOUD_SEARCH_REINDEX_COMPLETED' in opencloud_search_migration_result.stdout | default('')"

@@ -14,7 +14,9 @@ opencloud_enabled: true
 opencloud_hostname: cloud.met.surf
 opencloud_base_path: /srv/storage/opencloud
 opencloud_required_mount_path: /srv/storage
-opencloud_version: 7.2.4
+opencloud_version: 8.0.1
+opencloud_container_image_repository: opencloudeu/opencloud-rolling
+opencloud_search_index_generation: v5
 opencloud_collaboration_enabled: true
 opencloud_search_enabled: true
 opencloud_admin_password: 'ЗАДАЙТЕ-СЛУЧАЙНЫЙ-ПАРОЛЬ'
@@ -40,7 +42,7 @@ eurooffice_environment_variables_additional_variables: |
 
 Встроенная служба `collaboration` работает через `https://cloud.met.surf/wopi`. В реестре приложений DOCX, XLSX и PPTX назначены EuroOffice; CSP разрешает загрузку редактора. `COLLABORATION_APP_PROOF_DISABLE=true` соответствует [официальному примеру EuroOffice](https://github.com/opencloud-eu/opencloud-compose/blob/stable-7.2/weboffice/euroffice.yml). Проверка TLS-сертификатов остаётся включённой.
 
-При первом подключении закреплены уже установленные версии EuroOffice `v9.3.2` и Tika `3.3.0.0-full`, чтобы установка не обновляла их автоматически.
+В инвентори закреплены EuroOffice `v9.3.4-hotfix.1` и Tika `3.3.0.0-full`. EuroOffice обновлён с исправлениями сохранения документов; используемый API Tika 3 совместим с OpenCloud 8 и общим экземпляром Paperless.
 
 ## Tika и почта
 
@@ -79,7 +81,9 @@ ssh mash 'journalctl -u mash-opencloud --since "10 minutes ago"'
 
 Команды `ssh mash` предполагают ваш SSH alias; можно использовать адрес и ключ из инвентори.
 
-Для обновления сначала сделайте резервную копию, изучите заметки выбранной стабильной версии, измените `opencloud_version` и выполните `just install-service opencloud --limit mash_met_surf`. Изменение `opencloud_admin_password` после инициализации не сбрасывает пароль существующего пользователя.
+Для обновления сначала сделайте резервную копию, изучите заметки выбранной версии, измените `opencloud_version` и выполните `just install-service opencloud --limit mash_met_surf`. Изменение `opencloud_admin_password` после инициализации не сбрасывает пароль существующего пользователя.
+
+Для ветки Rolling нужно также указать `opencloud_container_image_repository: opencloudeu/opencloud-rolling`. На mash выбран выпуск `8.0.1` этой ветки; значение роли по умолчанию остаётся Production `7.2.4`. Переход с 7.x и автоматическая переиндексация описаны в [инструкции обновления до 8.x](opencloud-upgrade-8.md).
 
 Для согласованной резервной копии остановите группу OpenCloud, скопируйте весь `/srv/storage/opencloud` с сохранением владельцев, прав и расширенных атрибутов, затем запустите группу. Храните отдельную копию вне этого диска. Конфигурация содержит внутренние ключи: восстанавливать нужно и `config/`, и `data/` вместе.
 

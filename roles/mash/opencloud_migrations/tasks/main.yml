@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2026 MASH project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+---
+# A separate entry point preserves MASH's setup -> start -> migration ordering.
+- name: Run OpenCloud migrations after the service manager  # noqa role-name[path] MASH keeps local roles under roles/mash.
+  ansible.builtin.include_role:
+    name: mash/opencloud
+    tasks_from: migrate
+    apply:
+      tags: always

@@ -1,0 +1,49 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 MASH project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+set -eu
+umask 077
+
+marker={{ (opencloud_migrations_path ~ '/search-' ~ opencloud_search_index_generation ~ '.done') | quote }}
+log={{ (opencloud_migrations_path ~ '/search-' ~ opencloud_search_index_generation ~ '.log') | quote }}
+
+# Concurrent playbook invocations must not start duplicate rescans.
+exec 9>"${marker}.lock"
+flock 9
+if [ -f "$marker" ]; then
+    echo 'OpenCloud search migration already complete'
+    exit 0
+fi
+
+# A setup-only run or failed restart must never reindex the previous image.
+running_image=$({{ devture_systemd_docker_base_host_command_docker }} inspect --format '{% raw %}{{.Config.Image}}{% endraw %}' {{ opencloud_identifier | quote }})
+if [ "$running_image" != {{ opencloud_container_image | quote }} ]; then
+    echo 'The running OpenCloud image does not match the configured upgrade target' >&2
+    exit 1
+fi
+
+started_at=$(date --utc '+%Y-%m-%d %H:%M:%S.%N UTC')
+if ! {{ devture_systemd_docker_base_host_command_docker }} exec {{ opencloud_identifier | quote }} opencloud search index --all-spaces --force-rescan --concurrency {{ opencloud_search_reindex_concurrency | int }}{{ ' --insecure' if opencloud_search_reindex_insecure else '' }} >"$log" 2>&1; then
+    cat "$log"
+    exit 1
+fi
+cat "$log"
+
+# OpenCloud 8.0.1 may exit 0 even when a space failed or SIGTERM cancelled indexing.
+if grep -Eq 'failed to index space|aborted, indexing has been stopped' "$log"; then
+    echo 'OpenCloud search migration did not complete; leaving it pending' >&2
+    exit 1
+fi
+
+# File extraction failures are only reported by the server, not by the CLI.
+# Keep its journal in the protected migration directory for diagnosis.
+journalctl --unit={{ (opencloud_identifier ~ '.service') | quote }} --since="$started_at" --no-pager --output=cat >"${log}.service"
+if grep -E '"service"[[:space:]]*:[[:space:]]*"search"' "${log}.service" | grep -Eq 'failed to extract resource content|error adding updating the resource in the index|error walking the tree'; then
+    echo 'OpenCloud reported file indexing errors; inspect the protected migration service log' >&2
+    exit 1
+fi
+rm "${log}.service"
+
+printf '%s\n' {{ ('OpenCloud ' ~ opencloud_version ~ ', search schema ' ~ opencloud_search_index_generation) | quote }} >"${marker}.tmp"
+mv "${marker}.tmp" "$marker"
+echo 'OPENCLOUD_SEARCH_REINDEX_COMPLETED'

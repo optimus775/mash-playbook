@@ -16,6 +16,7 @@
     that:
       - opencloud_status.json.installed | bool
       - not opencloud_status.json.maintenance | bool
+      - opencloud_status.json.productversion == opencloud_version
 
 - name: Check office WOPI discovery over HTTPS
   ansible.builtin.uri:
