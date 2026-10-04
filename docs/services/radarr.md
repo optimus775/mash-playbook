@@ -13,6 +13,11 @@ Radarr is a movie organizer/manager for Usenet and BitTorrent users.
 
 See the project's [documentation](https://wiki.servarr.com/radarr) to learn what Radarr does and why it might be useful to you.
 
+For details about configuring the [Ansible role for Radarr](https://github.com/mother-of-all-self-hosting/ansible-role-radarr), you can check them via:
+
+- 🌐 [the role's documentation](https://github.com/mother-of-all-self-hosting/ansible-role-radarr/blob/main/docs/configuring-radarr.md) online
+- 📁 `roles/galaxy/radarr/docs/configuring-radarr.md` locally, if you have [fetched the Ansible roles](../installing.md)
+
 ## Dependencies
 
 This service requires the following other services:
@@ -34,18 +39,6 @@ radarr_enabled: true
 
 radarr_hostname: radarr.example.com
 
-# To mount additional data directories, use `radarr_container_additional_volumes`
-#
-# Example:
-# radarr_container_additional_volumes:
-#   - type: bind
-#     src: /path/on/the/host
-#     dst: /data
-#   - type: bind
-#     src: /another-path/on/the/host
-#     dst: /read-only
-#     options: readonly
-
 ########################################################################
 #                                                                      #
 # /radarr                                                              #
@@ -53,24 +46,21 @@ radarr_hostname: radarr.example.com
 ########################################################################
 ```
 
+Refer to [this section](https://github.com/mother-of-all-self-hosting/ansible-role-radarr/blob/main/docs/configuring-radarr.md#adjusting-the-playbook-configuration) on the role's documentation for details about other settings such as configuring trusted networks.
+
 ## Usage
 
-After running the command for installation, the Autobrr instance becomes available at the URL specified with `radarr_hostname`. With the configuration above, the service is hosted at `https://radarr.example.com`.
+After running the command for installation, the Radarr instance becomes available at the URL specified with `radarr_hostname`. With the configuration above, the service is hosted at `https://radarr.example.com`.
 
->[!NOTE]
-> The `radarr_path_prefix` variable can be adjusted to host under a subpath (e.g. `radarr_path_prefix: /radarr`), but this hasn't been tested yet.
-
-To get started, open the URL with a web browser to create an account. The recommended authentication method is `Forms (Login Page)`.
-
-For additional configuration options, refer to [ansible-role-radarr](https://github.com/spatterIight/ansible-role-radarr)'s `defaults/main.yml` file.
+To get started, open the URL with a web browser to create an account.
 
 ## Related services
 
 - "* Arr" applications — [Autobrr](autobrr.md) / [Homarr](homarr.md) / [Sonarr](sonarr.md)
 - [Jackett](jackett.md)
-  - For Jackett integration instructions, see the [setup guide](jackett.md#intergration-with-sonarrradarr)
+  - For Jackett integration instructions, refer to the [setup guide](https://github.com/mother-of-all-self-hosting/ansible-role-jackett/blob/main/docs/configuring-jackett.md#integration-with-sonarrradarr) on the role's documentation
 - [Jellyfin](jellyfin.md)
 - [Seerr](seerr.md)
 - [Plex](plex.md)
 - [qBittorrent](qbittorrent.md)
-  - For qBittorrent integration instructions, see the [setup guide](qbittorrent.md#intergration-with-sonarrradarr)
+  - For qBittorrent integration instructions, refer to the [setup guide](https://github.com/mother-of-all-self-hosting/ansible-role-qbittorrent/blob/main/docs/configuring-qbittorrent.md#integration-with-sonarrradarr) on the role's documentation

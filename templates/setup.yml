@@ -402,6 +402,14 @@
     - role: galaxy/gitea
     # /role-specific:gitea
 
+    # role-specific:gitlab
+    - role: galaxy/gitlab
+    # /role-specific:gitlab
+
+    # role-specific:gitlab_runner
+    - role: galaxy/gitlab_runner
+    # /role-specific:gitlab_runner
+
     # role-specific:gokapi
     - role: galaxy/gokapi
     # /role-specific:gokapi
@@ -682,9 +690,17 @@
     - role: galaxy/nextcloud
     # /role-specific:nextcloud
 
+    # role-specific:nginx
+    - role: galaxy/nginx
+    # /role-specific:nginx
+
     # role-specific:nifi
     - role: galaxy/nifi
     # /role-specific:nifi
+
+    # role-specific:nifi_registry
+    - role: galaxy/nifi_registry
+    # /role-specific:nifi_registry
 
     # role-specific:nocdnbs
     - role: galaxy/nocdnbs

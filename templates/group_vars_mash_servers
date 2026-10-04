@@ -511,6 +511,16 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (gitea_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gitea_restart_necessary | bool), 'groups': ['mash', 'gitea']} if gitea_enabled else omit) }}
   # /role-specific:gitea
 
+  # role-specific:gitlab
+  - |-
+    {{ ({'name': (gitlab_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gitlab_restart_necessary | bool), 'groups': ['mash', 'gitlab']} if gitlab_enabled else omit) }}
+  # /role-specific:gitlab
+
+  # role-specific:gitlab_runner
+  - |-
+    {{ ({'name': (gitlab_runner_identifier + '.service'), 'priority': 2100, 'restart_necessary': (gitlab_runner_restart_necessary | bool), 'groups': ['mash', 'gitlab-runner']} if gitlab_runner_enabled else omit) }}
+  # /role-specific:gitlab_runner
+
   # role-specific:gokapi
   - |-
     {{ ({'name': (gokapi_identifier + '.service'), 'priority': 2000, 'restart_necessary': (gokapi_restart_necessary | bool), 'groups': ['mash', 'gokapi']} if gokapi_enabled else omit) }}
@@ -887,10 +897,20 @@ mash_playbook_devture_systemd_service_manager_services_list_auto_itemized:
     {{ ({'name': (nextcloud_identifier + '-app-update.timer'), 'priority': 2500, 'restart_necessary': (nextcloud_restart_necessary | bool), 'groups': ['mash', 'nextcloud', 'nextcloud-app-update']} if nextcloud_enabled and nextcloud_app_autoupdate_enabled else omit) }}
   # /role-specific:nextcloud
 
+  # role-specific:nginx
+  - |-
+    {{ ({'name': (nginx_identifier + '.service'), 'priority': 2000, 'restart_necessary': (nginx_restart_necessary | bool), 'groups': ['mash', 'nginx']} if nginx_enabled else omit) }}
+  # /role-specific:nginx
+
   # role-specific:nifi
   - |-
     {{ ({'name': (nifi_identifier + '.service'), 'priority': 2000, 'restart_necessary': true, 'groups': ['mash', 'nifi']} if nifi_enabled else omit) }}
   # /role-specific:nifi
+
+  # role-specific:nifi_registry
+  - |-
+    {{ ({'name': (nifi_registry_identifier + '.service'), 'priority': 1900, 'restart_necessary': (nifi_registry_restart_necessary | bool), 'groups': ['mash', 'nifi-registry']} if nifi_registry_enabled else omit) }}
+  # /role-specific:nifi_registry
 
   # role-specific:nocdnbs
   - |-
@@ -1739,6 +1759,23 @@ mash_playbook_postgres_managed_databases_auto_itemized:
     }}
   # /role-specific:gitea
 
+  # role-specific:gitlab
+  # GitLab requires the `amcheck` extension, which only a superuser may create.
+  # Ref: https://docs.gitlab.com/administration/postgresql/extensions/
+  - |-
+    {{
+      ({
+        'name': gitlab_database_name,
+        'username': gitlab_database_postgres_username,
+        'password': gitlab_database_postgres_password,
+        'additional_sql_queries': [
+          ('\\c ' ~ gitlab_database_name),
+          'CREATE EXTENSION IF NOT EXISTS amcheck;',
+        ],
+      } if gitlab_enabled and (gitlab_database_postgres_hostname == postgres_connection_hostname or gitlab_database_postgres_socket_enabled) and gitlab_database_type == 'postgres' else omit)
+    }}
+  # /role-specific:gitlab
+
   # role-specific:gotify
   - |-
     {{
@@ -2001,7 +2038,7 @@ mash_playbook_postgres_managed_databases_auto_itemized:
         'name': n8n_database_name,
         'username': n8n_database_username,
         'password': n8n_database_password,
-      } if n8n_enabled and (n8n_database_hostname == postgres_connection_hostname or n8n_database_socket_enabled) else omit)
+      } if n8n_enabled and (n8n_database_hostname == postgres_connection_hostname or n8n_database_socket_enabled) and n8n_database_type == 'postgres' else omit)
     }}
   # /role-specific:n8n
 
@@ -3664,7 +3701,7 @@ backup_borg_systemd_required_services_list_auto: |
     ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and backup_borg_postgresql_enabled else [])
   }}
 
-backup_borg_location_exclude_patterns: |
+backup_borg_location_exclude_patterns_auto: |
   {{
     ([mariadb_data_path] if mariadb_enabled | default(false) and backup_borg_mysql_enabled else [])
     +
@@ -3829,6 +3866,10 @@ bazarr_gid: "{{ mash_playbook_gid }}"
 bazarr_container_additional_networks_auto: |
   {{
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    +
+    ([radarr_container_network] if radarr_enabled | default(false) and bazarr_container_network != radarr_container_network else [])
+    +
+    ([sonarr_container_network] if sonarr_enabled | default(false) and bazarr_container_network != sonarr_container_network else [])
   }}
 
 bazarr_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
@@ -5076,15 +5117,26 @@ docker_registry_browser_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbo
 docker_registry_browser_uid: "{{ mash_playbook_uid }}"
 docker_registry_browser_gid: "{{ mash_playbook_gid }}"
 
-docker_registry_browser_secret_key_base: "{{ (mash_playbook_generic_secret_key + ':browser') | hash('sha512') }}"
+docker_registry_browser_systemd_wanted_services_list_auto: |
+  {{
+    ([docker_registry_identifier ~ '.service'] if docker_registry_enabled | default(false) entifier else [])
+  }}
 
 docker_registry_browser_container_additional_networks_auto: |
   {{
+    ([docker_registry_container_network] if docker_registry_enabled | default(false) and docker_registry_browser_container_network != docker_registry_container_network else [])
+    +
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
   }}
 
 docker_registry_browser_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 docker_registry_browser_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+docker_registry_browser_secret_key_base: "{{ (mash_playbook_generic_secret_key + ':browser') | hash('sha512') }}"
+
+# role-specific:docker_registry
+docker_registry_browser_docker_registry_url: "http://{{ docker_registry_identifier }}:5000"
+# /role-specific:docker_registry
 
 # role-specific:traefik
 docker_registry_browser_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
@@ -6484,7 +6536,9 @@ forgejo_runner_docker_endpoint_is_unix_socket: "{{ false if forgejo_runner_docke
 
 forgejo_runner_runner_name: "forgejo-runner-by-mash-playbook"
 
-forgejo_runner_capacity: 1
+# role-specific:forgejo
+forgejo_runner_instance_url: "{{ forgejo_hostname }}{{ forgejo_path_prefix if forgejo_path_prefix != '/' }}"
+# /role-specific:forgejo
 
 ########################################################################
 #                                                                      #
@@ -6879,6 +6933,105 @@ gitea_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primar
 
 
 
+# role-specific:gitlab
+########################################################################
+#                                                                      #
+# gitlab                                                               #
+#                                                                      #
+########################################################################
+
+gitlab_enabled: false
+
+gitlab_identifier: "{{ mash_playbook_service_identifier_prefix }}gitlab"
+
+gitlab_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}gitlab"
+
+gitlab_uid: "{{ mash_playbook_uid }}"
+gitlab_gid: "{{ mash_playbook_gid }}"
+
+gitlab_systemd_required_services_list_auto: |
+  {{
+    ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and (gitlab_database_postgres_hostname == postgres_connection_hostname or gitlab_database_postgres_socket_enabled) and gitlab_database_type == 'postgres' else [])
+  }}
+
+gitlab_systemd_wanted_services_list_auto: |
+  {{
+    ([exim_relay_identifier ~ '.service'] if exim_relay_enabled | default(false) and gitlab_config_smtp_enabled | default(false) and gitlab_config_smtp_address == exim_relay_identifier else [])
+  }}
+
+gitlab_container_additional_networks_auto: |
+  {{
+    ([exim_relay_container_network] if exim_relay_enabled | default(false) and gitlab_config_smtp_enabled | default(false) and gitlab_config_smtp_address == exim_relay_identifier and gitlab_container_network != exim_relay_container_network else [])
+    +
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    +
+    ([postgres_container_network] if postgres_enabled | default(false) and (gitlab_database_postgres_hostname == postgres_connection_hostname and gitlab_container_network != postgres_container_network and not gitlab_database_postgres_socket_enabled) and gitlab_database_type == 'postgres' else [])
+  }}
+
+gitlab_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+gitlab_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+gitlab_container_labels_traefik_compression_middleware_enabled: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_enabled }}"
+gitlab_container_labels_traefik_compression_middleware_name: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_name if mash_playbook_reverse_proxy_traefik_middleware_compession_enabled else '' }}"
+
+# role-specific:exim_relay
+gitlab_config_smtp_enabled: "{{ exim_relay_enabled }}"
+gitlab_config_smtp_address: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"
+gitlab_config_smtp_port: "{{ 8025 if exim_relay_enabled else 587 }}"
+gitlab_config_email_from: "{{ exim_relay_sender_address if exim_relay_enabled else '' }}"
+# /role-specific:exim_relay
+
+# role-specific:postgres
+gitlab_database_type: "{{ 'postgres' if postgres_enabled else 'bundled' }}"
+gitlab_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_enabled else '' }}"
+gitlab_database_postgres_port: "{{ postgres_connection_port if postgres_enabled else '5432' }}"
+gitlab_database_postgres_password: "{{ (mash_playbook_generic_secret_key + ':db.gitlab') | hash('sha512') | to_uuid }}"
+gitlab_database_postgres_sslmode: "{{ 'disable' if postgres_enabled and (gitlab_database_postgres_hostname == postgres_connection_hostname or gitlab_database_postgres_socket_enabled) else 'require' }}"
+gitlab_database_postgres_socket_path_host: "{{ postgres_run_path }}"
+# /role-specific:postgres
+
+# role-specific:traefik
+gitlab_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+gitlab_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /gitlab                                                              #
+#                                                                      #
+########################################################################
+# /role-specific:gitlab
+
+
+
+# role-specific:gitlab_runner
+########################################################################
+#                                                                      #
+# gitlab_runner                                                        #
+#                                                                      #
+########################################################################
+
+gitlab_runner_enabled: false
+
+gitlab_runner_identifier: "{{ mash_playbook_service_identifier_prefix }}gitlab-runner"
+
+gitlab_runner_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}gitlab-runner"
+
+gitlab_runner_uid: "{{ mash_playbook_uid }}"
+gitlab_runner_gid: "{{ mash_playbook_gid }}"
+
+# role-specific:gitlab
+gitlab_runner_config_gitlab_url: "{{ gitlab_config_external_url if gitlab_enabled else '' }}"
+# /role-specific:gitlab
+
+########################################################################
+#                                                                      #
+# /gitlab_runner                                                       #
+#                                                                      #
+########################################################################
+# /role-specific:gitlab_runner
+
+
+
 # role-specific:gokapi
 ########################################################################
 #                                                                      #
@@ -7255,6 +7408,7 @@ headplane_headscale_config_path: "{{ headscale_config_path if headscale_enabled 
 headplane_headscale_container_name: "{{ headscale_identifier if headscale_enabled else '' }}"
 headplane_headscale_extra_records_enabled: "{{ true if headscale_enabled and headscale_extra_records_path_enabled else false }}"
 headplane_headscale_public_url: "{{ (headscale_scheme + '://' + headscale_hostname + headscale_path_prefix) if headscale_enabled else '' }}"
+headplane_config_integration_agent_tailscale_netns: "{{ false if headplane_config_integration_agent_enabled and headplane_headscale_hostname == headscale_identifier else true }}" # let the agent use ordinary route selection
 # /role-specific:headscale
 
 # role-specific:traefik
@@ -11793,15 +11947,17 @@ n8n_gid: "1000"
 
 n8n_systemd_required_services_list_auto: |
   {{
-    ([postgres_identifier ~ '.service'] if postgres_enabled and (n8n_database_hostname == postgres_connection_hostname or n8n_database_socket_enabled) else [])
+    ([postgres_identifier ~ '.service'] if postgres_enabled | default(false) and (n8n_database_hostname == postgres_connection_hostname or n8n_database_socket_enabled) and n8n_database_type == 'postgres' else [])
   }}
 
 n8n_container_additional_networks_auto: |
   {{
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
     +
-    ([postgres_container_network] if postgres_enabled and (n8n_database_hostname == postgres_connection_hostname and n8n_container_network != postgres_container_network and not n8n_database_socket_enabled) else [])
+    ([postgres_container_network] if postgres_enabled | default(false) and (n8n_database_hostname == postgres_connection_hostname and n8n_container_network != postgres_container_network and not n8n_database_socket_enabled) and n8n_database_type == 'postgres' else [])
   }}
+
+n8n_database_type: "{{ 'postgres' if postgres_enabled | default(false) else 'sqlite' }}"
 
 n8n_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 n8n_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
@@ -12094,6 +12250,46 @@ nextcloud_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_pr
 
 
 
+# role-specific:nginx
+########################################################################
+#                                                                      #
+# nginx                                                                #
+#                                                                      #
+########################################################################
+
+nginx_enabled: false
+
+nginx_identifier: "{{ mash_playbook_service_identifier_prefix }}nginx"
+
+nginx_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}nginx"
+
+nginx_uid: "{{ mash_playbook_uid }}"
+nginx_gid: "{{ mash_playbook_gid }}"
+
+nginx_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+nginx_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+nginx_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+nginx_container_labels_traefik_compression_middleware_enabled: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_enabled }}"
+nginx_container_labels_traefik_compression_middleware_name: "{{ mash_playbook_reverse_proxy_traefik_middleware_compession_name if mash_playbook_reverse_proxy_traefik_middleware_compession_enabled else '' }}"
+
+# role-specific:traefik
+nginx_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+nginx_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /nginx                                                               #
+#                                                                      #
+########################################################################
+# /role-specific:nginx
+
+
+
 # role-specific:nifi
 ########################################################################
 #                                                                      #
@@ -12112,9 +12308,16 @@ nifi_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_dir
 nifi_uid: "0"
 nifi_gid: "0"
 
+nifi_systemd_wanted_services_list_auto: |
+  {{
+    ([nifi_registry_identifier ~ '.service'] if nifi_registry_enabled | default(false) else [])
+  }}
+
 nifi_container_additional_networks_auto: |
   {{
     ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+    +
+    ([nifi_registry_container_network] if nifi_registry_enabled | default(false) and nifi_container_network != nifi_registry_container_network else [])
   }}
 
 nifi_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
@@ -12131,6 +12334,44 @@ nifi_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary
 #                                                                      #
 ########################################################################
 # /role-specific:nifi
+
+
+
+# role-specific:nifi_registry
+########################################################################
+#                                                                      #
+# nifi-registry                                                        #
+#                                                                      #
+########################################################################
+
+nifi_registry_enabled: false
+
+nifi_registry_identifier: "{{ mash_playbook_service_identifier_prefix }}nifi-registry"
+
+nifi_registry_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}nifi-registry"
+
+nifi_registry_uid: "{{ mash_playbook_uid }}"
+nifi_registry_gid: "{{ mash_playbook_gid }}"
+
+nifi_registry_container_additional_networks_auto: |
+  {{
+    ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+  }}
+
+nifi_registry_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+nifi_registry_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+# role-specific:traefik
+nifi_registry_container_labels_traefik_entrypoints: "{{ traefik_entrypoint_primary }}"
+nifi_registry_container_labels_traefik_tls_certResolver: "{{ traefik_certResolver_primary }}"
+# /role-specific:traefik
+
+########################################################################
+#                                                                      #
+# /nifi-registry                                                       #
+#                                                                      #
+########################################################################
+# /role-specific:nifi_registry
 
 
 
@@ -13362,6 +13603,14 @@ peertube_container_additional_networks_auto: |
 
 peertube_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
 peertube_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+peertube_container_labels_traefik_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
+peertube_container_labels_traefik_metrics_hostname: "{{ mash_playbook_metrics_exposure_hostname }}"
+peertube_container_labels_traefik_metrics_path_prefix: "{{ mash_playbook_metrics_exposure_path_prefix }}/{{ peertube_identifier }}"
+peertube_container_labels_traefik_metrics_middleware_basic_auth_enabled: "{{ mash_playbook_metrics_exposure_http_basic_auth_enabled }}"
+peertube_container_labels_traefik_metrics_middleware_basic_auth_users: "{{ mash_playbook_metrics_exposure_http_basic_auth_users }}"
+
+peertube_environment_variable_open_telemetry_metrics_enabled: "{{ mash_playbook_metrics_exposure_enabled }}"
 
 # role-specific:exim_relay
 peertube_config_smtp_hostname: "{{ exim_relay_identifier if exim_relay_enabled else '' }}"

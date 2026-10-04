@@ -39,7 +39,7 @@ For details about configuring the [Ansible role for n8n](https://github.com/moth
 
 This service requires the following other services:
 
-- [Postgres](postgres.md) database
+- [Postgres](postgres.md) / [SQLite](https://www.sqlite.org/) database — n8n will default to Postgres
 - [Traefik](traefik.md) reverse-proxy server
 
 ## Configuration
@@ -65,6 +65,18 @@ n8n_path_prefix: /n8n
 ########################################################################
 ```
 
+### Select database to use (optional)
+
+By default n8n is configured to use Postgres, but you can choose SQLite.
+
+To use SQLite, add the following configuration to your `vars.yml` file:
+
+```yaml
+n8n_database_type: sqlite
+```
+
+Refer to [this section](https://github.com/mother-of-all-self-hosting/ansible-role-n8n/blob/main/docs/configuring-n8n.md#configuring-the-database) on the role's documentation for details.
+
 ## Usage
 
 After running the command for installation, the n8n instance becomes available at the URL specified with `n8n_hostname` and `n8n_path_prefix`. With the configuration above, the service is hosted at `https://mash.example.com/n8n`.
@@ -73,4 +85,4 @@ To get started, open the URL with a web browser to create an account.
 
 ## Troubleshooting
 
-See [this section](https://github.com/mother-of-all-self-hosting/ansible-role-n8n/blob/main/docs/configuring-n8n.md#troubleshooting) on the role's documentation for details.
+Refer to [this section](https://github.com/mother-of-all-self-hosting/ansible-role-n8n/blob/main/docs/configuring-n8n.md#troubleshooting) on the role's documentation for details.

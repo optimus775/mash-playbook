@@ -53,18 +53,6 @@ bazarr_enabled: true
 
 bazarr_hostname: bazarr.example.com
 
-# To mount additional data directories, use `bazarr_container_additional_volumes_custom`
-#
-# Example:
-# bazarr_container_additional_volumes_custom:
-#   - type: bind
-#     src: /path/on/the/host
-#     dst: /data
-#   - type: bind
-#     src: /another-path/on/the/host
-#     dst: /read-only
-#     options: readonly
-
 ########################################################################
 #                                                                      #
 # /bazarr                                                              #
@@ -74,7 +62,7 @@ bazarr_hostname: bazarr.example.com
 
 ### Configuring HTTP Basic authentication
 
-Since there does not exist an authentication system on the web interface, the HTTP Basic authentication on Traefik is enabled for the web interface by default, considering the nature of the service. See [this section](https://github.com/mother-of-all-self-hosting/ansible-role-bazarr/blob/main/docs/configuring-bazarr.md#configuring-http-basic-authentication) on the role's documentation for details about how to set it up.
+Since there does not exist an authentication system on the web interface, the HTTP Basic authentication on Traefik is enabled for the web interface by default, considering the nature of the service. Refer to [this section](https://github.com/mother-of-all-self-hosting/ansible-role-bazarr/blob/main/docs/configuring-bazarr.md#configuring-http-basic-authentication) on the role's documentation for details about how to set it up.
 
 ## Usage
 
@@ -85,27 +73,15 @@ After running the command for installation, the Bazarr instance becomes availabl
 
 To get started, open the URL with a web browser to configure Bazarr.
 
-Refer to `defaults/main.yml` file for additional configuration options.
-
 ## Integration with Sonarr/Radarr
 
-To integrate Bazarr with [Sonarr](sonarr.md) and/or [Radarr](radarr.md), you need to ensure that:
-
-1. All services can access the same media directories via `bazarr_container_additional_volumes_custom`, `sonarr_container_additional_volumes`, and/or `radarr_container_additional_volumes`
-2. The services are connected to each other's networks:
-
-    ```yaml
-    # Connect Bazarr to Radarr and/or Sonarr's network
-    bazarr_container_additional_networks_custom:
-      - "{{ radarr_container_network }}"
-      - "{{ sonarr_container_network }}"
-    ```
+To integrate Bazarr with [Sonarr](sonarr.md) and/or [Radarr](radarr.md), you need to ensure that all services can access the same media directories via `bazarr_container_additional_volumes_custom`, `sonarr_container_additional_volumes_custom`, and/or `radarr_container_additional_volumes_custom`.
 
 After setup, configure the integrations in Bazarr's web interface under Settings → Sonarr/Radarr.
 
 ## Troubleshooting
 
-See [this section](https://github.com/mother-of-all-self-hosting/ansible-role-bazarr/blob/main/docs/configuring-bazarr.md#troubleshooting) on the role's documentation for details.
+Refer to [this section](https://github.com/mother-of-all-self-hosting/ansible-role-bazarr/blob/main/docs/configuring-bazarr.md#troubleshooting) on the role's documentation for details.
 
 ## Related services
 

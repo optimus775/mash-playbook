@@ -15,9 +15,8 @@
       "maxRequestsPerSecond": 2
     },
     {
-      "matchHost": "https://iris.radicle.network",
-      "concurrentRequestLimit": 2,
-      "maxRequestsPerSecond": 2
+      "matchHost": "iris.radicle.network",
+      "enabled": false
     }
   ],
   "branchConcurrentLimit": 5,
@@ -36,30 +35,10 @@
   ],
   "packageRules": [
     {
+      "description": "Roles use `vUPSTREAM-N` tags. `sourceUrl` is only known after lookup, so `matchSourceUrls` cannot select the versioning; match the datasource instead",
       "ignoreUnstable": false,
       "versioning": "loose",
-      "matchSourceUrls": [
-        "https://codeberg.org{/,}**",
-        "https://github.com{/,}**",
-        "https://gitlab.com{/,}**",
-        "https://iris.radicle.network{/,}**"
-      ]
-    },
-    {
-      "description": "Automerge version bumps of roles maintained in the MASH organization and of devture roles (via branch push - no PR)",
-      "matchManagers": ["ansible-galaxy"],
-      "matchSourceUrls": [
-        "https://github.com/devture/com.devture.ansible.role{/,}**",
-        "https://github.com/mother-of-all-self-hosting{/,}**"
-      ],
-      "automerge": true,
-      "automergeType": "branch"
-    },
-    {
-      "matchSourceUrls": [
-        "https://iris.radicle.network{/,}**"
-      ],
-      "reviewers": ["luixxiul"]
+      "matchDatasources": ["git-tags"]
     },
     {
       "description": "Automerge updates of the self-hosted Renovate runner (via branch push - no PR) monthly",
@@ -70,6 +49,12 @@
       "automergeType": "branch",
       "schedule": ["* 0-3 1 * *"],
       "automergeSchedule": ["* 0-3 1 * *"]
+    },
+    {
+      "description": "Disable Git tag updates from iris.radicle.network",
+      "matchDatasources": ["git-tags"],
+      "matchSourceUrls": ["https://iris.radicle.network/**"],
+      "enabled": false
     }
   ],
   "github-actions": {

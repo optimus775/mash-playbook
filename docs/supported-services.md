@@ -33,6 +33,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [AnonymousOverflow](https://github.com/httpjamesm/AnonymousOverflow) | Frontend for StackOverflow | [Link](services/anonymousoverflow.md) |
 | [Apache Answer](https://answer.apache.org/) | Q&A community platform software for teams | [Link](services/answer.md) |
 | [Apache NiFi](https://nifi.apache.org/) | An easy to use, powerful, and reliable system to process and distribute data | [Link](services/nifi.md) |
+| [Apache NiFi Registry](https://nifi.apache.org/projects/registry/) | Central storage and management of versioned flows shared across Apache NiFi instances | [Link](services/nifi-registry.md) |
 | [Apache Tika Server](https://github.com/apache/tika-docker) | Detect and extract metadata and text from different file types (such as PPT, XLS, and PDF) | [Link](services/tika.md) |
 | [APISIX](https://apisix.apache.org/docs/apisix/getting-started/README/) | An API Gateway, Ingress Controller, etc | [Link](services/apisix.md) |
 | [Apprise API](https://github.com/caronc/apprise-api) | Lightweight REST framework that wraps the [Apprise](https://github.com/caronc/apprise) Notification Library | [Link](services/apprise.md) |
@@ -106,6 +107,8 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Funkwhale](https://funkwhale.audio/) | ActivityPub federated streaming server for listening and sharing music | [Link](services/funkwhale.md) |
 | [Ghostfolio](https://ghostfol.io/) | Wealth management software to keep track of assets such as stocks, bonds, ETFs, etc. | [Link](services/ghostfolio.md) |
 | [Gitea](https://gitea.io/) | Software forge (Git hosting service, etc.) | [Link](services/gitea.md) |
+| [GitLab](https://about.gitlab.com/) | Complete DevOps platform (Git hosting service, CI/CD, etc.) | [Link](services/gitlab.md) |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | A runner to use with GitLab CI/CD | [Link](services/gitlab-runner.md) |
 | [Gokapi](https://github.com/Forceu/Gokapi) | Share files that expire after a set number of downloads or days | [Link](services/gokapi.md) |
 | [Gotenberg](https://gotenberg.dev/) | Docker-based API for converting documents to PDF | [Link](services/gotenberg.md) |
 | [GotHub](https://codeberg.org/gothub/gothub) | Frontend for GitHub | [Link](services/gothub.md) |
@@ -174,6 +177,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Neko](https://neko.m1k1o.net/) | A virtual browser or even desktop environment | [Link](services/neko.md) |
 | [NetBox](https://docs.netbox.dev/en/stable/) | Web application that provides [IP address management (IPAM)](https://en.wikipedia.org/wiki/IP_address_management) and [data center infrastructure management (DCIM)](https://en.wikipedia.org/wiki/Data_center_management#Data_center_infrastructure_management) functionality | [Link](services/netbox.md) |
 | [Nextcloud](https://nextcloud.com/) | Popular collaboration solution | [Link](services/nextcloud.md) |
+| [Nginx](https://nginx.org/) | Web server, which can also be used as a reverse proxy, load balancer and HTTP cache | [Link](services/nginx.md) |
 | [noCDNbs](https://git.private.coffee/PrivateCoffee/nocdnbs) | Privacy-friendly cdnjs proxy | [Link](services/nocdnbs.md) |
 | [NodeBB](https://github.com/NodeBB/NodeBB) | Node.js based forum software | [Link](services/nodebb.md) |
 | [Node-RED](https://nodered.org) | Flow-based programming tool | [Link](services/nodered.md) |

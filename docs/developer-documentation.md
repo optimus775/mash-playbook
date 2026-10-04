@@ -146,7 +146,7 @@ Please wire your role to other services than `systemd_service_manager` if necess
 <details>
 <summary>Wire the role to Postgres / MariaDB</summary>
 
-On this playbook Postgres is enabled by default (see [`examples/vars.yml`](../examples/vars.yml)), and you can wire your role to Postgres by adding it to the configuration for Postgres as below:
+On this playbook Postgres is enabled by default (refer to [`examples/vars.yml`](../examples/vars.yml)), and you can wire your role to Postgres by adding it to the configuration for Postgres as below:
 
 ```yaml
 # role-specific:postgres
@@ -294,6 +294,13 @@ If the role is regarded to have been abandoned by the author from the viewpoint 
 Please keep an eye on the roles maintained by the MASH organization to keep yours up-to-date by adding proper changes if any. Since the background of the decision for the changes are usually not announced (though you may find references in a commit message), you might as well to ask an organization member on the Matrix room about changes you are expected to apply.
 
 Please do not hesitate to ask for help to let the community members help you! 👋
+
+## Reviewing role dependency updates
+
+Renovate opens pull requests for Ansible role version updates instead of merging their branches
+directly. Review the released role changes and the playbook wiring before merging; a role update may
+need a playbook adaptation even when its role tests pass. Other dependency classes retain their
+separate Renovate policies.
 
 ## Maintaining the Renovate runner
 
