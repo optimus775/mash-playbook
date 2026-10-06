@@ -1,3 +1,9 @@
+# 2026-10-04
+
+## OpenCloud search migration requires an explicit command
+
+This affects OpenCloud installations with `opencloud_search_index_generation` configured, including upgrades from 7.x to 8.x whose search migration has not completed. Installation, setup and service startup no longer trigger a full search rescan when the completion marker is absent. After starting the target OpenCloud version, schedule the migration explicitly with `just run-tags migrate-opencloud --limit YOUR_SERVER_GROUP`. A failed migration also requires an explicit retry; a completed migration is still skipped using its existing marker. See the [upgrade procedure](docs/services/opencloud-upgrade-8.md).
+
 # 2026-09-27
 
 ## Jellyfin 12 requires preparation before upgrading

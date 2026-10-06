@@ -12,7 +12,7 @@
 | `opencloud_enabled` | Установка службы; по умолчанию `false` |
 | `opencloud_version` | Зафиксированная версия образа |
 | `opencloud_container_image_repository` | `opencloudeu/opencloud` для Production или `opencloudeu/opencloud-rolling` для Rolling |
-| `opencloud_search_index_generation` | Поколение поискового индекса, например `v5`; включает однократную переиндексацию после запуска |
+| `opencloud_search_index_generation` | Поколение поискового индекса, например `v5`; используется при явном запуске миграции |
 | `opencloud_search_reindex_timeout` | Максимальное время ожидания переиндексации в секундах |
 | `opencloud_hostname` | Домен без протокола и пути |
 | `opencloud_base_path` | Общий каталог файлов роли |
@@ -32,4 +32,6 @@
 
 Теги: `install-opencloud`, `setup-opencloud`, `check-opencloud`. Проверку выполняйте отдельным вызовом после запуска службы. `setup-opencloud` при выключенном сервисе удаляет unit, вспомогательные env/labels и сеть, сохраняя конфигурацию и пользовательские данные.
 
-Роль `mash/opencloud_migrations` вызывает задачи `migrate` после старта службы. При самостоятельном использовании роли также вызовите `tasks_from: migrate` через `include_role` после запуска целевого контейнера. Тег MASH `migrate-opencloud` позволяет повторить незавершённую миграцию.
+Роль `mash/opencloud_migrations` вызывает задачи `migrate` только при явном выборе тега `migrate-opencloud`. После запуска целевого контейнера выполните `just run-tags migrate-opencloud --limit mash_met_surf`. Обычная установка, настройка и запуск службы, а также запуск плейбука без тегов или с `--tags all` не запускают переиндексацию, даже если маркер завершения отсутствует. Тот же явный тег нужен для повторной попытки после ошибки; завершённая миграция пропускается по маркеру `.done`.
+
+При самостоятельном использовании роли вызовите `tasks_from: migrate` через `include_role` отдельной операцией после запуска целевого контейнера.

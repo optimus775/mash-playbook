@@ -243,6 +243,7 @@ opencloud_search_tika_url: ""
 
 # Set to the upstream search schema generation when an upgrade requires a rescan.
 # Keep it unchanged for patch releases; completion is persisted outside the index.
+# MASH runs this migration only with the explicit migrate-opencloud tag.
 opencloud_search_index_generation: ""
 opencloud_migrations_path: "{{ opencloud_base_path }}/migrations"
 opencloud_search_reindex_timeout: 86400

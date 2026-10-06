@@ -98,6 +98,44 @@ class OpenCloudTest(unittest.TestCase):
         self.assertIn('FRONTEND_FULL_TEXT_SEARCH_ENABLED=false', env)
         self.assertNotIn('COLLABORATION_APP_ADDR=', env)
 
+    def test_search_migration_requires_its_explicit_tag(self):
+        self.optimize({'opencloud_enabled': True})
+        setup = yaml.safe_load((self.path / 'setup.yml').read_text())
+        migration = next(r for r in setup[0]['roles'] if r['role'] == 'mash/opencloud_migrations')
+        play = [{
+            'name': 'Check OpenCloud migration selection',
+            'hosts': 'localhost', 'gather_facts': False,
+            'vars': {
+                'opencloud_enabled': True,
+                'opencloud_version': '8.0.1',
+                'opencloud_search_index_generation': 'v5',
+                'opencloud_migrations_path': str(self.path / 'missing-migration-state'),
+            },
+            'roles': [migration],
+        }]
+        playbook = self.path / 'migration-selection.yml'
+        playbook.write_text(yaml.safe_dump(play))
+        cases = [
+            (None, False), ('all', False), ('tagged', False), ('never', False),
+            ('start', False), ('start-all', False), ('start-group', False),
+            ('install-all,start', False), ('setup-all,start', False),
+            ('install-opencloud,start-group', False), ('setup-opencloud,start-group', False),
+            ('migrate-opencloud', True), ('start,migrate-opencloud', True),
+        ]
+        for tags, expected in cases:
+            with self.subTest(tags=tags):
+                # Real Ansible tag selection, but check mode prevents any API call or rescan.
+                command = ['ansible-playbook', '-i', 'localhost,', '-c', 'local',
+                           str(playbook), '--check']
+                if tags is not None:
+                    command += ['--tags', tags]
+                result = subprocess.run(command, capture_output=True, text=True, cwd=ROOT,
+                                        timeout=30, env={**os.environ, 'ANSIBLE_NOCOLOR': '1',
+                                                        'ANSIBLE_ROLES_PATH': str(ROOT / 'roles')})
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertEqual('Check whether this OpenCloud search migration is complete' in result.stdout,
+                                 expected, result.stdout + result.stderr)
+
     def test_existing_office_and_tika_are_wired_without_new_public_ports(self):
         result = self.render({
             'eurooffice_enabled': True, 'eurooffice_hostname': 'office.example.test',

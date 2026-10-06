@@ -1145,12 +1145,10 @@
       role: galaxy/systemd_service_manager
     # /role-specific:systemd_service_manager
 
-    # Local role: migrations must run after systemd has started the target image.
+    # Full search rescans require an explicit tag, after the target image has started.
     - role: mash/opencloud_migrations
       tags:
-        - start
-        - start-all
-        - start-group
+        - never
         - migrate-opencloud
 
     # role-specific:playbook_state_preserver

@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 ---
 # A separate entry point preserves MASH's setup -> start -> migration ordering.
+# Even --tags never must not start a full rescan without the migration tag.
 - name: Run OpenCloud migrations after the service manager  # noqa role-name[path] MASH keeps local roles under roles/mash.
   ansible.builtin.include_role:
     name: mash/opencloud
     tasks_from: migrate
     apply:
-      tags: always
+      tags: migrate-opencloud
+  when: "'migrate-opencloud' in ansible_run_tags"
