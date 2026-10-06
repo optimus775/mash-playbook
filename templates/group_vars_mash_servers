@@ -1769,7 +1769,7 @@ mash_playbook_postgres_managed_databases_auto_itemized:
         'username': gitlab_database_postgres_username,
         'password': gitlab_database_postgres_password,
         'additional_sql_queries': [
-          ('\\c ' ~ gitlab_database_name),
+          ('\c ' ~ gitlab_database_name),
           'CREATE EXTENSION IF NOT EXISTS amcheck;',
         ],
       } if gitlab_enabled and (gitlab_database_postgres_hostname == postgres_connection_hostname or gitlab_database_postgres_socket_enabled) and gitlab_database_type == 'postgres' else omit)
@@ -1850,7 +1850,7 @@ mash_playbook_postgres_managed_databases_auto_itemized:
         'name': immich_database_name,
         'username': immich_database_username,
         'password': immich_database_password,
-        'additional_sql_queries': immich_database_preparation_sql_queries,
+        'additional_sql_queries': [('\c ' ~ immich_database_name)] + immich_database_preparation_sql_queries,
       } if immich_enabled and immich_server_enabled and immich_database_hostname == postgres_identifier else omit)
     }}
   # /role-specific:immich
@@ -2492,8 +2492,45 @@ container_socket_proxy_base_path: "{{ mash_playbook_base_path }}/{{ mash_playboo
 container_socket_proxy_uid: "{{ mash_playbook_uid }}"
 container_socket_proxy_gid: "{{ mash_playbook_gid }}"
 
-# Traefik requires read access to the containers APIs to do its job
-container_socket_proxy_api_containers_enabled: true
+# Socket proxy permissions (`container_socket_proxy_write_access_enabled` and `container_socket_proxy_api_*_enabled`)
+# required by services using the socket proxy. Each item is a list of permission names (e.g. `images`, `write_access`).
+mash_playbook_container_socket_proxy_permissions_auto_itemized:
+  # role-specific:headplane
+  # Headplane's Docker integration requires write access to restart the Headscale container
+  - "{{ ['containers', 'write_access'] if headplane_enabled and headplane_config_integration_docker_enabled and headplane_config_integration_docker_endpoint == container_socket_proxy_endpoint else [] }}"
+  # /role-specific:headplane
+
+  # role-specific:homarr
+  # Homarr requires read access to the containers APIs to list containers.
+  # Container lifecycle actions (start, stop, etc.) additionally require `container_socket_proxy_write_access_enabled: true`.
+  - "{{ ['containers'] if homarr_enabled and homarr_docker_endpoint == container_socket_proxy_endpoint else [] }}"
+  # /role-specific:homarr
+
+  # role-specific:prunemate
+  # PruneMate requires write access and these APIs for prune operations.
+  # Without `system`, the socket proxy returns a 403 error.
+  - "{{ ['write_access', 'build', 'containers', 'images', 'network', 'volumes', 'system'] if prunemate_enabled and prunemate_docker_endpoint == container_socket_proxy_endpoint else [] }}"
+  # /role-specific:prunemate
+
+  # role-specific:traefik
+  # Traefik requires read access to the containers APIs to work
+  - ['containers']
+  # /role-specific:traefik
+
+  # role-specific:tsdproxy
+  # TSDProxy requires access to the Docker networks and images to work
+  - "{{ ['network', 'images'] if tsdproxy_docker_endpoint == container_socket_proxy_endpoint else [] }}"
+  # /role-specific:tsdproxy
+
+mash_playbook_container_socket_proxy_permissions_auto: "{{ mash_playbook_container_socket_proxy_permissions_auto_itemized | flatten | unique }}"
+
+container_socket_proxy_write_access_enabled: "{{ 'write_access' in mash_playbook_container_socket_proxy_permissions_auto }}"
+container_socket_proxy_api_build_enabled: "{{ 'build' in mash_playbook_container_socket_proxy_permissions_auto }}"
+container_socket_proxy_api_containers_enabled: "{{ 'containers' in mash_playbook_container_socket_proxy_permissions_auto }}"
+container_socket_proxy_api_images_enabled: "{{ 'images' in mash_playbook_container_socket_proxy_permissions_auto }}"
+container_socket_proxy_api_network_enabled: "{{ 'network' in mash_playbook_container_socket_proxy_permissions_auto }}"
+container_socket_proxy_api_system_enabled: "{{ 'system' in mash_playbook_container_socket_proxy_permissions_auto }}"
+container_socket_proxy_api_volumes_enabled: "{{ 'volumes' in mash_playbook_container_socket_proxy_permissions_auto }}"
 
 ########################################################################
 #                                                                      #
@@ -14632,13 +14669,6 @@ prunemate_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_pro
 # role-specific:container_socket_proxy
 prunemate_docker_endpoint_is_unix_socket: "{{ false if prunemate_docker_endpoint.startswith('tcp://') else true }}"
 prunemate_docker_endpoint: "{{ container_socket_proxy_endpoint if container_socket_proxy_enabled else 'unix:///var/run/docker.sock' }}"
-container_socket_proxy_write_access_enabled: true # required for prune operations
-container_socket_proxy_api_build_enabled: true # required for pruning build cache
-container_socket_proxy_api_containers_enabled: true
-container_socket_proxy_api_images_enabled: true
-container_socket_proxy_api_network_enabled: true
-container_socket_proxy_api_volumes_enabled: true
-container_socket_proxy_api_system_enabled: true # without this setting the docker-socket-proxy instance returns a 403 error.
 # /role-specific:container_socket_proxy
 
 # role-specific:traefik
@@ -16787,9 +16817,6 @@ tsdproxy_container_additional_networks_auto: |
 # role-specific:container_socket_proxy
 tsdproxy_docker_endpoint_is_unix_socket: "{{ false if container_socket_proxy_enabled else true }}"
 tsdproxy_docker_endpoint: "{{ container_socket_proxy_endpoint if container_socket_proxy_enabled == true and tsdproxy_enabled == true else 'unix:///var/run/docker.sock' }}"
-# TSDProxy needs access to the Docker Networks and images to work
-container_socket_proxy_api_network_enabled: "{{ true if tsdproxy_docker_endpoint == container_socket_proxy_endpoint else false }}"
-container_socket_proxy_api_images_enabled: "{{ true if tsdproxy_docker_endpoint == container_socket_proxy_endpoint else false }}"
 # /role-specific:container_socket_proxy
 
 ########################################################################
