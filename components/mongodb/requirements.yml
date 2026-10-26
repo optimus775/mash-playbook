@@ -1,5 +1,9 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
 - src: git+https://github.com/mother-of-all-self-hosting/ansible-role-mongodb.git
-  version: v9.0.4-0
+  version: v9.0.4-2
   name: mongodb

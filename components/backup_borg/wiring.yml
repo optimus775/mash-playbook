@@ -1,3 +1,9 @@
+# SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
 # The role enables itself by default. It stays disabled, unless enabled in your inventory.
@@ -34,8 +40,6 @@ backup_borg_mariadb_enabled: "{{ mariadb_enabled | default(false) }}"
 backup_borg_mongodb_enabled: "{{ mongodb_enabled | default(false) }}"
 backup_borg_mysql_enabled: "{{ mariadb_enabled | default(false) }}"
 backup_borg_postgresql_enabled: "{{ postgres_enabled | default(false) }}"
-
-backup_borg_retention_prefix: "{{ mash_playbook_service_identifier_prefix }}"
 
 backup_borg_storage_archive_name_format: "{{ mash_playbook_service_identifier_prefix }}-{now:%Y-%m-%d-%H%M%S}"
 

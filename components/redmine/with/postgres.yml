@@ -1,3 +1,9 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023 aine-etke
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
 redmine_database_postgres_hostname: "{{ postgres_connection_hostname if postgres_enabled and not redmine_database_postgres_socket_enabled else '' }}"

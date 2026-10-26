@@ -32,6 +32,7 @@ The guide is meant for anyone preparing a contribution. If you find existing fil
 
 - Link to the role's documentation instead of duplicating its content (installation steps, distro-specific commands, etc.). Copied instructions go stale; links age much better.
 - Reuse existing files to minimize inconsistencies.
+- When reusing, copyright attributions must be preserved on the files. Never strip them away, and **do not pretend you were the sole original author.** This often happens when a Gen-AI / LLM is involved, and it is your responsibility to avoid this slop. Additionally, consider to add URLs to the original files in a commit message, so that one can easily trace and verify the relationship between you and the authors.
 
 ## Support a new service | Create your own role
 
@@ -206,6 +207,12 @@ Your role, as for `ansible-galaxy`. The name must match the component's director
 
 `wiring.yml` holds the default configuration of your role for this playbook, which applies whenever the component is in use. `with/OTHER.yml` holds configuration which applies only when the `OTHER` component is in use too. A variable may only be defined in one of these files.
 
+Keep the playbook's variables and the roles' variables apart:
+
+- Only set variables which the role has. Setting one which it does not have (e.g. after the role renamed it) has no effect, and nothing reports it.
+- Name variables which the playbook defines for itself (e.g. a value which several components use, or a switch for an integration) `mash_playbook_*`, not after a role, so that they are not mistaken for the role's.
+- Leave the role's variables meant for users (e.g. `*_custom`, `*_additional_labels` and `*_additional_variables`) to them. The playbook sets the `*_auto` ones, and if a role lacks a variable for something, add one to the role. A pre-commit hook (`bin/check-components-user-variables.py`) checks this by the variables' names.
+
 ```yaml
 # wiring.yml
 
@@ -348,7 +355,7 @@ Both directories are ignored by git, but they are not interchangeable:
 
 ## Reviewing role dependency updates
 
-Renovate opens pull requests for Ansible role version updates instead of merging their branches directly. Review the released role changes and the playbook wiring before merging; a role update may need a playbook adaptation even when its role tests pass. Other dependency classes retain their separate Renovate policies.
+Renovate opens pull requests for Ansible role version updates instead of merging their branches directly. Review the released role changes and the playbook wiring before merging; a role update may need a playbook adaptation even when its role tests pass. In particular, check that the variables the components set still exist in the role (see [`wiring.yml` and `with/`](#wiringyml-and-with)). Other dependency classes retain their separate Renovate policies.
 
 ## Maintaining the Renovate runner
 

@@ -1,9 +1,13 @@
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
 # FMD Server
-hubsite_service_fmd_server_enabled: "{{ fmd_server_enabled }}"
-hubsite_service_fmd_server_name: FMD Server
-hubsite_service_fmd_server_url: "{{ fmd_server_scheme }}://{{ fmd_server_hostname }}{{ fmd_server_path_prefix }}"
-hubsite_service_fmd_server_logo_location: ""
-hubsite_service_fmd_server_description: "Official server for FMD (FindMyDevice)"
-hubsite_service_fmd_server_priority: 1000
+mash_playbook_hubsite_service_fmd_server_enabled: "{{ fmd_server_enabled }}"
+mash_playbook_hubsite_service_fmd_server_name: FMD Server
+mash_playbook_hubsite_service_fmd_server_url: "{{ fmd_server_scheme }}://{{ fmd_server_hostname }}{{ fmd_server_path_prefix }}"
+mash_playbook_hubsite_service_fmd_server_logo_location: ""
+mash_playbook_hubsite_service_fmd_server_description: "Official server for FMD (FindMyDevice)"
+mash_playbook_hubsite_service_fmd_server_priority: 1000

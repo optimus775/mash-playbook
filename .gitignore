@@ -3,9 +3,6 @@ inventory/host_vars/mash.met.surf/vars.yml.backup
 inventory/host_vars/*/vars.yml.pre-vault.bak
 inventory/host_vars/*/vault.yml.bak
 
-# ignore the local CodeGraph index
-.codegraph/
-
 # ignore files created by running pre-commit locally
 .ansible
 
@@ -31,6 +28,7 @@ inventory/host_vars/*/vault.yml.bak
 
 /var/
 .direnv/
+.envrc.local
 
 /group_vars/*
 !/group_vars/.gitkeep

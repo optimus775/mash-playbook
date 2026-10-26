@@ -17,6 +17,7 @@ SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
 SPDX-FileCopyrightText: 2024 Gergely Horváth
 SPDX-FileCopyrightText: 2024 Thomas Miceli
 SPDX-FileCopyrightText: 2024-2026 Suguru Hirahara
+SPDX-FileCopyrightText: 2026 Claude Opus
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -348,7 +349,7 @@ Refer to [this page](https://docs.nextcloud.com/server/latest/admin_manual/confi
 To disable the integration altogether (in case of using another LDAP server for Nextcloud while using LLDAP for other services, etc.), add the following configuration to your `vars.yml` file:
 
 ```yaml
-nextcloud_lldap_enabled: false
+mash_playbook_nextcloud_lldap_integration_enabled: false
 ```
 
 ### Configuring Nextcloud Office application

@@ -1,5 +1,9 @@
+# SPDX-FileCopyrightText: 2025 Slavi Pantaleev
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 
 - src: git+https://github.com/mother-of-all-self-hosting/ansible-role-bind.git
-  version: v9.20-6
+  version: v9.20-7
   name: bind
