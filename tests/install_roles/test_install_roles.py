@@ -33,6 +33,10 @@ FAKE_INSTALLER = textwrap.dedent("""\
     #!/usr/bin/env python3
     import os, shutil, sys, yaml
     arguments = sys.argv[1:]
+    if os.path.basename(sys.argv[0]) == "agru":
+        if "-no-tui" not in arguments:
+            print("Expected non-interactive installation", file=sys.stderr)
+            sys.exit(2)
     requirements_path = arguments[arguments.index("-r") + 1]
     roles_path = arguments[arguments.index("-p") + 1]
     if os.environ.get("FAKE_INSTALLER_FAIL"):

@@ -847,9 +847,16 @@ class TestRoleInstallation(OptimizeTestCase):
             # and "installs" them like agru does (with their version in meta/.galaxy_install_info)
             import os, sys, yaml
             arguments = sys.argv[1:]
-            if arguments == ["-v"]:
+            legacy = bool(os.environ.get("FAKE_AGRU_LEGACY"))
+            if arguments == ["-version"] or (arguments == ["-v"] and not legacy):
+                if legacy:
+                    print("flag provided but not defined: -version", file=sys.stderr)
+                    sys.exit(2)
                 print(os.environ.get("FAKE_AGRU_VERSION", "v0.3.0"))
                 sys.exit(0)
+            if legacy and "-no-tui" in arguments:
+                print("flag provided but not defined: -no-tui", file=sys.stderr)
+                sys.exit(2)
             definitions = []
             for index, argument in enumerate(arguments):
                 if argument == "-r":
@@ -979,6 +986,15 @@ class TestRoleInstallation(OptimizeTestCase):
     def test_update_pins_versions_with_bundled_agru(self):
         self.use_bundled_agru()
         self.test_update_pins_versions_of_all_components()
+
+    def test_update_with_legacy_agru_does_not_install_during_version_check(self):
+        self.use_bundled_agru()
+        self.make_clone_with_upstream_change()
+        result = self.pb.just("update", "-u", env={**self.env, "FAKE_AGRU_LEGACY": "1"})
+        self.assertFailedCleanly(result)
+        self.assertIn("version 0.3.0 or newer", result.stderr)
+        self.assertFalse(self.agru_log_path.exists())
+        self.assertNotIn("# changed upstream", (self.pb.root / "components" / "miniflux" / "wiring.yml").read_text())
 
     def test_update_with_unknown_flags_fails_before_pulling(self):
         self.make_clone_with_upstream_change()

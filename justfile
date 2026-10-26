@@ -62,7 +62,8 @@ update *flags:
     fi
     if [ "{{ flags }}" = "-u" ]; then
         # Older versions of agru only take one requirements file (-r), and would ignore all others
-        agru_version=$(agru -v 2>/dev/null | sed 's/^v//' || true)
+        # -v means verbose installation in older binaries; -version safely fails there.
+        agru_version=$(agru -version 2>/dev/null | sed 's/^v//' || true)
         if [ "$(printf '%s\n' 0.3.0 "$agru_version" | sort -V | head -n 1)" != "0.3.0" ]; then
             echo "Updating role versions (-u) requires the agru tool, version 0.3.0 or newer: https://github.com/etkecc/agru#where-to-get" >&2
             exit 1
