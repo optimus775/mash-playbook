@@ -1,0 +1,4 @@
+---
+
+opencloud_search_enabled: "{{ tika_enabled | default(false) }}"
+opencloud_search_tika_url: "{{ ('http://' ~ tika_identifier ~ ':' ~ tika_container_http_port | string) if tika_enabled | default(false) else '' }}"

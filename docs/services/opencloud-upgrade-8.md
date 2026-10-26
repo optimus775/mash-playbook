@@ -51,7 +51,7 @@ Ansible ждёт завершения асинхронной задачи; ли�
 ## Последовательность обновления
 
 1. Проверить работоспособность текущего экземпляра и сделать согласованную резервную копию при остановленном OpenCloud.
-2. Обновить инвентори и подготовить производные файлы: `just optimize`.
+2. Обновить инвентори. Команды `just` автоматически подготовят производные файлы из `components/` перед запуском плейбука.
 3. Применить конфигурацию Tika: `just run-tags install-tika,install-aux,start-group --extra-vars=group=tika --limit mash_met_surf`. Тег `install-aux` нужен для XML-файла из инвентори.
 4. Обновить EuroOffice: `just install-service eurooffice --limit mash_met_surf`. Дождаться ответа 200 от `/hosting/discovery`.
 5. Выполнить `just install-service opencloud --limit mash_met_surf`. Эта команда устанавливает и запускает службу; переиндексация выполняется отдельно.

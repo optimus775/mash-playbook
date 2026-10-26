@@ -3,7 +3,7 @@
 
 # Настройка OpenCloud
 
-Полная инструкция для этого форка: [OpenCloud в MASH](../../../../docs/services/opencloud.md).
+Полная инструкция для этого форка: [OpenCloud в MASH](../../../../components/opencloud/README.md).
 
 Основные переменные перечислены в [defaults/main.yml](../defaults/main.yml). В самостоятельном окружении задайте `opencloud_enabled`, UID/GID, HTTPS-домен, пароль администратора и настройки `systemd_docker_base`.
 

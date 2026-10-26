@@ -1,0 +1,4 @@
+---
+
+opencloud_collaboration_enabled: "{{ eurooffice_enabled | default(false) }}"
+opencloud_collaboration_app_url: "{{ (eurooffice_scheme ~ '://' ~ eurooffice_hostname) if eurooffice_enabled | default(false) else '' }}"

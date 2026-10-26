@@ -1,0 +1,26 @@
+---
+
+opencloud_enabled: false
+opencloud_identifier: "{{ mash_playbook_service_identifier_prefix }}opencloud"
+opencloud_base_path: "{{ mash_playbook_base_path }}/{{ mash_playbook_service_base_directory_name_prefix }}opencloud"
+opencloud_uid: "{{ mash_playbook_uid }}"
+opencloud_gid: "{{ mash_playbook_gid }}"
+opencloud_container_labels_traefik_enabled: "{{ mash_playbook_traefik_labels_enabled }}"
+opencloud_container_labels_traefik_docker_network: "{{ mash_playbook_reverse_proxyable_services_additional_network }}"
+
+opencloud_container_additional_networks_auto: |
+  {{
+    (
+      ([mash_playbook_reverse_proxyable_services_additional_network] if mash_playbook_reverse_proxyable_services_additional_network else [])
+      + ([tika_container_network] if opencloud_search_enabled and tika_enabled | default(false) else [])
+      + ([exim_relay_container_network] if opencloud_smtp_enabled and exim_relay_enabled | default(false) else [])
+    ) | unique | reject('equalto', opencloud_container_network) | list
+  }}
+opencloud_systemd_required_services_list_auto: |
+  {{
+    ([traefik_identifier ~ '.service'] if traefik_enabled | default(false) else [])
+    + ([eurooffice_identifier ~ '.service'] if opencloud_collaboration_enabled and eurooffice_enabled | default(false) else [])
+    + ([tika_identifier ~ '.service'] if opencloud_search_enabled and tika_enabled | default(false) else [])
+  }}
+opencloud_systemd_wanted_services_list_auto: |
+  {{ ([exim_relay_identifier ~ '.service'] if opencloud_smtp_enabled and exim_relay_enabled | default(false) else []) }}

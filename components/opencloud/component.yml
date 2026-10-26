@@ -1,0 +1,25 @@
+---
+
+activation_prefix: opencloud_
+
+# Both roles are maintained in this repository, not installed from Galaxy.
+setup:
+  - priority: 1000
+    entry:
+      - role: mash/opencloud
+  - priority: 9015
+    entry:
+      # Run only on request, after systemd_service_manager starts the target image.
+      - role: mash/opencloud_migrations
+        tags:
+          - never
+          - migrate-opencloud
+
+inject:
+  systemd_service_manager:
+    services:
+      - name: "{{ opencloud_identifier }}.service"
+        priority: 2200
+        restart_necessary: "{{ opencloud_restart_necessary | bool }}"
+        groups: [mash, opencloud]
+        when: "{{ opencloud_enabled }}"

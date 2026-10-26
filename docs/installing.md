@@ -20,18 +20,15 @@ If you've configured your DNS records and the playbook, you can start the instal
 
 ## Update Ansible roles
 
-Before installing, you need to update the Ansible roles that this playbook uses and fetches from outside.
+Before installing, update your playbook directory and the Ansible roles that this playbook uses and fetches from outside, by running `just update`.
 
-To update your playbook directory and all upstream Ansible roles (defined in the `requirements.yml` file), run:
-
-- either: `just update`
-- or: a combination of `git pull` and `just roles`
+If you only update the playbook directory (e.g. with `git pull`), the Ansible roles are installed and updated automatically when you run the playbook with `just`.
 
 If you don't have either `just` tool, you can run the `ansible-galaxy` tool directly: `rm -rf roles/galaxy; ansible-galaxy install -r requirements.yml -p roles/galaxy/ --force`
 
 For details about `just` commands, take a look at: [Running `just` commands](just.md).
 
-**Note**: if you're not using the [`just`](https://github.com/casey/just) utility, you need to create `setup.yml`, `requirements.yml` and `group_vars/mash_servers` based on the up-to-date templates found in the [`templates/` directory](../templates). If you are using `just`, these files are created and maintained up-to-date automatically.
+**Note**: if you're not using the [`just`](https://github.com/casey/just) utility, you need to generate `setup.yml`, `requirements.yml` and `group_vars/mash_servers/` from the [`components/` directory](../components) yourself (again after each playbook update), by running `bin/ansible-python.sh bin/optimize.py --components-path=components --inventory-path=inventory --all-components --dst-requirements-yml-path=requirements.yml --dst-setup-yml-path=setup.yml --dst-group-vars-path=group_vars/mash_servers`. If you are using `just`, these files are created and maintained up-to-date automatically.
 
 ## Installing services
 
@@ -86,7 +83,7 @@ When this command completes, services won't be running yet.
 
 You can now:
 
-- [Importing an existing Postgres database (from another installation)](services/postgres.md#importing) (optional)
+- [Importing an existing Postgres database (from another installation)](../components/postgres/README.md#importing) (optional)
 
 … and then proceed to starting all services:
 

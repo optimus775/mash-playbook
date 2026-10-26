@@ -27,7 +27,7 @@ Follow this guide to install services on your server using this Ansible playbook
 
 ## 🛠️ Configuration options
 
-You can check useful documentation for configuring components in [`services`](services/) directory. Refer to [this page](supported-services.md) for a list of all supported services.
+Refer to [this page](supported-services.md) for a list of all supported services, with links to the documentation for configuring each of them (the `README.md` of its directory in [`components`](../components)).
 
 ## 👨‍🔧 Maintenance
 
@@ -37,7 +37,7 @@ If your server and services experience issues, feel free to come to [our support
 
 - [Maintenance and Troubleshooting](maintenance-and-troubleshooting.md)
 
-- [PostgreSQL maintenance](services/postgres.md#maintenance)
+- [PostgreSQL maintenance](../components/postgres/README.md#maintenance)
 
 - [Upgrading services](maintenance-upgrading-services.md)
 
@@ -52,6 +52,7 @@ If your server and services experience issues, feel free to come to [our support
 - [Configuring IPv6](configuring-ipv6.md)
 
 - [Developer documentation](developer-documentation.md)
+- [Extending the playbook with your own components](extending-the-playbook.md)
 
 - [Playbook tags](playbook-tags.md)
 

@@ -17,17 +17,38 @@ Here are some examples of shortcuts:
 
 | Shortcut                                       | Result                                                                                                         |
 |------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| `just roles`                                   | Install the necessary Ansible roles pinned in [`requirements.yml`](../templates/requirements.yml)              |
+| `just roles`                                   | Install and update the Ansible roles (also done automatically before running the playbook)                     |
 | `just update`                                  | Run `git pull` (to update the playbook) and install the Ansible roles                                          |
 | `just install-all`                             | Run `ansible-playbook -i inventory/hosts setup.yml --tags=install-all,start`                                   |
 | `just setup-all`                               | Run `ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,start`                                     |
 | `just install-all --ask-vault-pass`            | Run commands with additional arguments (`--ask-vault-pass` will be appended to the above installation command) |
 | `just run-tags install-miniflux,start`         | Run specific playbook tags (here `install-miniflux` and `start`)                                               |
-| `just install-service miniflux`                | Run `just run-tags install-miniflux,start` with even less typing                                               |
+| `just install-service miniflux`                | Run `just run --tags=install-miniflux,start-group --extra-vars=group=miniflux` with even less typing           |
 | `just start-all`                               | (Re-)starts all services                                                                                       |
 | `just stop-group postgres`                     | Stop only the Postgres service                                                                                 |
 
 While [our documentation on prerequisites](prerequisites.md) lists `just` as one of the requirements for installation, using `just` is optional. If you find it difficult to install it, do not find it useful, or want to prefer raw `ansible-playbook` commands for some reason, feel free to run all commands manually. For example, you can run `ansible-galaxy` directly to install the Ansible roles: `rm -rf roles/galaxy; ansible-galaxy install -r requirements.yml -p roles/galaxy/ --force`.
+
+## Ansible roles and optimization
+
+Before running the playbook (e.g. with `just install-all`), the `just` recipes prepare it for your inventory:
+
+- They generate `requirements.yml`, `setup.yml` and `group_vars/mash_servers/` from the [components](../components), including only the components of the services enabled in your inventory (its `host_vars` and `group_vars`, as well as the playbook's own `group_vars`). This makes playbook runs faster.
+- They install missing and outdated Ansible roles into `roles/galaxy`, and delete the roles of services which are no longer in use.
+
+You can therefore run the playbook right after editing your `vars.yml` or updating the playbook, without running `just roles` first.
+
+Only variables in `host_vars` and `group_vars` are taken into account. Services enabled only elsewhere (inline in the `hosts` file, or with `--extra-vars`) are left out, unless you include all roles (see below).
+
+The inventory is `inventory/hosts`, unless the `ANSIBLE_INVENTORY` environment variable points to another inventory's hosts file (or directory). Until an inventory with variable files exists, all roles are included.
+
+To include all roles regardless of your inventory, run `just optimize-disable`. To go back to including only the roles in use, run `just optimize-enable`.
+
+### Roles you are working on
+
+If you change a role in `roles/galaxy` (for example, while developing it), it is kept as it is instead of being updated or deleted, and a warning is printed. To replace it with the version pinned in `requirements.yml`, run `just roles --force`.
+
+Roles which are symbolic links (for example, to your git checkout of the role) or contain a `.git` directory are never replaced or deleted, and neither are roles which the playbook does not know about.
 
 ## Difference between playbook tags and shortcuts
 
@@ -44,10 +65,17 @@ Such kind of difference sometimes matters. For example, when you install a serve
 
 ## Conditional service restart
 
-When running `install-all` or `install-service` (whether via `just` or raw `ansible-playbook`), only services whose configuration or container image actually changed during the playbook run will be restarted. Unchanged services are left running (or get started if they were stopped). This reduces unnecessary downtime.
+With conditional restart, a service whose role tracks its changes is restarted only when its configuration or container image changed during the run. An unchanged service is left running, or started if it was stopped. Whether conditional restart applies depends on the playbook tags. The standard `just` recipes add these tags:
 
-When running with `setup-*` tags (e.g. `setup-all`, `setup-miniflux`), all services are unconditionally restarted regardless of whether changes were detected. This is appropriate for setup's thorough "full setup" semantics.
+| Command                        | Tags added by the recipe      | Restart behavior                             |
+|--------------------------------|-------------------------------|----------------------------------------------|
+| `just install-all`             | `install-all,start`           | Conditional                                  |
+| `just install-service SERVICE` | `install-SERVICE,start-group` | Conditional, within the service's group      |
+| `just setup-all`               | `setup-all,start`             | Unconditional: all targeted services restart |
+| `just setup-service SERVICE`   | `setup-SERVICE,start-group`   | Unconditional, within the service's group    |
+| `just start-all`               | `start-all`                   | Unconditional: all services restart          |
+| `just start-group GROUP`       | `start-group`                 | Unconditional, within the group              |
 
-`start-all` and `start-group` always restart all targeted services, since no installation tasks run during these commands.
+For raw `ansible-playbook` or `just run-tags` runs, conditional restart applies only when the selected tags include an `install-*` tag and no `setup-*` tag. Any other run with a start or restart tag restarts its targeted services unconditionally.
 
-This behavior is automatically determined based on the playbook tags in use. It can be overridden with the `devture_systemd_service_manager_conditional_restart_enabled` variable. For example, to force unconditional restarts during installation: `just install-all --extra-vars='devture_systemd_service_manager_conditional_restart_enabled=false'`
+This behavior can be overridden with the `devture_systemd_service_manager_conditional_restart_enabled` variable. For example, to force unconditional restarts during installation: `just install-all --extra-vars='devture_systemd_service_manager_conditional_restart_enabled=false'`

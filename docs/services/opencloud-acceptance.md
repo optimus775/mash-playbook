@@ -54,4 +54,4 @@ just run-tags check-opencloud --limit mash_met_surf
 
 После приёмки папка `OpenCloud-Acceptance-20260910` удалена из персональных файлов; WebDAV подтвердил её отсутствие ответом 404. Временные локальные токены браузерной проверки удалены.
 
-Перед изменением настроек EuroOffice сохранена резервная копия в `/srv/storage/opencloud/backups/eurooffice-before-opencloud-20260910T191248Z`. Инструкция по эксплуатации и резервному копированию OpenCloud: [opencloud.md](opencloud.md).
+Перед изменением настроек EuroOffice сохранена резервная копия в `/srv/storage/opencloud/backups/eurooffice-before-opencloud-20260910T191248Z`. Инструкция по эксплуатации и резервному копированию OpenCloud: [OpenCloud](../../components/opencloud/README.md).

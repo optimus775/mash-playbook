@@ -1,0 +1,5 @@
+---
+
+opencloud_smtp_enabled: "{{ exim_relay_enabled | default(false) }}"
+opencloud_smtp_host: "{{ exim_relay_identifier if exim_relay_enabled | default(false) else '' }}"
+opencloud_smtp_sender: "{{ exim_relay_sender_address if exim_relay_enabled | default(false) else '' }}"

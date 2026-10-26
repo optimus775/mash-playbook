@@ -6,6 +6,7 @@ SPDX-FileCopyrightText: 2023 QEDeD
 SPDX-FileCopyrightText: 2024 Nikita Chernyi
 SPDX-FileCopyrightText: 2024 Fabio Bonelli
 SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2026 Radon Rosborough
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -30,8 +31,6 @@ We will be using `example.com` as the domain in the following instruction. Pleas
 
 - Strong password (random strings) generator. The playbook often requires you to create a strong password and use it for settings on `vars.yml`, components, etc. As any tools should be fine, this playbook has adopted [`pwgen`](https://linux.die.net/man/1/pwgen) (running `pwgen -s 64 1`). [Password Tech](https://pwgen-win.sourceforge.io/), formerly known as "PWGen for Windows", is available as free and open-source password generator for Windows. Generally, using a random generator available on the internet is not recommended.
 
-- (Optional) [regex](https://github.com/mrabarnett/mrab-regex) Python library for running `just optimize`. On most distros, you need to install some `python-regex` or `py3-regex` package, etc.
-
 ## Server
 
 - (Recommended) An **x86** server running one of these operating systems that make use of [systemd](https://systemd.io/):
@@ -51,6 +50,8 @@ We will be using `example.com` as the domain in the following instruction. Pleas
 - [Python](https://www.python.org/). Most distributions install Python by default, but some don't (e.g. Ubuntu 18.04) and require manual installation (something like `apt-get install python3`). On some distros, Ansible may incorrectly [detect the Python version](https://docs.ansible.com/ansible/latest/reference_appendices/interpreter_discovery.html) (2 vs 3) and you may need to explicitly specify the interpreter path in `inventory/hosts` during installation (e.g. `ansible_python_interpreter=/usr/bin/python3`)
 
 - [sudo](https://www.sudo.ws/), even when you've configured Ansible to log in as `root`, because this Ansible playbook sometimes uses the Ansible [become](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_privilege_escalation.html) module to perform tasks as another user (e.g. `mash`) and the `become` module's default implementation uses `sudo`. Some distributions, like a minimal Debian net install, do not include the `sudo` package by default.
+
+  - ⚠️ Caution: Some distributions (e.g. Ubuntu 26.04) ship [sudo-rs](https://github.com/trifectatechfoundation/sudo-rs) instead of [sudo-ws](https://www.sudo.ws/). This is incompatible with Ansible version 2.21 and below due to [a change in the prompt output format](https://github.com/ansible/ansible/issues/85837). You can either [upgrade Ansible](ansible.md#upgrading-ansible) or switch back to sudo-ws (e.g. `sudo update-alternatives --set sudo /usr/bin/sudo.ws`).
 
 - Properly configured DNS records for `example.com` (details in [Configuring DNS](configuring-dns.md)).
 
