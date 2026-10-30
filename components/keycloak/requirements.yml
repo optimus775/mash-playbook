@@ -1,9 +1,5 @@
-# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
 
 - src: git+https://github.com/mother-of-all-self-hosting/ansible-role-keycloak.git
-  version: v26.8.1-0
+  version: v26.8.1-1
   name: keycloak

@@ -1,9 +1,5 @@
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
 
 - src: git+https://progressiv.radicle.garden/znvd313jEb23f9AUNmtsweE7YHCK.git
-  version: v2.15.2-0
+  version: v2.15.3-0
   name: snowflake

@@ -1,9 +1,5 @@
-# SPDX-FileCopyrightText: 2026 Suguru Hirahara
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
 
 - src: git+https://progressiv.radicle.garden/zxNS7XeayGimb4WFfvqmasiZZC3v.git
-  version: v2.4.0-0
+  version: v2.4.3-0
   name: borg_ui

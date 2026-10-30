@@ -1,9 +1,5 @@
-# SPDX-FileCopyrightText: 2025 spatterlight
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
 
 - src: git+https://github.com/mother-of-all-self-hosting/ansible-role-plex.git
-  version: v1.43.4-7
+  version: v1.43.5-0
   name: plex

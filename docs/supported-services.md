@@ -24,7 +24,6 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 
 | Name | Description | Documentation |
 | ---- | ----------- | ------------- |
-| [AUX](https://github.com/mother-of-all-self-hosting/ansible-role-aux) | Auxiliary file/directory management on your server via Ansible | [Link](../components/auxiliary/README.md) |
 | [Actual](https://actualbudget.org) | Local-first personal finance tool | [Link](../components/actual/README.md) |
 | [AdGuard Home](https://adguard.com/en/adguard-home/overview.html/) | A network-wide DNS software for blocking ads & tracking | [Link](../components/adguard_home/README.md) |
 | [Adminer](https://www.adminer.org/) | Full-featured database server administration software | [Link](../components/adminer/README.md) |
@@ -139,6 +138,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Karakeep](https://karakeep.app/) | Bookmark manager to collect, organize and archive webpages | [Link](../components/karakeep/README.md) |
 | [Keycloak](https://www.keycloak.org/) | An identity and access management solution | [Link](../components/keycloak/README.md) |
 | [keyoxide-web](https://codeberg.org/keyoxide/keyoxide-web) | Web client for [Keyoxide](https://keyoxide.org/), a decentralized tool to create and verify decentralized online identities | [Link](../components/keyoxide/README.md) |
+| [kukaroll](https://github.com/devture/kukaroll) | A "git push to deploy" tool for projects checked out on the server | [Link](../components/kukaroll/README.md) |
 | [Kutt](https://kutt.to/) | Modern URL shortener with support for custom domains | [Link](../components/kutt/README.md) |
 | [Label Studio](https://labelstud.io/) | Data labeling tool that supports multiple projects, users, and data types in one platform | [Link](../components/labelstudio/README.md) |
 | [Lago](https://www.getlago.com/) | Metering and usage-based billing | [Link](../components/lago/README.md) |
@@ -229,7 +229,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Radarr](https://radarr.video/) | A movie organizer/manager for Usenet and BitTorrent users | [Link](../components/radarr/README.md) |
 | [Radicale](https://radicale.org/) | A CalDAV and CardDAV Server (solution for hosting contacts and calendars) | [Link](../components/radicale/README.md) |
 | [Radicle Explorer](https://radicle.network/nodes/seed.radicle.dev/rad%3Az4V1sjrXqjvFdnCUbxPFqd5p4DtH5) | [Radicle](https://radicle.dev/) user interface for the web browser | [Link](../components/radicle_explorer/README.md) |
-| [Radicle HTTP Daemon](https://radicle.network/nodes/seed.radicle.dev/rad%3Az4V1sjrXqjvFdnCUbxPFqd5p4DtH5/tree/crates/radicle-httpd/radicle-httpd.1.adoc) | Gateway between the [Radicle](https://radicle.dev/) protocol and the HTTP protocol | [Link](../components/radicle_httpd/README.md) |
+| [Radicle HTTP Daemon](https://radicle.network/nodes/seed.radicle.dev/rad%3Az4V1sjrXqjvFdnCUbxPFqd5p4DtH5/tree/explorer/crates/radicle-httpd/radicle-httpd.1.adoc) | Gateway between the [Radicle](https://radicle.dev/) protocol and the HTTP protocol | [Link](../components/radicle_httpd/README.md) |
 | [Radicle node](https://radicle.network/nodes/seed.radicle.dev/rad%3Az3gqcJUoA1n9HaHKufZs5FCSGazv5) | Network daemon for the [Radicle](https://radicle.dev/) network | [Link](../components/radicle_node/README.md) |
 | [ReactFlux](https://github.com/electh/ReactFlux) | Third-party web frontend for Miniflux | [Link](../components/reactflux/README.md) |
 | [Readeck](https://readeck.org) | A bookmark manager and a read-later tool combined in one | [Link](../components/readeck/README.md) |
@@ -257,6 +257,7 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [Standalone Snowflake proxy](https://community.torproject.org/relay/setup/snowflake/standalone/) | Help users connect to the [Tor](https://torproject.org/) network in places where Tor is blocked | [Link](../components/snowflake/README.md) |
 | [Statusnook](https://statusnook.com/) | Status page deployment service | [Link](../components/statusnook/README.md) |
 | [Stirling PDF v1](https://github.com/Stirling-Tools/Stirling-PDF) | PDF converter and editor | [Link](../components/stirling_pdf/README.md) |
+| [strongSwan](https://www.strongswan.org/) | IPsec-based VPN solution | [Link](../components/strongswan/README.md) |
 | [Svix](https://github.com/svix/svix-webhooks) | Webhook service | [Link](../components/svix/README.md) |
 | [syncstorage-rs](https://github.com/mozilla-services/syncstorage-rs) | Mozilla Sync Storage server for Firefox Sync | [Link](../components/syncstorage_rs_docker/README.md) |
 | [Syncthing](https://syncthing.net/) | A continuous file synchronization program which synchronizes files between two or more computers in real time | [Link](../components/syncthing/README.md) |
@@ -290,8 +291,16 @@ Below is an exhaustive list of the free and open-source software for self-hostin
 | [YaCy](https://yacy.net) | Distributed web search engine on a P2P network | [Link](../components/yacy/README.md) |
 | [Yggstack](https://github.com/yggdrasil-network/yggstack) | SOCKS5 proxy server and TCP port forwarder for [Yggdrasil Network](https://yggdrasil-network.github.io) | [Link](../components/yggstack/README.md) |
 | [YOURLS](https://yourls.org) | Your Own URL Shortener, on your server | [Link](../components/yourls/README.md) |
+
+### System-related components
+
+Below is an exhaustive list of the components which this playbook supports for managing the remote server.
+
+| Name | Description | Documentation |
+| ---- | ----------- | ------------- |
+| [AUX](https://github.com/mother-of-all-self-hosting/ansible-role-aux) | Auxiliary file/directory management on your server via Ansible | [Link](../components/auxiliary/README.md) |
 | Cleanup | Housekeeping on the server: Docker leftovers, logs, paths, packages and old kernels | [Link](../components/cleanup/README.md) |
-| [Fail2ban](https://github.com/fail2ban/fail2ban) | Bans IP addresses which show malicious signs, such as too many failed SSH logins | [Link](../components/fail2ban/README.md) |
+| [Fail2Ban](https://github.com/fail2ban/fail2ban) | Bans IP addresses which show malicious signs, such as too many failed SSH logins | [Link](../components/fail2ban/README.md) |
 | [SSH server](https://www.openssh.com/) | Configuration of the server's SSH daemon and authorized keys | [Link](../components/ssh/README.md) |
 | Swap | A swap file for the server | [Link](../components/swap/README.md) |
 

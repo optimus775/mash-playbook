@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-10-30
+
+### Woodpecker CI's directories moved
+
+Woodpecker CI's server and agent directories moved from `/mash/woodpecker-ci/server` and `/mash/woodpecker-ci/agent` to `/mash/woodpecker-ci-server` and `/mash/woodpecker-ci-agent`. Their shared parent directory was owned by the `mash` user, who could rename the agent's directory (now owned by root) and put another in its place.
+
+The next playbook run moves the server's directory, recreates the agent's, and deletes the old parent once it is empty. If you set `woodpecker_ci_server_base_path` or `woodpecker_ci_agent_base_path` in your `vars.yml`, your paths are left alone. To skip the migration, set `mash_playbook_migration_woodpecker_ci_paths_migration_enabled: false` (not recommended).
+
+### The base directory (`/mash`) is now owned by root
+
+The playbook now makes the base directory (`mash_playbook_base_path`, `/mash` by default) owned by `root`, with the `mash` group and the same mode (`0750`). Previously it was owned by the `mash` user.
+
+Whoever owns this directory can rename any service's directory in it, even one owned by root, and put another in its place. A service that runs something as root from its directory relies on this not being possible.
+
+Nothing changes for you: the services' own directories keep their owners, and the `mash` user can still reach them through the group. The next playbook run changes the owner. To keep the old owner, set `mash_playbook_base_path_uid: "{{ mash_playbook_uid }}"` in your `vars.yml` (not recommended).
+
 ## 2026-10-25
 
 ### The playbook's wiring moved from `templates/` to `components/`
@@ -542,3 +558,28 @@ Our [example vars.yml](examples/vars.yml) file has been updated, so that new hos
 ### Initial release
 
 This is the initial release of this playbook.
+
+#### Why create such a mega playbook?
+
+We used to maintain separate playbooks for various services ([Matrix](https://github.com/spantaleev/matrix-docker-ansible-deploy), [Nextcloud](https://github.com/spantaleev/nextcloud-docker-ansible-deploy), [Gitea](https://github.com/spantaleev/gitea-docker-ansible-deploy), [Gitlab](https://github.com/spantaleev/gitlab-docker-ansible-deploy), [Vaultwarden](https://github.com/spantaleev/vaultwarden-docker-ansible-deploy), [PeerTube](https://github.com/spantaleev/peertube-docker-ansible-deploy), ..). They re-used Ansible roles (for [Postgres](https://github.com/devture/com.devture.ansible.role.postgres), [Traefik](https://github.com/devture/com.devture.ansible.role.traefik), etc.), but were still hard to maintain due to the large duplication of effort.
+
+Most of these playbooks hosted services which require a Postgres database, a Traefik reverse-proxy, a backup solution, etc. All of them needed to come with documentation, etc. All these things need to be created and kept up-to-date in each and every playbook.
+
+Having to use a dedicated Ansible playbook for each and every piece of software means that you have to juggle many playbooks and make sure they don't conflict with one another when installing services on the same server. All these related playbooks interoperated nicely, but still required at least a bit of manual configuration to achieve this interoperability.
+
+Using specialized Ansible playbooks also means that trying out new software is difficult. Despite the playbooks being similar (which eases the learning curve), each one is still a new git repository you need to clone and maintain, etc.
+
+Furthermore, not all pieces of software are large enough to justify having their own dedicated Ansible playbook. They have no home, so no one uses them.
+
+We're finding the need for a playbook which combines all of this into one, so that:
+
+- you don't need to juggle multiple Ansible playbooks
+- you can try out various services easily - a few lines of extra configuration and you're ready to go
+- small pieces of software (like [Miniflux](https://miniflux.app/), powered by the [miniflux](https://github.com/mother-of-all-self-hosting/ansible-role-miniflux) Ansible role) which don't have their own playbook can finally find a home
+- you can use a single playbook with the quality you know and trust
+- shared services (like Postgres) are maintained in one single place
+- backups are made easy, because everything lives together (same base data path, same Postgres instance)
+
+Having one large playbook with all services does not necessarily mean you need to host everything on the same server though. Feel free to use as many servers as you see fit. While containers provide some level of isolation, it's still better to not put all your eggs in one basket and create a single point of failure.
+
+All of the aforementioned playbooks have been absorbed into this one. See the [full list of supported services here](docs/supported-services.md). The [Matrix playbook](https://github.com/spantaleev/matrix-docker-ansible-deploy) will remain separate, because it contains a huge number of components and will likely grow even more. It deserves to stand on its own.

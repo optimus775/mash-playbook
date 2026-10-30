@@ -1,9 +1,5 @@
-# SPDX-FileCopyrightText: 2025 spatterlight
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 ---
 
 - src: git+https://github.com/mother-of-all-self-hosting/ansible-role-jellyfin.git
-  version: v12.3-0
+  version: v12.4-0
   name: jellyfin
