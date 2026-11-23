@@ -35,6 +35,7 @@ For details about configuring the [Ansible role for Termix](https://radicle.netw
 
 This service requires the following other services:
 
+- [Postgres](../postgres/README.md) / MySQL / [MariaDB](../mariadb/README.md) / [SQLite](https://www.sqlite.org/) database
 - [Traefik](../traefik/README.md) reverse-proxy server
 
 ## Configuration
@@ -50,7 +51,8 @@ To enable this service, add the following configuration to your `vars.yml` file 
 
 termix_enabled: true
 
-termix_hostname: termix.example.com
+termix_hostname: mash.example.com
+termix_path_prefix: /termix
 
 ########################################################################
 #                                                                      #
@@ -59,9 +61,16 @@ termix_hostname: termix.example.com
 ########################################################################
 ```
 
+### Select database to use
+
+Termix can use a MySQL compatible database, Postgres, or SQLite, and you need to choose one. Refer to [this section](https://radicle.network/nodes/progressiv.radicle.garden/rad%3Az4TiZiqkm6MBmkPL2NTPMavni6LV/tree/docs/configuring-termix.md#specify-database) on the role's documentation for details.
+
+>[!NOTE]
+> The database for your existing installation is most likely to be `sqlite`.
+
 ## Usage
 
-After running the command for installation, the Termix instance becomes available at the URL specified with `termix_hostname`. With the configuration above, the service is hosted at `https://termix.example.com`.
+After running the command for installation, the Termix instance becomes available at the URL specified with `termix_hostname` and `termix_path_prefix`. With the configuration above, the service is hosted at `https://mash.example.com/termix`.
 
 To get started, open the URL with a web browser to create an account. **Note that the first registered user becomes an administrator automatically.**
 

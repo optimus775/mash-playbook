@@ -1,5 +1,10 @@
 ---
 
+description: File storage with EuroOffice integration and full-text search through Tika
+docs:
+  name: OpenCloud
+  url: https://github.com/opencloud-eu/opencloud
+  section: foss
 activation_prefix: opencloud_
 
 # Both roles are maintained in this repository, not installed from Galaxy.

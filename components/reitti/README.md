@@ -55,7 +55,8 @@ To enable this service, add the following configuration to your `vars.yml` file 
 
 reitti_enabled: true
 
-reitti_hostname: reitti.example.com
+reitti_hostname: mash.example.com
+reitti_path_prefix: /reitti
 
 ########################################################################
 #                                                                      #
@@ -240,9 +241,24 @@ reitti_systemd_required_services_list_custom:
 
 Running the installation command will create the shared Valkey instance named `mash-valkey`.
 
+### Integrating with Immich (optional)
+
+Reitti can be integrated with [Immich](../immich/README.md).
+
+If Reitti and Immich do not share a network (like Traefik), you can connect the Reitti container network to Immich by adding the following configuration to your `vars.yml` file:
+
+```yaml
+immich_container_additional_networks_custom:
+  - "{{ reitti_container_network }}"
+```
+
+On the settings UI, specify `http://mash-immich:2283` to the Immich Server URL.
+
+Refer to [this page](https://www.dedicatedcode.com/projects/reitti/latest/configurations/photo-integration/) on the official documentation for details about how to set it up.
+
 ### Usage
 
-After running the command for installation, the Reitti instance becomes available at the URL specified with `reitti_hostname`. With the configuration above, the service is hosted at `https://reitti.example.com`.
+After running the command for installation, the Reitti instance becomes available at the URL specified with `reitti_hostname` and `reitti_path_prefix`. With the configuration above, the service is hosted at `https://mash.example.com/reitti`.
 
 To get started, open the URL with a web browser to create an account. **Note that the first registered user becomes an administrator automatically.**
 
